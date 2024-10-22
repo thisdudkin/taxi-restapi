@@ -1,39 +1,21 @@
+# Maven
 target/
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
 
-### IntelliJ IDEA ###
-.idea/
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-*.iws
-*.iml
-*.ipr
+# Jenv
+.java-version
 
-### Eclipse ###
-.apt_generated
+# Eclipse
+.settings/
 .classpath
-.factorypath
 .project
-.settings
-.springBeans
-.sts4-cache
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+# IntelliJ IDEA
+.idea
+*.iml
 
-### VS Code ###
-.vscode/
+# Visual Studio Code
+.factorypath
 
-### Mac OS ###
-.DS_Store
+# Branch switching
+generated/
