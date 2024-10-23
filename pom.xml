@@ -19,6 +19,7 @@
         <module>authentication-server</module>
         <module>driver-service</module>
         <module>rides-service</module>
+        <module>common-module</module>
     </modules>
     <packaging>pom</packaging>
 
