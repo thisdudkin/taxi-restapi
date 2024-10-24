@@ -10,7 +10,10 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -43,6 +46,14 @@ public class Passenger extends BaseEntity {
     @Column(nullable = false)
     private PaymentMethod preferredPaymentMethod;
 
+    @Column
+    private BigDecimal balance;
+
+    @ElementCollection
+    @CollectionTable(name = "passenger_ratings", joinColumns = @JoinColumn(name = "passenger_id"))
+    @Column(name = "ratings")
+    private List<Integer> ratings = new ArrayList<>();
+
     @Column(nullable = false)
     private Instant createdAt;
 
@@ -73,6 +84,10 @@ public class Passenger extends BaseEntity {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    public double getAverageRating() {
+        return ratings.isEmpty() ? 0.0 : ratings.stream().mapToInt(Integer::intValue).average().orElse(0.0);
     }
 
 }
