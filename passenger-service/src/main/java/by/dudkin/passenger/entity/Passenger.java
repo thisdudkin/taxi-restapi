@@ -57,7 +57,7 @@ public class Passenger extends BaseEntity {
     @Column(nullable = false)
     private Instant createdAt;
 
-    @Column(nullable = false)
+    @Column
     private Instant updatedAt;
 
     @PrePersist
