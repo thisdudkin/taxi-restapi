@@ -25,7 +25,7 @@ public class PersonalInfo {
     @Column(nullable = false)
     private String phone;
 
-    @Column
+    @Column(name = "birthdate")
     private LocalDate dateOfBirth;
 
 }

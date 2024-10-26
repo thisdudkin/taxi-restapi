@@ -43,7 +43,7 @@ public class Passenger extends BaseEntity {
     private PersonalInfo info;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "payment_method", nullable = false)
     private PaymentMethod preferredPaymentMethod;
 
     @Column
@@ -51,7 +51,7 @@ public class Passenger extends BaseEntity {
 
     @ElementCollection
     @CollectionTable(name = "passenger_ratings", joinColumns = @JoinColumn(name = "passenger_id"))
-    @Column(name = "ratings")
+    @Column(name = "rating")
     private List<Integer> ratings = new ArrayList<>();
 
     @Column(nullable = false)
