@@ -16,16 +16,16 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class PersonalInfo {
 
-    @Column(nullable = false)
+    @Column(name = "firstname", nullable = false)
     private String firstName;
 
-    @Column(nullable = false)
+    @Column(name = "lastname", nullable = false)
     private String lastName;
 
     @Column(nullable = false)
     private String phone;
 
-    @Column
+    @Column(name = "birthdate")
     private LocalDate dateOfBirth;
 
 }
