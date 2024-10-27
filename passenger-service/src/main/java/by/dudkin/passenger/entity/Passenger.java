@@ -54,10 +54,10 @@ public class Passenger extends BaseEntity {
     @Column(name = "rating")
     private List<Integer> ratings = new ArrayList<>();
 
-    @Column(nullable = false)
+    @Column(name = "created_utc", nullable = false)
     private Instant createdAt;
 
-    @Column
+    @Column(name = "updated_utc")
     private Instant updatedAt;
 
     @PrePersist

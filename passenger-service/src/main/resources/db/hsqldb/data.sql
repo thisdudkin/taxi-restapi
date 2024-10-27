@@ -7,7 +7,7 @@ VALUES ('petr', 'petr@gmail.com', 'password123', 'Petr', 'Petrov', '+375 29 123-
 INSERT INTO passengers (username, email, password, firstname, lastname, phone, birthdate, payment_method, balance)
 VALUES ('anna', 'anna@example.com', 'password321', 'Anna', 'Ivanova', '+375 33 987-65-43', '1992-03-22', 'CASH', 100.00);
 
-INSERT INTO passengers_rating (passenger_id, rating) VALUES (0, 4);
-INSERT INTO passengers_rating (passenger_id, rating) VALUES (0, 5);
-INSERT INTO passengers_rating (passenger_id, rating) VALUES (1, 3);
-INSERT INTO passengers_rating (passenger_id, rating) VALUES (2, 5);
+INSERT INTO passenger_ratings (passenger_id, rating) VALUES (0, 4);
+INSERT INTO passenger_ratings (passenger_id, rating) VALUES (0, 5);
+INSERT INTO passenger_ratings (passenger_id, rating) VALUES (1, 3);
+INSERT INTO passenger_ratings (passenger_id, rating) VALUES (2, 5);

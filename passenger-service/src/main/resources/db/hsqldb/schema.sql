@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS passengers_rating;
+DROP TABLE IF EXISTS passenger_ratings;
 DROP TABLE IF EXISTS passengers;
 
 CREATE TABLE IF NOT EXISTS passengers
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS passengers
 
 CREATE INDEX IF NOT EXISTS idx_passengers_username ON passengers (username);
 
-CREATE TABLE IF NOT EXISTS passengers_rating
+CREATE TABLE IF NOT EXISTS passenger_ratings
 (
     passenger_id BIGINT NOT NULL,
     rating       INTEGER,
