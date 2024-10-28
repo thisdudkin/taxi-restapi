@@ -4,6 +4,7 @@ import by.dudkin.passenger.entity.Passenger;
 import by.dudkin.passenger.rest.dto.PassengerDto;
 import by.dudkin.passenger.rest.dto.PassengerFieldsDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.Collection;
 
@@ -16,6 +17,7 @@ public interface PassengerMapper {
 
     Passenger toPassenger(PassengerFieldsDto passengerFieldsDto);
 
+    @Mapping(target = "averageRating", source = "averageRating")
     PassengerDto toPassengerDto(Passenger passenger);
 
     Collection<PassengerDto> toPassengerDtos(Collection<Passenger> passengers);

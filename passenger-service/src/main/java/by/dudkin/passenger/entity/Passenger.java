@@ -49,6 +49,7 @@ public class Passenger extends BaseEntity {
     @Column
     private BigDecimal balance;
 
+    @Builder.Default
     @ElementCollection
     @CollectionTable(name = "passenger_ratings", joinColumns = @JoinColumn(name = "passenger_id"))
     @Column(name = "rating")

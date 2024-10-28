@@ -19,7 +19,7 @@ public record PassengerDto(Long id,
                            PersonalInfo info,
                            PaymentMethod preferredPaymentMethod,
                            BigDecimal balance,
-                           List<Integer> ratings,
+                           Double averageRating,
                            @NotNull Instant createdAt,
                            Instant updatedAt
 ) implements Serializable { }
