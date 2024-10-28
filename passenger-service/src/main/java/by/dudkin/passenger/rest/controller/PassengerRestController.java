@@ -18,7 +18,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.ProblemDetail.forStatusAndDetail;
 
 /**
  * @author Alexander Dudkin
@@ -32,20 +34,20 @@ public class PassengerRestController implements PassengerApi {
     private final PassengerMapper passengerMapper;
 
     @Override
-    public ResponseEntity<List<PassengerDto>> listPassengers() {
+    public ResponseEntity<?> listPassengers() {
         List<PassengerDto> passengers = new ArrayList<>();
         passengers.addAll(passengerMapper.toPassengerDtos(this.passengerService.findAll()));
         if (passengers.isEmpty()) {
-            return new ResponseEntity<>(NOT_FOUND);
+            return new ResponseEntity<>(forStatusAndDetail(NOT_FOUND, "Passengers not found"), NOT_FOUND);
         }
         return new ResponseEntity<>(passengers, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<PassengerDto> getPassenger(Integer passengerId) {
+    public ResponseEntity<?> getPassenger(Integer passengerId) {
         Passenger passenger = this.passengerService.findById(passengerId);
         if (passenger == null) {
-            return new ResponseEntity<>(NOT_FOUND);
+            return new ResponseEntity<>(forStatusAndDetail(NOT_FOUND, format("Passenger with ID %s not found", passengerId)), NOT_FOUND);
         }
         return new ResponseEntity<>(passengerMapper.toPassengerDto(passenger), HttpStatus.OK);
     }
@@ -60,10 +62,10 @@ public class PassengerRestController implements PassengerApi {
     }
 
     @Override
-    public ResponseEntity<PassengerDto> updatePassenger(Integer passengerId, PassengerFieldsDto passengerFieldsDto) {
+    public ResponseEntity<?> updatePassenger(Integer passengerId, PassengerFieldsDto passengerFieldsDto) {
         Passenger currentPassenger = this.passengerService.findById(passengerId);
         if (currentPassenger == null) {
-            return new ResponseEntity<>(NOT_FOUND);
+            return new ResponseEntity<>(forStatusAndDetail(NOT_FOUND, format("Passenger with ID %s not found", passengerId)), NOT_FOUND);
         }
         currentPassenger.setUsername(passengerFieldsDto.username());
         currentPassenger.setEmail(passengerFieldsDto.email());
@@ -76,10 +78,10 @@ public class PassengerRestController implements PassengerApi {
 
     @Transactional
     @Override
-    public ResponseEntity<PassengerDto> deletePassenger(Integer passengerId) {
+    public ResponseEntity<?> deletePassenger(Integer passengerId) {
         Passenger passenger = this.passengerService.findById(passengerId);
         if (passenger == null) {
-            return new ResponseEntity<>(NOT_FOUND);
+            return new ResponseEntity<>(forStatusAndDetail(NOT_FOUND, format("Passenger with ID %s not found", passengerId)), NOT_FOUND);
         }
         this.passengerService.delete(passenger);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
