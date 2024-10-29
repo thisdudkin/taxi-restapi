@@ -1,5 +1,6 @@
 package by.dudkin.passenger.rest.advice;
 
+import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -48,6 +49,11 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ProblemDetail> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
         return new ResponseEntity<>(forStatusAndDetail(CONFLICT, e.getMessage()), CONFLICT);
+    }
+
+    @ExceptionHandler(PassengerNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handlePassengerNotFoundException(PassengerNotFoundException e) {
+        return new ResponseEntity<>(forStatusAndDetail(NOT_FOUND, e.getMessage()), NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)

@@ -1,5 +1,6 @@
 package by.dudkin.passenger.mapper;
 
+import by.dudkin.common.entity.BaseEntity;
 import by.dudkin.passenger.entity.Passenger;
 import by.dudkin.passenger.rest.dto.PassengerDto;
 import by.dudkin.passenger.rest.dto.PassengerFieldsDto;

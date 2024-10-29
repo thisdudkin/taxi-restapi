@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
@@ -20,7 +21,8 @@ import java.util.Objects;
  * @author Alexander Dudkin
  */
 @Entity @Setter
-@Builder @Getter
+@SuperBuilder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "passengers")

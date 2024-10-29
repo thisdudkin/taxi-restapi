@@ -124,7 +124,7 @@ public interface PassengerApi {
         value = {"/passengers/{passengerId}"},
         produces = {"application/json"}
     )
-    default ResponseEntity<?> deletePassenger(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") @Min(0L) Integer passengerId) {
+    default ResponseEntity<?> deletePassenger(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") @Min(0L) Long passengerId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 

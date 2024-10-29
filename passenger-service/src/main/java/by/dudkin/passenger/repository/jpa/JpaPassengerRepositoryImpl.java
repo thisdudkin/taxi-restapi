@@ -8,6 +8,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * @author Alexander Dudkin
@@ -19,8 +20,8 @@ public class JpaPassengerRepositoryImpl implements PassengerRepository {
     private EntityManager em;
 
     @Override
-    public Passenger findById(long id) throws DataAccessException {
-        return this.em.find(Passenger.class, id);
+    public Optional<Passenger> findById(long id) throws DataAccessException {
+        return Optional.ofNullable(this.em.find(Passenger.class, id));
     }
 
     @SuppressWarnings("unchecked")
