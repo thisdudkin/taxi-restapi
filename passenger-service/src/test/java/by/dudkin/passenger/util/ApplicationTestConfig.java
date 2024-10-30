@@ -1,4 +1,4 @@
-package by.dudkin.passenger.service;
+package by.dudkin.passenger.util;
 
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.TestConfiguration;

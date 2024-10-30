@@ -49,8 +49,8 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     public PassengerDto update(long passengerId, PassengerFieldsDto passengerFieldsDto) throws DataAccessException {
-        Passenger passenger = passengerMapper.toPassenger(passengerFieldsDto);
-        passengerRepository.save(passenger);
+        Passenger passenger = getOrThrow(passengerId);
+        updateFields(passenger, passengerFieldsDto);
         return passengerMapper.toPassengerDto(passenger);
     }
 
@@ -65,6 +65,14 @@ public class PassengerServiceImpl implements PassengerService {
                 .orElseThrow(() -> new PassengerNotFoundException(
                         messageSource.getMessage(ErrorMessages.PASSENGER_NOT_FOUND, new Object[]{id}, Locale.getDefault())
                 ));
+    }
+
+    private void updateFields(Passenger passenger, PassengerFieldsDto passengerFieldsDto) {
+        passenger.setUsername(passengerFieldsDto.username());
+        passenger.setEmail(passengerFieldsDto.email());
+        passenger.setPassword(passengerFieldsDto.password()); // TODO: BCryptPasswordEncoder, also for save() method
+        passenger.setInfo(passengerFieldsDto.info());
+        passenger.setPreferredPaymentMethod(passengerFieldsDto.preferredPaymentMethod());
     }
 
 }
