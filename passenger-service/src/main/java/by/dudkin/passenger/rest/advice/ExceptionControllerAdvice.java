@@ -1,64 +1,70 @@
 package by.dudkin.passenger.rest.advice;
 
 import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import by.dudkin.passenger.util.ErrorMessages;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.method.ParameterValidationResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Locale;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ProblemDetail.forStatusAndDetail;
 
 /**
  * @author Alexander Dudkin
  */
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class ExceptionControllerAdvice {
+
+    private final MessageSource messageSource;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        String message = e.getBindingResult().getFieldErrors().stream()
-            .map(fe -> fe.getField() + " " + fe.getDefaultMessage())
-            .collect(joining("; ", "Validation failed: ", ""));
-
+        String errors = e.getBindingResult().getFieldErrors().stream()
+                .map(fe -> fe.getField() + " " + fe.getDefaultMessage())
+                .collect(joining("; "));
+        String message = messageSource.getMessage(ErrorMessages.VALIDATION_FAILED, new Object[]{errors}, Locale.getDefault());
         return new ResponseEntity<>(forStatusAndDetail(BAD_REQUEST, message), BAD_REQUEST);
     }
 
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ProblemDetail> handleHandlerMethodValidationException(HandlerMethodValidationException e) {
-        String message = Arrays.stream(requireNonNull(e.getDetailMessageArguments()))
-            .map(Object::toString)
-            .collect(joining("; ", "Validation failed: ", ""));
+        String errors = Arrays.stream(requireNonNull(e.getDetailMessageArguments()))
+                .map(Object::toString)
+                .collect(joining("; "));
+        String message = messageSource.getMessage(ErrorMessages.VALIDATION_FAILED, new Object[]{errors}, Locale.getDefault());
         return new ResponseEntity<>(forStatusAndDetail(BAD_REQUEST, message), BAD_REQUEST);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ProblemDetail> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
-        return new ResponseEntity<>(forStatusAndDetail(CONFLICT, e.getMessage()), CONFLICT);
+        String message = messageSource.getMessage(ErrorMessages.DATA_INTEGRITY, null, Locale.getDefault());
+        return new ResponseEntity<>(forStatusAndDetail(INTERNAL_SERVER_ERROR, message), INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(PassengerNotFoundException.class)
     public ResponseEntity<ProblemDetail> handlePassengerNotFoundException(PassengerNotFoundException e) {
-        return new ResponseEntity<>(forStatusAndDetail(NOT_FOUND, e.getMessage()), NOT_FOUND);
+        String message = messageSource.getMessage(ErrorMessages.PASSENGER_NOT_FOUND, null, Locale.getDefault());
+        return new ResponseEntity<>(forStatusAndDetail(NOT_FOUND, message), NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleException(Exception e) {
-        return new ResponseEntity<>(forStatusAndDetail(INTERNAL_SERVER_ERROR, "Something went wrong."), INTERNAL_SERVER_ERROR);
+        String message = messageSource.getMessage(ErrorMessages.GENERAL_ERROR, null, Locale.getDefault());
+        return new ResponseEntity<>(forStatusAndDetail(INTERNAL_SERVER_ERROR, message), INTERNAL_SERVER_ERROR);
     }
 
 }

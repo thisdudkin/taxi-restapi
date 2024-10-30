@@ -17,8 +17,8 @@ public interface PassengerService {
 
     PassengerDto create(PassengerFieldsDto passengerFieldsDto) throws DataAccessException;
 
-    PassengerDto update(Integer passengerId, PassengerFieldsDto passengerFieldsDto) throws DataAccessException;
+    PassengerDto update(long passengerId, PassengerFieldsDto passengerFieldsDto) throws DataAccessException;
 
-    void delete(Long passengerId) throws DataAccessException;
+    void delete(long passengerId) throws DataAccessException;
 
 }
