@@ -7,6 +7,7 @@ import by.dudkin.passenger.rest.dto.PassengerDto;
 import by.dudkin.passenger.rest.dto.PassengerFieldsDto;
 import by.dudkin.passenger.service.PassengerService;
 import by.dudkin.passenger.util.ApplicationTestConfig;
+import by.dudkin.passenger.util.ErrorMessages;
 import by.dudkin.passenger.util.TestDataGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -56,6 +57,10 @@ class PassengerRestControllerTests {
 
     private List<Passenger> passengers;
 
+    private static final String URI_PASSENGERS = "/passengers";
+    private static final String URI_ID_ONE = "/passengers/1";
+    private static final String URI_UNDEFINED_ID = "/passengers/999";
+
     @BeforeEach
     void initPassengers() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(passengerRestController)
@@ -80,10 +85,10 @@ class PassengerRestControllerTests {
     void testGetPassengerSuccess() throws Exception {
         given(this.passengerService.findById(1)).willReturn(passengerMapper.toPassengerDto(passengers.getFirst()));
 
-        this.mockMvc.perform(get("/passengers/1")
+        this.mockMvc.perform(get(URI_ID_ONE)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.username").value(passengers.getFirst().getUsername()));
     }
@@ -92,7 +97,7 @@ class PassengerRestControllerTests {
     void testGetPassengerNotFound() throws Exception {
         given(this.passengerService.findById(999)).willThrow(PassengerNotFoundException.class);
 
-        this.mockMvc.perform(get("/passengers/999")
+        this.mockMvc.perform(get(URI_UNDEFINED_ID)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound());
     }
@@ -101,10 +106,10 @@ class PassengerRestControllerTests {
     void testGetAllPassengersSuccess() throws Exception {
         given(this.passengerService.findAll()).willReturn(passengerMapper.toPassengerDtos(passengers));
 
-        this.mockMvc.perform(get("/passengers/")
+        this.mockMvc.perform(get(URI_PASSENGERS)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.[0].id").value(1))
                 .andExpect(jsonPath("$.[0].username").value(passengers.getFirst().getUsername()))
                 .andExpect(jsonPath("$.[1].id").value(2))
@@ -116,7 +121,7 @@ class PassengerRestControllerTests {
         passengers.clear();
         given(this.passengerService.findAll()).willReturn(passengerMapper.toPassengerDtos(passengers));
 
-        this.mockMvc.perform(get("/passengers/")
+        this.mockMvc.perform(get(URI_PASSENGERS)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
     }
@@ -134,7 +139,7 @@ class PassengerRestControllerTests {
         mapper.registerModule(new JavaTimeModule());
         String newPassengerAsJSON = mapper.writeValueAsString(passengerMapper.toPassenger(newPassenger));
 
-        this.mockMvc.perform(post("/passengers")
+        this.mockMvc.perform(post(URI_PASSENGERS)
                         .content(newPassengerAsJSON)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -150,7 +155,7 @@ class PassengerRestControllerTests {
         mapper.registerModule(new JavaTimeModule());
         String newPassengerAsJSON = mapper.writeValueAsString(passengerMapper.toPassengerDto(newPassenger));
 
-        this.mockMvc.perform(post("/passengers")
+        this.mockMvc.perform(post(URI_PASSENGERS)
                         .content(newPassengerAsJSON)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -172,7 +177,7 @@ class PassengerRestControllerTests {
         mapper.registerModule(new JavaTimeModule());
         String newPassengerAsJSON = mapper.writeValueAsString(updated);
 
-        this.mockMvc.perform(put("/passengers/1")
+        this.mockMvc.perform(put(URI_ID_ONE)
                         .content(newPassengerAsJSON)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -187,7 +192,7 @@ class PassengerRestControllerTests {
         mapper.registerModule(new JavaTimeModule());
         String newPassengerAsJSON = mapper.writeValueAsString(passengerMapper.toPassengerDto(newPassenger));
 
-        this.mockMvc.perform(put("/passengers/1")
+        this.mockMvc.perform(put(URI_ID_ONE)
                         .content(newPassengerAsJSON)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -202,7 +207,7 @@ class PassengerRestControllerTests {
         String newPassengerAsJSON = mapper.writeValueAsString(passengerMapper.toPassengerDto(newPassenger));
         given(this.passengerService.findById(1)).willReturn(passengerMapper.toPassengerDto(passengers.getFirst()));
 
-        this.mockMvc.perform(delete("/passengers/1")
+        this.mockMvc.perform(delete(URI_ID_ONE)
                         .contentType(newPassengerAsJSON)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -211,10 +216,10 @@ class PassengerRestControllerTests {
 
     @Test
     void testDeletePassengerError() throws Exception {
-        doThrow(new PassengerNotFoundException("Passenger not found wit ID: 999"))
+        doThrow(new PassengerNotFoundException(ErrorMessages.PASSENGER_NOT_FOUND))
                 .when(passengerService).delete(999L);
 
-        this.mockMvc.perform(delete("/passengers/999")
+        this.mockMvc.perform(delete(URI_UNDEFINED_ID)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))

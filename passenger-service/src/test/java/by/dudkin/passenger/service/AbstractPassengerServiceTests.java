@@ -30,9 +30,6 @@ abstract class AbstractPassengerServiceTests {
     private static final String PASSENGER_USERNAME_IVAN = "ivan";
     private static final String PASSENGER_USERNAME_ANNA = "anna";
     private static final String PASSENGER_EMAIL_ANNA = "anna@example.com";
-    private static final String PASSENGER_USERNAME_TAGIR = "tagir";
-    private static final String PASSENGER_PASSWORD = "password";
-    private static final String PASSENGER_EMAIL_TAGIR = "tagir@gmail.com";
 
     @Autowired
     protected PassengerService passengerService;

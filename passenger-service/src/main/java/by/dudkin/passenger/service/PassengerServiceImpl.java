@@ -24,47 +24,44 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class PassengerServiceImpl implements PassengerService {
 
-    private final MessageSource messageSource;
     private final PassengerMapper passengerMapper;
     private final PassengerRepository passengerRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public PassengerDto findById(long id) throws DataAccessException {
+    public PassengerDto findById(long id) {
         return passengerMapper.toPassengerDto(getOrThrow(id));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<PassengerDto> findAll() throws DataAccessException {
+    public Collection<PassengerDto> findAll() {
         return passengerMapper.toPassengerDtos(passengerRepository.findAll());
     }
 
     @Override
-    public PassengerDto create(PassengerFieldsDto passengerFieldsDto) throws DataAccessException {
+    public PassengerDto create(PassengerFieldsDto passengerFieldsDto) {
         Passenger passenger = passengerMapper.toPassenger(passengerFieldsDto);
         passengerRepository.save(passenger);
         return passengerMapper.toPassengerDto(passenger);
     }
 
     @Override
-    public PassengerDto update(long passengerId, PassengerFieldsDto passengerFieldsDto) throws DataAccessException {
+    public PassengerDto update(long passengerId, PassengerFieldsDto passengerFieldsDto) {
         Passenger passenger = getOrThrow(passengerId);
         updateFields(passenger, passengerFieldsDto);
         return passengerMapper.toPassengerDto(passenger);
     }
 
     @Override
-    public void delete(long passengerId) throws DataAccessException {
+    public void delete(long passengerId) {
         Passenger passenger = getOrThrow(passengerId);
         passengerRepository.delete(passenger);
     }
 
     private Passenger getOrThrow(long id) {
         return passengerRepository.findById(id)
-                .orElseThrow(() -> new PassengerNotFoundException(
-                        messageSource.getMessage(ErrorMessages.PASSENGER_NOT_FOUND, new Object[]{id}, Locale.getDefault())
-                ));
+                .orElseThrow(() -> new PassengerNotFoundException(ErrorMessages.PASSENGER_NOT_FOUND));
     }
 
     private void updateFields(Passenger passenger, PassengerFieldsDto passengerFieldsDto) {

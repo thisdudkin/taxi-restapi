@@ -11,12 +11,12 @@ import java.util.Optional;
  */
 public interface PassengerRepository {
 
-    Collection<Passenger> findAll() throws DataAccessException;
+    Collection<Passenger> findAll();
 
-    Optional<Passenger> findById(long id) throws DataAccessException;
+    Optional<Passenger> findById(long id);
 
-    void save(Passenger passenger) throws DataAccessException;
+    void save(Passenger passenger);
 
-    void delete(Passenger passenger) throws DataAccessException;
+    void delete(Passenger passenger);
 
 }
