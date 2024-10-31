@@ -4,18 +4,21 @@ import by.dudkin.passenger.entity.Passenger;
 import org.springframework.dao.DataAccessException;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * @author Alexander Dudkin
  */
 public interface PassengerRepository {
 
-    Collection<Passenger> findAll() throws DataAccessException;
+    Collection<Passenger> findAll();
 
-    Passenger findById(long id) throws DataAccessException;
+    Optional<Passenger> findById(long id);
 
-    void save(Passenger passenger) throws DataAccessException;
+    void saveOrUpdate(Passenger passenger);
 
-    void delete(Passenger passenger) throws DataAccessException;
+    void save(Passenger passenger);
+
+    void delete(Passenger passenger);
 
 }

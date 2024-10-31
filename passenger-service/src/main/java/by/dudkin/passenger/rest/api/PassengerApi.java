@@ -69,7 +69,7 @@ public interface PassengerApi {
         produces = {"application/json"},
         consumes = {"application/json"}
     )
-    default ResponseEntity<PassengerDto> addPassenger(@Parameter(name = "PassengerDto", description = "The passenger", required = true) @RequestBody @Valid PassengerFieldsDto passengerFieldsDto) {
+    default ResponseEntity<?> save(@Parameter(name = "PassengerFieldsDto", description = "The passenger", required = true) @RequestBody @Valid PassengerFieldsDto passengerFieldsDto) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
@@ -124,7 +124,7 @@ public interface PassengerApi {
         value = {"/passengers/{passengerId}"},
         produces = {"application/json"}
     )
-    default ResponseEntity<PassengerDto> deletePassenger(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") @Min(0L) Integer passengerId) {
+    default ResponseEntity<?> deletePassenger(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") @Min(0L) Long passengerId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
@@ -179,7 +179,7 @@ public interface PassengerApi {
         value = {"/passengers/{passengerId}"},
         produces = {"application/json"}
     )
-    default ResponseEntity<PassengerDto> getPassenger(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") @Min(0L) Integer passengerId) {
+    default ResponseEntity<?> get(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") @Min(0L) long passengerId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
@@ -218,7 +218,7 @@ public interface PassengerApi {
         value = {"/passengers"},
         produces = {"application/json"}
     )
-    default ResponseEntity<List<PassengerDto>> listPassengers() {
+    default ResponseEntity<?> getAll() {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
@@ -274,7 +274,7 @@ public interface PassengerApi {
         produces = {"application/json"},
         consumes = {"application/json"}
     )
-    default ResponseEntity<PassengerDto> updatePassenger(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") @Min(0L) Integer passengerId, @Parameter(name = "PassengerDto", description = "The passenger", required = true) @RequestBody @Valid PassengerFieldsDto passengerFieldsDto) {
+    default ResponseEntity<?> update(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") @Min(0L) long passengerId, @Parameter(name = "PassengerDto", description = "The passenger", required = true) @RequestBody @Valid PassengerFieldsDto passengerFieldsDto) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 

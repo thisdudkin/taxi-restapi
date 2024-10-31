@@ -3,11 +3,27 @@ package by.dudkin.passenger.entity;
 import by.dudkin.common.entity.BaseEntity;
 import by.dudkin.common.entity.PersonalInfo;
 import by.dudkin.common.enums.PaymentMethod;
-import jakarta.persistence.*;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
@@ -20,7 +36,8 @@ import java.util.Objects;
  * @author Alexander Dudkin
  */
 @Entity @Setter
-@Builder @Getter
+@SuperBuilder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "passengers")
