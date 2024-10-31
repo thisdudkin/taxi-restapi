@@ -12,7 +12,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -32,7 +31,7 @@ public class JpaPassengerRepositoryImpl implements PassengerRepository {
             return Optional.ofNullable(this.em.find(Passenger.class, id));
         } catch (DataAccessException e) {
             logger.error("Error finding passenger by ID: {}", id, e);
-            return Optional.empty();
+            throw new DataIntegrityViolationException(ErrorMessages.DATA_INTEGRITY);
         }
     }
 
@@ -43,18 +42,28 @@ public class JpaPassengerRepositoryImpl implements PassengerRepository {
             return this.em.createQuery("SELECT passenger FROM Passenger passenger").getResultList();
         } catch (DataAccessException e) {
             logger.error("Error retrieving all passengers", e);
-            return Collections.emptyList();
+            throw new DataIntegrityViolationException(ErrorMessages.DATA_INTEGRITY);
         }
     }
 
     @Override
-    public void save(Passenger passenger) {
+    public void saveOrUpdate(Passenger passenger) {
         try {
             if (passenger.getId() == null) {
                 this.em.persist(passenger);
             } else {
                 this.em.merge(passenger);
             }
+        } catch (DataAccessException e) {
+            logger.error("Error saving or updating passenger: {}", passenger);
+            throw new DataIntegrityViolationException(ErrorMessages.DATA_INTEGRITY);
+        }
+    }
+
+    @Override
+    public void save(Passenger passenger) {
+        try {
+            this.em.persist(passenger);
         } catch (DataAccessException e) {
             logger.error("Error saving passenger: {}", passenger);
             throw new DataIntegrityViolationException(ErrorMessages.DATA_INTEGRITY);

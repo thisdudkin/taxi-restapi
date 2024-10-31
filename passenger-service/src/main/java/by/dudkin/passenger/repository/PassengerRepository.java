@@ -15,6 +15,8 @@ public interface PassengerRepository {
 
     Optional<Passenger> findById(long id);
 
+    void saveOrUpdate(Passenger passenger);
+
     void save(Passenger passenger);
 
     void delete(Passenger passenger);
