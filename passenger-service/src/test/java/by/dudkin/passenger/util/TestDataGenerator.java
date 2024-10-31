@@ -63,6 +63,24 @@ public class TestDataGenerator {
                 .build();
     }
 
+    public static Passenger createRandomPassengerWithId(Long id) {
+        Passenger passenger = Passenger.builder()
+                .username(randomUsername())
+                .email(randomEmail())
+                .password(randomPassword())
+                .info(PersonalInfo.builder()
+                        .firstName(randomFirstName())
+                        .lastName(randomLastName())
+                        .phone(randomPhone())
+                        .dateOfBirth(randomDateOfBirth())
+                        .build())
+                .preferredPaymentMethod(PaymentMethod.CASH)
+                .balance(BigDecimal.valueOf(ThreadLocalRandom.current().nextDouble(0, 10000)))
+                .build();
+        passenger.setId(id);
+        return passenger;
+    }
+
     public static PassengerFieldsDto createRandomFieldsDto() {
         return new PassengerFieldsDto(
                 randomUsername(),

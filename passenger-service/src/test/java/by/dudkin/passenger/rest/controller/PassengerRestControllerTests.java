@@ -68,16 +68,13 @@ class PassengerRestControllerTests {
         passengers = new ArrayList<>();
 
 
-        Passenger passenger = TestDataGenerator.createRandomPassenger();
-        passenger.setId(1L);
+        Passenger passenger = TestDataGenerator.createRandomPassengerWithId(1L);
         passengers.add(passenger);
 
-        passenger = TestDataGenerator.createRandomPassenger();
-        passenger.setId(2L);
+        passenger = TestDataGenerator.createRandomPassengerWithId(2L);
         passengers.add(passenger);
 
-        passenger = TestDataGenerator.createRandomPassenger();
-        passenger.setId(3L);
+        passenger = TestDataGenerator.createRandomPassengerWithId(3L);
         passengers.add(passenger);
     }
 

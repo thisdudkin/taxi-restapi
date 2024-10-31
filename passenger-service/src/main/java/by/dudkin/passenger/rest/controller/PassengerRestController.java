@@ -48,7 +48,7 @@ public class PassengerRestController implements PassengerApi {
 
     @Override
     public ResponseEntity<PassengerDto> deletePassenger(Long passengerId) {
-        this.passengerService.delete(passengerId);
+        passengerService.delete(passengerId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
