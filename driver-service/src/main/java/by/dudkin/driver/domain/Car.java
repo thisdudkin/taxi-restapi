@@ -1,25 +1,20 @@
-package by.dudkin.passenger.entity;
+package by.dudkin.driver.domain;
 
 import by.dudkin.common.entity.BaseEntity;
-import by.dudkin.common.entity.PersonalInfo;
-import by.dudkin.common.enums.PaymentMethod;
-import jakarta.persistence.CollectionTable;
+import by.dudkin.common.enums.CarType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,11 +23,9 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Alexander Dudkin
@@ -41,55 +34,46 @@ import java.util.Objects;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "passengers")
-@ToString(exclude = "password")
-public class Passenger implements BaseEntity<Long> {
+@Table(name = "cars")
+@ToString(exclude = "assignments")
+public class Car implements BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String username;
+    @Column(name = "license_plate", unique = true, nullable = false)
+    private String licensePlate;
 
-    @Size(min = 8)
-    @Column(nullable = false)
-    private String password;
-
-    @Email
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Embedded
-    private PersonalInfo info;
+    @Column(name = "model", nullable = false)
+    private String model;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "payment_method", nullable = false)
-    private PaymentMethod preferredPaymentMethod;
+    @Column(name = "type", nullable = false)
+    private CarType type;
 
-    @Column
-    private BigDecimal balance;
+    @Column(name = "year", nullable = false)
+    private Integer year;
 
-    @Builder.Default
-    @ElementCollection
-    @CollectionTable(name = "passenger_ratings", joinColumns = @JoinColumn(name = "passenger_id"))
-    @Column(name = "rating")
-    private List<Integer> ratings = new ArrayList<>();
+    @Column(name = "color", nullable = false)
+    private String color;
 
-    @Column(name = "created_utc", nullable = false)
+    @OneToMany(mappedBy = "car", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<DriverCarAssignment> assignments;
+
+    @Column(name = "created_utc", updatable = false, nullable = false)
     private Instant createdAt;
 
     @Column(name = "updated_utc")
     private Instant updatedAt;
 
     @PrePersist
-    protected void onCreate() {
+    public void onCreate() {
         this.createdAt = Instant.now();
     }
 
     @PreUpdate
-    protected void onUpdate() {
+    public void onUpdate() {
         this.updatedAt = Instant.now();
     }
 
@@ -100,17 +84,13 @@ public class Passenger implements BaseEntity<Long> {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Passenger passenger = (Passenger) o;
-        return getId() != null && Objects.equals(getId(), passenger.getId());
+        Car car = (Car) o;
+        return getId() != null && Objects.equals(getId(), car.getId());
     }
 
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
-    }
-
-    public double getAverageRating() {
-        return ratings.isEmpty() ? 0.0 : ratings.stream().mapToInt(Integer::intValue).average().orElse(0.0);
     }
 
 }

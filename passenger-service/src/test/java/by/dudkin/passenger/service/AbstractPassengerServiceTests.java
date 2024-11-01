@@ -53,7 +53,7 @@ abstract class AbstractPassengerServiceTests {
                 .map(passengerMapper::toPassenger)
                 .toList();
 
-        Passenger passenger = EntityUtils.getById(passengers, Passenger.class, 2);
+        Passenger passenger = EntityUtils.getById(passengers, Passenger.class, 2L);
 
         assertThat(passenger.getUsername()).isEqualTo(PASSENGER_USERNAME_ANNA);
         assertThat(passenger.getEmail()).isEqualTo(PASSENGER_EMAIL_ANNA);
