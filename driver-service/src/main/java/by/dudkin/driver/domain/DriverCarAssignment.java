@@ -4,6 +4,7 @@ import by.dudkin.common.entity.BaseEntity;
 import by.dudkin.common.enums.AssignmentStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -12,8 +13,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +21,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -29,12 +31,15 @@ import java.util.Objects;
 /**
  * @author Alexander Dudkin
  */
-@Entity @Builder
-@Getter @Setter
+@Entity
+@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"driver", "car"})
 @Table(name = "driver_car_assignments")
+@EntityListeners(AuditingEntityListener.class)
 public class DriverCarAssignment implements BaseEntity<Long> {
 
     @Id
@@ -54,24 +59,15 @@ public class DriverCarAssignment implements BaseEntity<Long> {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private AssignmentStatus status;
+    private AssignmentStatus status = AssignmentStatus.ACTIVE;
 
+    @CreatedDate
     @Column(name = "created_utc", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @LastModifiedDate
     @Column(name = "updated_utc")
     private Instant updatedAt;
-
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = Instant.now();
-        this.status = AssignmentStatus.ACTIVE;
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = Instant.now();
-    }
 
     @Override
     public final boolean equals(Object o) {

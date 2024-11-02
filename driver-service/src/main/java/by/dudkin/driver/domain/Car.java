@@ -5,6 +5,7 @@ import by.dudkin.common.enums.CarType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -12,8 +13,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +21,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -30,12 +32,15 @@ import java.util.Set;
 /**
  * @author Alexander Dudkin
  */
-@Entity @Builder
-@Getter @Setter
+@Entity
+@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "cars")
 @ToString(exclude = "assignments")
+@EntityListeners(AuditingEntityListener.class)
 public class Car implements BaseEntity<Long> {
 
     @Id
@@ -61,21 +66,13 @@ public class Car implements BaseEntity<Long> {
     @OneToMany(mappedBy = "car", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<DriverCarAssignment> assignments;
 
+    @CreatedDate
     @Column(name = "created_utc", updatable = false, nullable = false)
     private Instant createdAt;
 
+    @LastModifiedDate
     @Column(name = "updated_utc")
     private Instant updatedAt;
-
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = Instant.now();
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = Instant.now();
-    }
 
     @Override
     public final boolean equals(Object o) {
