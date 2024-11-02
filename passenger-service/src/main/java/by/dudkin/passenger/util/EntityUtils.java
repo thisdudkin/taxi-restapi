@@ -3,6 +3,7 @@ package by.dudkin.passenger.util;
 import by.dudkin.common.entity.BaseEntity;
 import org.springframework.orm.ObjectRetrievalFailureException;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -22,7 +23,7 @@ public abstract class EntityUtils {
      * @return the found entity
      * @throws ObjectRetrievalFailureException if the entity was not found
      */
-    public static <T extends BaseEntity> T getById(Collection<T> entities, Class<T> entityClass, int entityId)
+    public static <T extends BaseEntity<ID>, ID extends Serializable> T getById(Collection<T> entities, Class<T> entityClass, ID entityId)
         throws ObjectRetrievalFailureException {
         for (T entity : entities) {
             if (entity.getId() == entityId && entityClass.isInstance(entity)) {
