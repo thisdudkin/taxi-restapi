@@ -26,6 +26,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -63,8 +64,9 @@ public class Car implements BaseEntity<Long> {
     @Column(name = "color", nullable = false)
     private String color;
 
+    @Builder.Default
     @OneToMany(mappedBy = "car", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<DriverCarAssignment> assignments;
+    private Set<DriverCarAssignment> assignments = new HashSet<>();
 
     @CreatedDate
     @Column(name = "created_utc", updatable = false, nullable = false)

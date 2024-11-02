@@ -34,6 +34,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -74,6 +75,7 @@ public class Driver implements BaseEntity<Long> {
     @Column(name = "balance")
     private BigDecimal balance;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private DriverStatus status = DriverStatus.READY;
@@ -81,8 +83,9 @@ public class Driver implements BaseEntity<Long> {
     @Column(name = "experience", nullable = false)
     private Integer experience;
 
+    @Builder.Default
     @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<DriverCarAssignment> assignments;
+    private Set<DriverCarAssignment> assignments = new HashSet<>();
 
     @Builder.Default
     @ElementCollection

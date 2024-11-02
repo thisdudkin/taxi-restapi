@@ -57,6 +57,7 @@ public class DriverCarAssignment implements BaseEntity<Long> {
     @Column(name = "assignment_date", nullable = false)
     private Instant assignmentDate;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private AssignmentStatus status = AssignmentStatus.ACTIVE;
