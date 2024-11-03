@@ -1,8 +1,8 @@
 package by.dudkin.passenger.rest.controller;
 
 import by.dudkin.passenger.rest.api.PassengerApi;
-import by.dudkin.passenger.rest.dto.PassengerDto;
-import by.dudkin.passenger.rest.dto.PassengerFieldsDto;
+import by.dudkin.passenger.rest.dto.request.PassengerRequest;
+import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import by.dudkin.passenger.service.PassengerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,28 +26,28 @@ public class PassengerRestController implements PassengerApi {
     private final PassengerService passengerService;
 
     @Override
-    public ResponseEntity<List<PassengerDto>> getAll() {
-        List<PassengerDto> passengers = new ArrayList<>(passengerService.findAll());
+    public ResponseEntity<List<PassengerResponse>> getAll() {
+        List<PassengerResponse> passengers = new ArrayList<>(passengerService.findAll());
         return new ResponseEntity<>(passengers, OK);
     }
 
     @Override
-    public ResponseEntity<PassengerDto> get(long passengerId) {
+    public ResponseEntity<PassengerResponse> get(long passengerId) {
         return new ResponseEntity<>(passengerService.findById(passengerId), OK);
     }
 
     @Override
-    public ResponseEntity<PassengerDto> save(PassengerFieldsDto passengerFieldsDto) {
-        return new ResponseEntity<>(passengerService.create(passengerFieldsDto), HttpStatus.CREATED);
+    public ResponseEntity<PassengerResponse> save(PassengerRequest passengerRequest) {
+        return new ResponseEntity<>(passengerService.create(passengerRequest), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<PassengerDto> update(long passengerId, PassengerFieldsDto passengerFieldsDto) {
-        return new ResponseEntity<>(passengerService.update(passengerId, passengerFieldsDto), HttpStatus.OK);
+    public ResponseEntity<PassengerResponse> update(long passengerId, PassengerRequest passengerRequest) {
+        return new ResponseEntity<>(passengerService.update(passengerId, passengerRequest), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<PassengerDto> deletePassenger(Long passengerId) {
+    public ResponseEntity<Void> deletePassenger(long passengerId) {
         passengerService.delete(passengerId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

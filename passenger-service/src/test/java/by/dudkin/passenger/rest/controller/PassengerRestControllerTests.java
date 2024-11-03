@@ -1,10 +1,11 @@
 package by.dudkin.passenger.rest.controller;
 
+import by.dudkin.common.enums.PaymentMethod;
 import by.dudkin.passenger.entity.Passenger;
 import by.dudkin.passenger.mapper.PassengerMapper;
 import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
-import by.dudkin.passenger.rest.dto.PassengerDto;
-import by.dudkin.passenger.rest.dto.PassengerFieldsDto;
+import by.dudkin.passenger.rest.dto.request.PassengerRequest;
+import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import by.dudkin.passenger.service.PassengerService;
 import by.dudkin.passenger.util.ApplicationTestConfig;
 import by.dudkin.passenger.util.ErrorMessages;
@@ -22,8 +23,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static by.dudkin.common.enums.PaymentMethod.CASH;
 import static org.mockito.BDDMockito.doThrow;
@@ -80,7 +83,7 @@ class PassengerRestControllerTests {
 
     @Test
     void testGetPassengerSuccess() throws Exception {
-        given(this.passengerService.findById(1)).willReturn(passengerMapper.toPassengerDto(passengers.getFirst()));
+        given(this.passengerService.findById(1)).willReturn(passengerMapper.toResponse(passengers.getFirst()));
 
         this.mockMvc.perform(get(URI_ID_ONE)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -125,16 +128,10 @@ class PassengerRestControllerTests {
 
     @Test
     void testCreatePassengerSuccess() throws Exception {
-        PassengerFieldsDto newPassenger = new PassengerFieldsDto(
-                TestDataGenerator.randomUsername(),
-                TestDataGenerator.randomPassword(),
-                TestDataGenerator.randomEmail(),
-                passengers.getFirst().getInfo(),
-                CASH
-        );
+        PassengerRequest newPassenger = TestDataGenerator.createRandomRequest();
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        String newPassengerAsJSON = mapper.writeValueAsString(passengerMapper.toPassenger(newPassenger));
+        String newPassengerAsJSON = mapper.writeValueAsString(newPassenger);
 
         this.mockMvc.perform(post(URI_PASSENGERS)
                         .content(newPassengerAsJSON)
@@ -150,7 +147,7 @@ class PassengerRestControllerTests {
         newPassenger.setUsername(null);
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        String newPassengerAsJSON = mapper.writeValueAsString(passengerMapper.toPassengerDto(newPassenger));
+        String newPassengerAsJSON = mapper.writeValueAsString(passengerMapper.toResponse(newPassenger));
 
         this.mockMvc.perform(post(URI_PASSENGERS)
                         .content(newPassengerAsJSON)
@@ -161,13 +158,14 @@ class PassengerRestControllerTests {
 
     @Test
     void testUpdatePassengerSuccess() throws Exception {
-        PassengerDto firstDto = passengerMapper.toPassengerDto(passengers.getFirst());
-        PassengerFieldsDto updated = new PassengerFieldsDto(
+        PassengerResponse firstDto = passengerMapper.toResponse(passengers.getFirst());
+        PassengerRequest updated = new PassengerRequest(
                 TestDataGenerator.randomUsername(),
-                firstDto.password(),
                 firstDto.email(),
+                TestDataGenerator.randomPassword(),
                 firstDto.info(),
-                firstDto.preferredPaymentMethod()
+                TestDataGenerator.randomBalance(),
+                firstDto.paymentMethod()
         );
         given(this.passengerService.update(1, updated)).willReturn(firstDto);
         ObjectMapper mapper = new ObjectMapper();
@@ -187,7 +185,7 @@ class PassengerRestControllerTests {
         newPassenger.setUsername(null);
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        String newPassengerAsJSON = mapper.writeValueAsString(passengerMapper.toPassengerDto(newPassenger));
+        String newPassengerAsJSON = mapper.writeValueAsString(passengerMapper.toResponse(newPassenger));
 
         this.mockMvc.perform(put(URI_ID_ONE)
                         .content(newPassengerAsJSON)
@@ -201,8 +199,8 @@ class PassengerRestControllerTests {
         Passenger newPassenger = passengers.getFirst();
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        String newPassengerAsJSON = mapper.writeValueAsString(passengerMapper.toPassengerDto(newPassenger));
-        given(this.passengerService.findById(1)).willReturn(passengerMapper.toPassengerDto(passengers.getFirst()));
+        String newPassengerAsJSON = mapper.writeValueAsString(passengerMapper.toResponse(newPassenger));
+        given(this.passengerService.findById(1)).willReturn(passengerMapper.toResponse(passengers.getFirst()));
 
         this.mockMvc.perform(delete(URI_ID_ONE)
                         .contentType(newPassengerAsJSON)

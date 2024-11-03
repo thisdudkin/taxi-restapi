@@ -1,7 +1,7 @@
 package by.dudkin.passenger.rest.api;
 
-import by.dudkin.passenger.rest.dto.PassengerDto;
-import by.dudkin.passenger.rest.dto.PassengerFieldsDto;
+import by.dudkin.passenger.rest.dto.request.PassengerRequest;
+import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -41,7 +41,7 @@ public interface PassengerApi {
             content = {@Content(
                 mediaType = "application/json",
                 schema = @Schema(
-                    implementation = PassengerDto.class
+                    implementation = PassengerResponse.class
                 )
             )}
         ), @ApiResponse(
@@ -69,7 +69,7 @@ public interface PassengerApi {
         produces = {"application/json"},
         consumes = {"application/json"}
     )
-    default ResponseEntity<?> save(@Parameter(name = "PassengerFieldsDto", description = "The passenger", required = true) @RequestBody @Valid PassengerFieldsDto passengerFieldsDto) {
+    default ResponseEntity<PassengerResponse> save(@Parameter(name = "PassengerRequest", description = "The passenger", required = true) @RequestBody @Valid PassengerRequest passengerFieldsDto) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
@@ -84,7 +84,7 @@ public interface PassengerApi {
             content = {@Content(
                 mediaType = "application/json",
                 schema = @Schema(
-                    implementation = PassengerDto.class
+                    implementation = PassengerResponse.class
                 )
             )}
         ), @ApiResponse(
@@ -124,7 +124,7 @@ public interface PassengerApi {
         value = {"/passengers/{passengerId}"},
         produces = {"application/json"}
     )
-    default ResponseEntity<?> deletePassenger(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") @Min(0L) Long passengerId) {
+    default ResponseEntity<Void> deletePassenger(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") @Min(0L) long passengerId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
@@ -139,7 +139,7 @@ public interface PassengerApi {
             content = {@Content(
                 mediaType = "application/json",
                 schema = @Schema(
-                    implementation = PassengerDto.class
+                    implementation = PassengerResponse.class
                 )
             )}
         ), @ApiResponse(
@@ -179,7 +179,7 @@ public interface PassengerApi {
         value = {"/passengers/{passengerId}"},
         produces = {"application/json"}
     )
-    default ResponseEntity<?> get(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") @Min(0L) long passengerId) {
+    default ResponseEntity<PassengerResponse> get(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") @Min(0L) long passengerId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
@@ -195,7 +195,7 @@ public interface PassengerApi {
                 mediaType = "application/json",
                 array = @ArraySchema(
                     schema = @Schema(
-                        implementation = PassengerDto.class
+                        implementation = PassengerResponse.class
                     )
                 )
             )}
@@ -218,7 +218,7 @@ public interface PassengerApi {
         value = {"/passengers"},
         produces = {"application/json"}
     )
-    default ResponseEntity<?> getAll() {
+    default ResponseEntity<List<PassengerResponse>> getAll() {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
@@ -233,7 +233,7 @@ public interface PassengerApi {
             content = {@Content(
                 mediaType = "application/json",
                 schema = @Schema(
-                    implementation = PassengerDto.class
+                    implementation = PassengerResponse.class
                 )
             )}
         ), @ApiResponse(
@@ -274,7 +274,7 @@ public interface PassengerApi {
         produces = {"application/json"},
         consumes = {"application/json"}
     )
-    default ResponseEntity<?> update(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") @Min(0L) long passengerId, @Parameter(name = "PassengerDto", description = "The passenger", required = true) @RequestBody @Valid PassengerFieldsDto passengerFieldsDto) {
+    default ResponseEntity<PassengerResponse> update(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") @Min(0L) long passengerId, @Parameter(name = "PassengerResponse", description = "The passenger", required = true) @RequestBody @Valid PassengerRequest passengerRequest) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 

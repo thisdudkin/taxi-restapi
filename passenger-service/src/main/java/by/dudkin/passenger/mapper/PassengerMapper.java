@@ -1,10 +1,11 @@
 package by.dudkin.passenger.mapper;
 
 import by.dudkin.passenger.entity.Passenger;
-import by.dudkin.passenger.rest.dto.PassengerDto;
-import by.dudkin.passenger.rest.dto.PassengerFieldsDto;
+import by.dudkin.passenger.rest.dto.request.PassengerRequest;
+import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.Collection;
 
@@ -13,12 +14,20 @@ import java.util.Collection;
  */
 @Mapper(componentModel = "spring")
 public interface PassengerMapper {
-    Passenger toPassenger(PassengerDto passengerDto);
 
-    Passenger toPassenger(PassengerFieldsDto passengerFieldsDto);
+    @Mapping(target = "rating", source = "averageRating")
+    @Mapping(target = "paymentMethod", source = "preferredPaymentMethod")
+    PassengerResponse toResponse(Passenger passenger);
 
-    @Mapping(target = "averageRating", source = "averageRating")
-    PassengerDto toPassengerDto(Passenger passenger);
+    @Mapping(source = "paymentMethod", target = "preferredPaymentMethod")
+    Passenger toPassenger(PassengerRequest passengerRequest);
 
-    Collection<PassengerDto> toPassengerDtos(Collection<Passenger> passengers);
+    @Mapping(source = "paymentMethod", target = "preferredPaymentMethod")
+    Passenger toPassenger(PassengerResponse passengerResponse);
+
+    @Mapping(source = "paymentMethod", target = "preferredPaymentMethod")
+    void updatePassenger(PassengerRequest passengerRequest, @MappingTarget Passenger passenger);
+
+    Collection<PassengerResponse> toPassengerDtos(Collection<Passenger> passengers);
+
 }

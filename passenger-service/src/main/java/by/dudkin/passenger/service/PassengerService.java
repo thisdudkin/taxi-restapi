@@ -1,7 +1,7 @@
 package by.dudkin.passenger.service;
 
-import by.dudkin.passenger.rest.dto.PassengerDto;
-import by.dudkin.passenger.rest.dto.PassengerFieldsDto;
+import by.dudkin.passenger.rest.dto.request.PassengerRequest;
+import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 
 import java.util.Collection;
 
@@ -10,13 +10,13 @@ import java.util.Collection;
  */
 public interface PassengerService {
 
-    PassengerDto findById(long id);
+    PassengerResponse findById(long id);
 
-    Collection<PassengerDto> findAll();
+    Collection<PassengerResponse> findAll();
 
-    PassengerDto create(PassengerFieldsDto passengerFieldsDto);
+    PassengerResponse create(PassengerRequest passengerRequest);
 
-    PassengerDto update(long passengerId, PassengerFieldsDto passengerFieldsDto);
+    PassengerResponse update(long passengerId, PassengerRequest passengerRequest);
 
     void delete(long passengerId);
 

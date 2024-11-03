@@ -1,12 +1,11 @@
 package by.dudkin.passenger.service;
 
 import by.dudkin.common.entity.BaseEntity;
-import by.dudkin.common.entity.PersonalInfo;
 import by.dudkin.passenger.entity.Passenger;
 import by.dudkin.passenger.mapper.PassengerMapper;
 import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
-import by.dudkin.passenger.rest.dto.PassengerDto;
-import by.dudkin.passenger.rest.dto.PassengerFieldsDto;
+import by.dudkin.passenger.rest.dto.request.PassengerRequest;
+import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import by.dudkin.passenger.util.EntityUtils;
 import by.dudkin.passenger.util.TestDataGenerator;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Collection;
 
@@ -39,12 +39,10 @@ abstract class AbstractPassengerServiceTests {
 
     @Test
     void shouldFindPassengerById() {
-        PassengerDto passengerDto = this.passengerService.findById(0L);
+        PassengerResponse passengerDto = this.passengerService.findById(0L);
 
         assertThat(passengerDto.username()).isEqualTo(PASSENGER_USERNAME_IVAN);
-        assertThrows(PassengerNotFoundException.class, () -> {
-            this.passengerService.findById(991L);
-        });
+        assertThrows(PassengerNotFoundException.class, () -> this.passengerService.findById(991L));
     }
 
     @Test
@@ -62,11 +60,11 @@ abstract class AbstractPassengerServiceTests {
     @Test
     @Transactional
     void shouldAddNewPassengers() {
-        Collection<PassengerDto> passengers = this.passengerService.findAll();
+        Collection<PassengerResponse> passengers = this.passengerService.findAll();
         int found = passengers.size();
-        PassengerFieldsDto dto = TestDataGenerator.createRandomFieldsDto();
+        PassengerRequest dto = TestDataGenerator.createRandomRequest();
 
-        PassengerDto savedPassenger = this.passengerService.create(dto);
+        PassengerResponse savedPassenger = this.passengerService.create(dto);
 
         assertThat(savedPassenger.id().longValue()).isNotEqualTo(0);
         assertThat(savedPassenger.createdAt()).isNotNull();
@@ -78,20 +76,14 @@ abstract class AbstractPassengerServiceTests {
     @Test
     @Transactional
     void shouldUpdatePassenger() {
-        PassengerDto passenger = passengerService.findById(1);
+        PassengerResponse passenger = passengerService.findById(1);
         Instant previousCreatedAt = passenger.createdAt();
         String oldUsername = passenger.username();
         String newUsername = oldUsername + "X";
-        PassengerFieldsDto updated = new PassengerFieldsDto(
-                newUsername,
-                passenger.password(),
-                passenger.email(),
-                passenger.info(),
-                passenger.preferredPaymentMethod()
-        );
+        PassengerRequest updated = TestDataGenerator.createRandomRequestWithUsername(newUsername);
 
         passengerService.update(1L, updated);
-        PassengerDto updatedPassenger = passengerService.findById(1);
+        PassengerResponse updatedPassenger = passengerService.findById(1);
 
         assertThat(updatedPassenger.username()).isEqualTo(newUsername);
         assertThat(updatedPassenger.createdAt()).isEqualTo(previousCreatedAt);
@@ -100,20 +92,18 @@ abstract class AbstractPassengerServiceTests {
     @Test
     @Transactional
     void shouldDeletePassenger() {
-        PassengerFieldsDto dto = TestDataGenerator.createRandomFieldsDto();
-        PassengerDto saved = this.passengerService.create(dto);
+        PassengerRequest dto = TestDataGenerator.createRandomRequest();
+        PassengerResponse saved = this.passengerService.create(dto);
         Long passengerId = saved.id();
 
         passengerService.delete(passengerId);
 
-        assertThrows(PassengerNotFoundException.class, () -> {
-            this.passengerService.findById(passengerId);
-        });
+        assertThrows(PassengerNotFoundException.class, () -> this.passengerService.findById(passengerId));
     }
 
     @Test
     void shouldNotSavePassengerWithDuplicateEmail() {
-        PassengerFieldsDto passenger = TestDataGenerator.createRandomFieldsDtoWithEmail(PASSENGER_EMAIL_ANNA);
+        PassengerRequest passenger = TestDataGenerator.createRandomRequestWithEmail(PASSENGER_EMAIL_ANNA);
 
         assertThatThrownBy(() -> this.passengerService.create(passenger))
                 .isInstanceOf(DataIntegrityViolationException.class);
@@ -121,43 +111,40 @@ abstract class AbstractPassengerServiceTests {
 
     @Test
     void shouldNotSavePassengerWithDuplicateUsername() {
-        PassengerFieldsDto passenger = TestDataGenerator.createRandomFieldsDtoWithUsername(PASSENGER_USERNAME_ANNA);
+        PassengerRequest passenger = TestDataGenerator.createRandomRequestWithUsername(PASSENGER_USERNAME_ANNA);
 
-        assertThatThrownBy(() -> this.passengerService.create(passenger))
-                .isInstanceOf(DataIntegrityViolationException.class);
+        assertThatThrownBy(() -> this.passengerService.create(passenger)).isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     @Transactional
     void shouldNotSavePassengerWithEmptyPersonalInfo() {
-        PassengerFieldsDto passenger = new PassengerFieldsDto(
+        PassengerRequest passenger = new PassengerRequest(
                 TestDataGenerator.randomUsername(),
-                TestDataGenerator.randomPassword(),
                 TestDataGenerator.randomEmail(),
+                TestDataGenerator.randomPassword(),
                 null,
+                BigDecimal.ONE,
                 CASH);
 
-        assertThatThrownBy(() -> this.passengerService.create(passenger))
-                .isInstanceOf(DataIntegrityViolationException.class);
+        assertThatThrownBy(() -> this.passengerService.create(passenger)).isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     void shouldReturnEmptyCollectionWhenNoPassengersFound() {
-        Collection<PassengerDto> passengers = this.passengerService.findAll();
+        Collection<PassengerResponse> passengers = this.passengerService.findAll();
         passengers.stream().map(passengerMapper::toPassenger)
                 .map(BaseEntity::getId)
                 .forEach(passengerService::delete);
 
-        Collection<PassengerDto> result = this.passengerService.findAll();
+        Collection<PassengerResponse> result = this.passengerService.findAll();
 
         assertThat(result).isEmpty();
     }
 
     @Test
     void shouldThrowPassengerNotFoundExceptionWhenPassengerNotFoundById() {
-        assertThrows(PassengerNotFoundException.class, () -> {
-            this.passengerService.findById(9999L);
-        });
+        assertThrows(PassengerNotFoundException.class, () -> this.passengerService.findById(9999L));
     }
 
 }
