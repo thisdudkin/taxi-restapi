@@ -4,17 +4,14 @@ import by.dudkin.passenger.entity.Passenger;
 import by.dudkin.passenger.mapper.PassengerMapper;
 import by.dudkin.passenger.repository.PassengerRepository;
 import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
-import by.dudkin.passenger.rest.dto.PassengerDto;
-import by.dudkin.passenger.rest.dto.PassengerFieldsDto;
+import by.dudkin.passenger.rest.dto.request.PassengerRequest;
+import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import by.dudkin.passenger.util.ErrorMessages;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
-import java.util.Locale;
 
 /**
  * @author Alexander Dudkin
@@ -29,28 +26,28 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     @Transactional(readOnly = true)
-    public PassengerDto findById(long id) {
-        return passengerMapper.toPassengerDto(getOrThrow(id));
+    public PassengerResponse findById(long id) {
+        return passengerMapper.toResponse(getOrThrow(id));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<PassengerDto> findAll() {
+    public Collection<PassengerResponse> findAll() {
         return passengerMapper.toPassengerDtos(passengerRepository.findAll());
     }
 
     @Override
-    public PassengerDto create(PassengerFieldsDto passengerFieldsDto) {
-        Passenger passenger = passengerMapper.toPassenger(passengerFieldsDto);
+    public PassengerResponse create(PassengerRequest passengerRequest) {
+        Passenger passenger = passengerMapper.toPassenger(passengerRequest);
         passengerRepository.save(passenger);
-        return passengerMapper.toPassengerDto(passenger);
+        return passengerMapper.toResponse(passenger);
     }
 
     @Override
-    public PassengerDto update(long passengerId, PassengerFieldsDto passengerFieldsDto) {
+    public PassengerResponse update(long passengerId, PassengerRequest passengerRequest) {
         Passenger passenger = getOrThrow(passengerId);
-        updateFields(passenger, passengerFieldsDto);
-        return passengerMapper.toPassengerDto(passenger);
+        passengerMapper.updatePassenger(passengerRequest, passenger);
+        return passengerMapper.toResponse(passenger);
     }
 
     @Override
@@ -62,14 +59,6 @@ public class PassengerServiceImpl implements PassengerService {
     private Passenger getOrThrow(long id) {
         return passengerRepository.findById(id)
                 .orElseThrow(() -> new PassengerNotFoundException(ErrorMessages.PASSENGER_NOT_FOUND));
-    }
-
-    private void updateFields(Passenger passenger, PassengerFieldsDto passengerFieldsDto) {
-        passenger.setUsername(passengerFieldsDto.username());
-        passenger.setEmail(passengerFieldsDto.email());
-        passenger.setPassword(passengerFieldsDto.password()); // TODO: BCryptPasswordEncoder, also for save() method
-        passenger.setInfo(passengerFieldsDto.info());
-        passenger.setPreferredPaymentMethod(passengerFieldsDto.preferredPaymentMethod());
     }
 
 }

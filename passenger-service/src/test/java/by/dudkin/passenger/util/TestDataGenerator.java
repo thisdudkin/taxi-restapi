@@ -3,11 +3,12 @@ package by.dudkin.passenger.util;
 import by.dudkin.common.entity.PersonalInfo;
 import by.dudkin.common.enums.PaymentMethod;
 import by.dudkin.passenger.entity.Passenger;
-import by.dudkin.passenger.rest.dto.PassengerFieldsDto;
+import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -42,6 +43,10 @@ public class TestDataGenerator {
         return RandomStringUtils.randomAlphanumeric(15);
     }
 
+    public static BigDecimal randomBalance() {
+        return BigDecimal.valueOf(new Random().nextInt(1, 4999));
+    }
+
     public static LocalDate randomDateOfBirth() {
         int year = ThreadLocalRandom.current().nextInt(1950, 2000);
         return LocalDate.of(year, 1, 1);
@@ -59,7 +64,7 @@ public class TestDataGenerator {
                         .dateOfBirth(randomDateOfBirth())
                         .build())
                 .preferredPaymentMethod(PaymentMethod.CASH)
-                .balance(BigDecimal.valueOf(ThreadLocalRandom.current().nextDouble(0, 10000)))
+                .balance(randomBalance())
                 .build();
     }
 
@@ -75,53 +80,56 @@ public class TestDataGenerator {
                         .dateOfBirth(randomDateOfBirth())
                         .build())
                 .preferredPaymentMethod(PaymentMethod.CASH)
-                .balance(BigDecimal.valueOf(ThreadLocalRandom.current().nextDouble(0, 10000)))
+                .balance(randomBalance())
                 .build();
         passenger.setId(id);
         return passenger;
     }
 
-    public static PassengerFieldsDto createRandomFieldsDto() {
-        return new PassengerFieldsDto(
+    public static PassengerRequest createRandomRequest() {
+        return new PassengerRequest(
                 randomUsername(),
-                randomPassword(),
                 randomEmail(),
+                randomPassword(),
                 PersonalInfo.builder()
                         .firstName(randomFirstName())
                         .lastName(randomLastName())
                         .phone(randomPhone())
                         .dateOfBirth(randomDateOfBirth())
                         .build(),
+                randomBalance(),
                 PaymentMethod.CREDIT_CARD
         );
     }
 
-    public static PassengerFieldsDto createRandomFieldsDtoWithUsername(String username) {
-        return new PassengerFieldsDto(
+    public static PassengerRequest createRandomRequestWithUsername(String username) {
+        return new PassengerRequest(
                 username,
-                randomPassword(),
                 randomEmail(),
+                randomPassword(),
                 PersonalInfo.builder()
                         .firstName(randomFirstName())
                         .lastName(randomLastName())
                         .phone(randomPhone())
                         .dateOfBirth(randomDateOfBirth())
                         .build(),
+                randomBalance(),
                 PaymentMethod.CREDIT_CARD
         );
     }
 
-    public static PassengerFieldsDto createRandomFieldsDtoWithEmail(String email) {
-        return new PassengerFieldsDto(
+    public static PassengerRequest createRandomRequestWithEmail(String email) {
+        return new PassengerRequest(
                 randomUsername(),
-                randomPassword(),
                 email,
+                randomPassword(),
                 PersonalInfo.builder()
                         .firstName(randomFirstName())
                         .lastName(randomLastName())
                         .phone(randomPhone())
                         .dateOfBirth(randomDateOfBirth())
                         .build(),
+                randomBalance(),
                 PaymentMethod.CREDIT_CARD
         );
     }
