@@ -10,6 +10,7 @@ import by.dudkin.driver.repository.AssignmentRepository;
 import by.dudkin.driver.rest.advice.AssignmentNotFoundException;
 import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
+import by.dudkin.driver.rest.dto.response.PaginatedResponse;
 import by.dudkin.driver.service.api.AssignmentService;
 import by.dudkin.driver.service.api.CarService;
 import by.dudkin.driver.service.api.DriverService;
@@ -20,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author Alexander Dudkin
@@ -56,24 +59,41 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<AssignmentResponse> findAll(Specification<DriverCarAssignment> spec, Pageable pageable) {
-        return assignmentRepository.findAllWithDriverAndCar(spec, pageable).map(assignmentMapper::toResponse);
+    public PaginatedResponse<AssignmentResponse> findAll(Specification<DriverCarAssignment> spec, Pageable pageable) {
+        Page<DriverCarAssignment> assignmentPage = assignmentRepository.findAll(spec, pageable);
+        List<AssignmentResponse> assignmentList = assignmentPage.getContent().stream()
+                .map(assignmentMapper::toResponse)
+                .toList();
+
+        return PaginatedResponse.fromPage(assignmentPage, assignmentList);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<AssignmentResponse> findAllByDriver(long driverId, Pageable pageable) {
-        return assignmentRepository.findByDriverId(driverId, pageable).map(assignmentMapper::toResponse);
+    public PaginatedResponse<AssignmentResponse> findAllByDriver(long driverId, Pageable pageable) {
+        Page<DriverCarAssignment> assignmentPage = assignmentRepository.findByDriverId(driverId, pageable);
+        List<AssignmentResponse> assignmentList = assignmentPage.getContent().stream()
+                .map(assignmentMapper::toResponse)
+                .toList();
+
+        return PaginatedResponse.fromPage(assignmentPage, assignmentList);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<AssignmentResponse> findAllByCar(long carId, Pageable pageable) {
-        return assignmentRepository.findByCarId(carId, pageable).map(assignmentMapper::toResponse);
+    public PaginatedResponse<AssignmentResponse> findAllByCar(long carId, Pageable pageable) {
+        Page<DriverCarAssignment> assignmentPage = assignmentRepository.findByCarId(carId, pageable);
+        List<AssignmentResponse> assignmentList = assignmentPage.getContent().stream()
+                .map(assignmentMapper::toResponse)
+                .toList();
+
+        return PaginatedResponse.fromPage(assignmentPage, assignmentList);
     }
 
     @Override
-    public AssignmentResponse cancelAssignment(long assignmentId, AssignmentRequest assignmentRequest) {
+    public AssignmentResponse cancelAssignment(long assignmentId) {
+        assignmentValidator.validateStatus(assignmentId);
+
         DriverCarAssignment assignment = getOrThrow(assignmentId);
         assignment.setStatus(AssignmentStatus.COMPLETED);
         return assignmentMapper.toResponse(assignmentRepository.save(assignment));

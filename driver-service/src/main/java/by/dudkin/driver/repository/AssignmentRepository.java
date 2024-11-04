@@ -46,12 +46,6 @@ public interface AssignmentRepository extends JpaRepository<DriverCarAssignment,
             """)
     Optional<DriverCarAssignment> findActiveAssignmentByCarId(long carId);
 
-    @Query("""
-        SELECT a FROM DriverCarAssignment a
-        JOIN FETCH a.driver d
-        JOIN FETCH a.car c
-        WHERE (:spec IS NULL OR a = :spec)
-        """)
-    Page<DriverCarAssignment> findAllWithDriverAndCar(@Nullable Specification<DriverCarAssignment> spec, Pageable pageable);
+    Page<DriverCarAssignment> findAll(Specification<DriverCarAssignment> spec, Pageable pageable);
 
 }

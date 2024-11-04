@@ -7,3 +7,5 @@ databaseChangeLog:
       file: classpath:db/changelog/changeset/create-cars-table.yaml
   - include:
       file: classpath:db/changelog/changeset/create-driver-car-assignments.yaml
+  - include:
+      file: classpath:db/changelog/changeset/add-color-column-to-cars.yaml

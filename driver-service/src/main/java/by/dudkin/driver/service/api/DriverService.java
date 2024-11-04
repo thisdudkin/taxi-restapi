@@ -16,7 +16,7 @@ public interface DriverService {
 
     PaginatedResponse<DriverResponse> findAll(Pageable pageable);
 
-    DriverResponse findById(long carId);
+    DriverResponse findById(long driverId);
 
     DriverResponse create(DriverRequest driverRequest);
 

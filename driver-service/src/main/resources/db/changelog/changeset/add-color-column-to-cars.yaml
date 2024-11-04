@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-color-column-to-cars
+      author: Alexander Dudkin
+      changes:
+        - addColumn:
+            tableName: cars
+            columns:
+              - column:
+                  name: color
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false

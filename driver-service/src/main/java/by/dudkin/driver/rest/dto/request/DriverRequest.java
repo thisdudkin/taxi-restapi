@@ -34,9 +34,6 @@ public record DriverRequest(
         @PositiveOrZero
         BigDecimal balance,
 
-        @NotNull
-        DriverStatus status,
-
         @PositiveOrZero
         int experience
 
