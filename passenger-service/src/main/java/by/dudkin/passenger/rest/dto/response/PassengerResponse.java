@@ -12,7 +12,7 @@ import java.time.Instant;
  */
 public record PassengerResponse(
 
-        Long id,
+        long id,
 
         String username,
 
@@ -24,7 +24,7 @@ public record PassengerResponse(
 
         BigDecimal balance,
 
-        Double rating,
+        double rating,
 
         Instant createdAt,
 
