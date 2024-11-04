@@ -10,7 +10,7 @@ import java.time.Instant;
  */
 public record CarResponse(
 
-        Long id,
+        long id,
 
         String licensePlate,
 
@@ -18,7 +18,7 @@ public record CarResponse(
 
         CarType type,
 
-        Integer year,
+        long year,
 
         String color,
 

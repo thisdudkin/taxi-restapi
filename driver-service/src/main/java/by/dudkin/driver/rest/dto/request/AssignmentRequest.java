@@ -9,8 +9,7 @@ import java.time.Instant;
  * @author Alexander Dudkin
  */
 public record AssignmentRequest(
-        // TODO: Delete driverId in future. It will be set from Authorization header
-        @NotNull Long driverId,
-        @NotNull Long carId,
+        long driverId,
+        long carId,
         @NotNull Instant assignmentDate
 ) implements Serializable {}

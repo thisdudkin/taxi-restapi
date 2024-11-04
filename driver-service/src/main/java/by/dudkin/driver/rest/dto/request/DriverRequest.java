@@ -38,7 +38,6 @@ public record DriverRequest(
         DriverStatus status,
 
         @PositiveOrZero
-        Integer experience
-
+        int experience
 
 ) implements Serializable { }

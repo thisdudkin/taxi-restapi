@@ -12,7 +12,7 @@ import java.time.Instant;
  */
 public record DriverResponse(
 
-        Long id,
+        long id,
 
         String username,
 
@@ -24,9 +24,9 @@ public record DriverResponse(
 
         DriverStatus status,
 
-        Integer experience,
+        long experience,
 
-        Double rating,
+        double rating,
 
         Instant createdAt,
 
