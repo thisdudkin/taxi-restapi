@@ -4,7 +4,9 @@ import by.dudkin.common.entity.BaseEntity;
 import by.dudkin.common.entity.PersonalInfo;
 import by.dudkin.common.enums.DriverStatus;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -14,6 +16,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -30,6 +33,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -79,6 +84,12 @@ public class Driver implements BaseEntity<Long> {
     @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<DriverCarAssignment> assignments;
 
+    @Builder.Default
+    @ElementCollection
+    @CollectionTable(name = "driver_ratings", joinColumns = @JoinColumn(name = "driver_id"))
+    @Column(name = "rating")
+    private List<Integer> ratings = new ArrayList<>();
+
     @CreatedDate
     @Column(name = "created_utc", nullable = false, updatable = false)
     private Instant createdAt;
@@ -101,6 +112,10 @@ public class Driver implements BaseEntity<Long> {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    public double getAverageRating() {
+        return ratings.isEmpty() ? 0.0 : ratings.stream().mapToInt(Integer::intValue).average().orElse(0.0);
     }
 
 }
