@@ -1,7 +1,7 @@
 package by.dudkin.passenger.rest.advice;
 
 import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
-import by.dudkin.passenger.util.ErrorMessages;
+import by.dudkin.common.util.ErrorMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;

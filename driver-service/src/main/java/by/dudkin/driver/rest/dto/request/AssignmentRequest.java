@@ -11,5 +11,5 @@ import java.time.Instant;
 public record AssignmentRequest(
         long driverId,
         long carId,
-        @NotNull Instant assignmentDate
+        Instant assignmentDate
 ) implements Serializable {}

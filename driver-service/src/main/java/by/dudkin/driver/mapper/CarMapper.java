@@ -6,6 +6,8 @@ import by.dudkin.driver.rest.dto.response.CarResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
+import java.util.Collection;
+
 /**
  * @author Alexander Dudkin
  */

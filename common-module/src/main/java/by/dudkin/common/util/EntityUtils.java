@@ -1,4 +1,4 @@
-package by.dudkin.passenger.util;
+package by.dudkin.common.util;
 
 import by.dudkin.common.entity.BaseEntity;
 import org.springframework.orm.ObjectRetrievalFailureException;

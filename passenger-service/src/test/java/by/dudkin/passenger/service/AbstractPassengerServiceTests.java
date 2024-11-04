@@ -6,7 +6,7 @@ import by.dudkin.passenger.mapper.PassengerMapper;
 import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
-import by.dudkin.passenger.util.EntityUtils;
+import by.dudkin.common.util.EntityUtils;
 import by.dudkin.passenger.util.TestDataGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
