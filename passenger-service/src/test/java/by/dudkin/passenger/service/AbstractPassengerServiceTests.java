@@ -66,7 +66,7 @@ abstract class AbstractPassengerServiceTests {
 
         PassengerResponse savedPassenger = this.passengerService.create(dto);
 
-        assertThat(savedPassenger.id().longValue()).isNotEqualTo(0);
+        assertThat(savedPassenger.id()).isNotEqualTo(0);
         assertThat(savedPassenger.createdAt()).isNotNull();
         assertThat(savedPassenger.updatedAt()).isNull();
         passengers = this.passengerService.findAll();
