@@ -17,6 +17,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -42,14 +45,18 @@ import java.util.Set;
 /**
  * @author Alexander Dudkin
  */
-@Entity
-@Builder
-@Getter
-@Setter
+@NamedEntityGraph(name = "driver-assignments-cars", attributeNodes = {
+    @NamedAttributeNode(value = "assignments", subgraph = "assignments-subgraph"),
+    @NamedAttributeNode("ratings")
+    },
+    subgraphs = @NamedSubgraph(name = "assignments-subgraph", attributeNodes = @NamedAttributeNode("car"))
+)
+@Entity @Builder
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "drivers")
-@ToString(exclude = "assignments")
+@ToString(exclude = {"assignments", "ratings"})
 @EntityListeners(AuditingEntityListener.class)
 public class Driver implements BaseEntity<Long> {
 

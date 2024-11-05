@@ -11,7 +11,7 @@ import java.util.Optional;
  */
 public interface CarRepository extends JpaRepository<Car, Long> {
 
-    @EntityGraph(attributePaths = {"assignments", "assignments.driver"})
+    @EntityGraph(value = "car-assignments-drivers")
     Optional<Car> findWithAssignmentsAndDriversById(Long id);
 
 }

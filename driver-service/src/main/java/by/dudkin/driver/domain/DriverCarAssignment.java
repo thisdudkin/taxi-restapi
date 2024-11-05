@@ -13,6 +13,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedEntityGraphs;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,10 +34,14 @@ import java.util.Objects;
 /**
  * @author Alexander Dudkin
  */
-@Entity
-@Builder
-@Getter
-@Setter
+@NamedEntityGraphs({
+    @NamedEntityGraph(name = "assignment-car-driver", attributeNodes = {
+        @NamedAttributeNode("driver"),
+        @NamedAttributeNode("car")
+    })
+})
+@Entity @Builder
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"driver", "car"})

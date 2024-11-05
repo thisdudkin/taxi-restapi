@@ -12,6 +12,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -33,10 +36,13 @@ import java.util.Set;
 /**
  * @author Alexander Dudkin
  */
-@Entity
-@Builder
-@Getter
-@Setter
+@NamedEntityGraph(name = "car-assignments-drivers", attributeNodes = {
+    @NamedAttributeNode(value = "assignments", subgraph = "assignments-subgraph")
+},
+    subgraphs = @NamedSubgraph(name = "assignments-subgraph", attributeNodes = @NamedAttributeNode("driver"))
+)
+@Entity @Builder
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "cars")
