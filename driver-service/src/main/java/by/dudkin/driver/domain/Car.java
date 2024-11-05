@@ -12,6 +12,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -26,16 +29,20 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 /**
  * @author Alexander Dudkin
  */
-@Entity
-@Builder
-@Getter
-@Setter
+@NamedEntityGraph(name = "car-assignments-drivers", attributeNodes = {
+    @NamedAttributeNode(value = "assignments", subgraph = "assignments-subgraph")
+},
+    subgraphs = @NamedSubgraph(name = "assignments-subgraph", attributeNodes = @NamedAttributeNode("driver"))
+)
+@Entity @Builder
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "cars")
@@ -63,8 +70,9 @@ public class Car implements BaseEntity<Long> {
     @Column(name = "color", nullable = false)
     private String color;
 
+    @Builder.Default
     @OneToMany(mappedBy = "car", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<DriverCarAssignment> assignments;
+    private Set<DriverCarAssignment> assignments = new HashSet<>();
 
     @CreatedDate
     @Column(name = "created_utc", updatable = false, nullable = false)

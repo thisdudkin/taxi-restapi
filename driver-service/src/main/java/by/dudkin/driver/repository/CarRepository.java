@@ -1,6 +1,6 @@
 package by.dudkin.driver.repository;
 
-import by.dudkin.driver.domain.Driver;
+import by.dudkin.driver.domain.Car;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,9 +9,9 @@ import java.util.Optional;
 /**
  * @author Alexander Dudkin
  */
-public interface DriverRepository extends JpaRepository<Driver, Long> {
+public interface CarRepository extends JpaRepository<Car, Long> {
 
-    @EntityGraph(value = "driver-assignments-cars")
-    Optional<Driver> findWithAssignmentsAndCarsById(Long id);
+    @EntityGraph(value = "car-assignments-drivers")
+    Optional<Car> findWithAssignmentsAndDriversById(Long id);
 
 }
