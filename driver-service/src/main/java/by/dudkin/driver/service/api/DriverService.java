@@ -1,5 +1,6 @@
 package by.dudkin.driver.service.api;
 
+import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
 import org.springframework.data.domain.Page;
@@ -21,5 +22,7 @@ public interface DriverService {
     DriverResponse update(long driverId, DriverRequest driverRequest);
 
     void delete(long driverId);
+
+    Driver getOrThrow(long driverId);
 
 }

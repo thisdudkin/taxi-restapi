@@ -56,7 +56,8 @@ public class DriverServiceImpl implements DriverService {
         driverRepository.delete(driver);
     }
 
-    private Driver getOrThrow(long driverId) {
+    @Override
+    public Driver getOrThrow(long driverId) {
         return driverRepository.findWithAssignmentsAndCarsById(driverId)
                 .orElseThrow(() -> new DriverNotFoundException(ErrorMessages.DRIVER_NOT_FOUND));
     }

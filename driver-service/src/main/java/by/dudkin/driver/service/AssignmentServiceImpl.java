@@ -7,14 +7,13 @@ import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.domain.DriverCarAssignment;
 import by.dudkin.driver.mapper.AssignmentMapper;
 import by.dudkin.driver.repository.AssignmentRepository;
-import by.dudkin.driver.repository.CarRepository;
-import by.dudkin.driver.repository.DriverRepository;
 import by.dudkin.driver.rest.advice.AssignmentNotFoundException;
-import by.dudkin.driver.rest.advice.CarNotFoundException;
-import by.dudkin.driver.rest.advice.DriverNotFoundException;
 import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
 import by.dudkin.driver.service.api.AssignmentService;
+import by.dudkin.driver.service.api.CarService;
+import by.dudkin.driver.service.api.DriverService;
+import by.dudkin.driver.util.AssignmentValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,20 +31,16 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     private final AssignmentMapper assignmentMapper;
     private final AssignmentRepository assignmentRepository;
-    private final DriverRepository driverRepository;
-    private final CarRepository carRepository;
+    private final DriverService driverService;
+    private final CarService carService;
+    private final AssignmentValidator assignmentValidator;
 
     @Override
     public AssignmentResponse create(AssignmentRequest assignmentRequest) {
-        if (assignmentRepository.findActiveAssignmentByCarId(assignmentRequest.carId()).isPresent()) {
-            throw new IllegalStateException(ErrorMessages.CAR_ALREADY_BOOKED);
-        }
+        assignmentValidator.validateCarAvailability(assignmentRequest.carId());
 
-        Car car = carRepository.findById(assignmentRequest.carId())
-                .orElseThrow(() -> new CarNotFoundException(ErrorMessages.CAR_NOT_FOUND));
-
-        Driver driver = driverRepository.findById(assignmentRequest.driverId())
-                .orElseThrow(() -> new DriverNotFoundException(ErrorMessages.DRIVER_NOT_FOUND));
+        Car car = carService.getOrThrow(assignmentRequest.carId());
+        Driver driver = driverService.getOrThrow(assignmentRequest.driverId());
 
         DriverCarAssignment assignment = assignmentMapper.toAssignment(assignmentRequest);
         assignment.setDriver(driver);

@@ -9,6 +9,7 @@ import by.dudkin.driver.rest.advice.DuplicateLicensePlateException;
 import by.dudkin.driver.rest.dto.request.CarRequest;
 import by.dudkin.driver.rest.dto.response.CarResponse;
 import by.dudkin.driver.service.api.CarService;
+import by.dudkin.driver.util.CarValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,7 @@ public class CarServiceImpl implements CarService {
 
     private final CarMapper carMapper;
     private final CarRepository carRepository;
+    private final CarValidator carValidator;
 
     @Override
     @Transactional(readOnly = true)
@@ -42,8 +44,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarResponse create(CarRequest carRequest) {
-        if (carRepository.existsByLicensePlate(carRequest.licensePlate()))
-            throw new DuplicateLicensePlateException(ErrorMessages.DUPLICATE_LICENSE_PLATE);
+        carValidator.validateUniqueLicensePlate(carRequest.licensePlate());
         return carMapper.toResponse(carRepository.save(carMapper.toCar(carRequest)));
     }
 
@@ -61,7 +62,8 @@ public class CarServiceImpl implements CarService {
         carRepository.delete(car);
     }
 
-    private Car getOrThrow(long carId) {
+    @Override
+    public Car getOrThrow(long carId) {
         return carRepository.findWithAssignmentsAndDriversById(carId)
                 .orElseThrow(() -> new CarNotFoundException(ErrorMessages.CAR_NOT_FOUND));
     }

@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-cars
+      author: Alexander Dudkin
+      changes:
+        - createTable:
+            tableName: cars
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: license_plate
+                  type: VARCHAR(128)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: model
+                  type: VARCHAR(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: year
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_utc
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_utc
+                  type: TIMESTAMP WITH TIME ZONE
+
+        - createIndex:
+            tableName: cars
+            indexName: idx_cars_license_plate
+            columns:
+              - column:
+                  name: license_plate

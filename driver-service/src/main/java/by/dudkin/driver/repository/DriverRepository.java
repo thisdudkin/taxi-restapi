@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface DriverRepository extends JpaRepository<Driver, Long> {
 
     @EntityGraph(value = "driver-assignments-cars")
-    Optional<Driver> findWithAssignmentsAndCarsById(Long id);
+    Optional<Driver> findWithAssignmentsAndCarsById(long id);
 
     @EntityGraph(value = "driver-assignments-cars")
     Page<Driver> findAll(Pageable pageable);
