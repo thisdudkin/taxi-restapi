@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: classpath:db/changelog/changeset/create-drivers-table.yaml
+  - include:
+      file: classpath:db/changelog/changeset/create-driver-ratings-table.yaml
+  - include:
+      file: classpath:db/changelog/changeset/create-cars-table.yaml
+  - include:
+      file: classpath:db/changelog/changeset/create-driver-car-assignments.yaml

@@ -2,7 +2,7 @@ package by.dudkin.passenger.repository.jpa;
 
 import by.dudkin.passenger.entity.Passenger;
 import by.dudkin.passenger.repository.PassengerRepository;
-import by.dudkin.passenger.util.ErrorMessages;
+import by.dudkin.common.util.ErrorMessages;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;

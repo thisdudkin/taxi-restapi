@@ -1,6 +1,5 @@
 package by.dudkin.passenger.rest.controller;
 
-import by.dudkin.common.enums.PaymentMethod;
 import by.dudkin.passenger.entity.Passenger;
 import by.dudkin.passenger.mapper.PassengerMapper;
 import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
@@ -8,7 +7,7 @@ import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import by.dudkin.passenger.service.PassengerService;
 import by.dudkin.passenger.util.ApplicationTestConfig;
-import by.dudkin.passenger.util.ErrorMessages;
+import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.passenger.util.TestDataGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -23,12 +22,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import static by.dudkin.common.enums.PaymentMethod.CASH;
 import static org.mockito.BDDMockito.doThrow;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
