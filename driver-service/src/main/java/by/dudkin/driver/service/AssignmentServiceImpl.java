@@ -69,28 +69,6 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public PaginatedResponse<AssignmentResponse> findAllByDriver(long driverId, Pageable pageable) {
-        Page<DriverCarAssignment> assignmentPage = assignmentRepository.findByDriverId(driverId, pageable);
-        List<AssignmentResponse> assignmentList = assignmentPage.getContent().stream()
-                .map(assignmentMapper::toResponse)
-                .toList();
-
-        return PaginatedResponse.fromPage(assignmentPage, assignmentList);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public PaginatedResponse<AssignmentResponse> findAllByCar(long carId, Pageable pageable) {
-        Page<DriverCarAssignment> assignmentPage = assignmentRepository.findByCarId(carId, pageable);
-        List<AssignmentResponse> assignmentList = assignmentPage.getContent().stream()
-                .map(assignmentMapper::toResponse)
-                .toList();
-
-        return PaginatedResponse.fromPage(assignmentPage, assignmentList);
-    }
-
-    @Override
     public AssignmentResponse cancelAssignment(long assignmentId) {
         assignmentValidator.validateStatus(assignmentId);
 

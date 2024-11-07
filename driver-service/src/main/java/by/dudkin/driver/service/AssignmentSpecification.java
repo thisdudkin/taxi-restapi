@@ -12,12 +12,12 @@ public class AssignmentSpecification {
 
     public Specification<DriverCarAssignment> hasDriverId(Long driverId) {
         return ((root, query, criteriaBuilder) ->
-                driverId == null ? null : criteriaBuilder.equal(root.get("driver").get("id"), driverId));
+            driverId == null ? null : criteriaBuilder.equal(root.get("driver").get("id"), driverId));
     }
 
     public Specification<DriverCarAssignment> hasCarId(Long carId) {
         return (root, query, criteriaBuilder) ->
-                carId == null ? null : criteriaBuilder.equal(root.get("car").get("id"), carId);
+            carId == null ? null : criteriaBuilder.equal(root.get("car").get("id"), carId);
     }
 
     public Specification<DriverCarAssignment> getSpecification(Long driverId, Long carId) {
