@@ -20,7 +20,7 @@ spring:
 
 logging:
   level:
-    liquibase: DEBUG
+    liquibase: INFO
     org:
       springframework: INFO
 

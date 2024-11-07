@@ -3,6 +3,7 @@ package by.dudkin.driver.service.api;
 import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
+import by.dudkin.driver.rest.dto.response.PaginatedResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,7 +14,7 @@ import java.util.Collection;
  */
 public interface DriverService {
 
-    Page<DriverResponse> findAll(Pageable pageable);
+    PaginatedResponse<DriverResponse> findAll(Pageable pageable);
 
     DriverResponse findById(long carId);
 

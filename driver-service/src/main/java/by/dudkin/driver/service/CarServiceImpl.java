@@ -8,6 +8,7 @@ import by.dudkin.driver.rest.advice.CarNotFoundException;
 import by.dudkin.driver.rest.advice.DuplicateLicensePlateException;
 import by.dudkin.driver.rest.dto.request.CarRequest;
 import by.dudkin.driver.rest.dto.response.CarResponse;
+import by.dudkin.driver.rest.dto.response.PaginatedResponse;
 import by.dudkin.driver.service.api.CarService;
 import by.dudkin.driver.util.CarValidator;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Alexander Dudkin
@@ -32,8 +34,13 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<CarResponse> findAll(Pageable pageable) {
-        return carRepository.findAll(pageable).map(carMapper::toResponse);
+    public PaginatedResponse<CarResponse> findAll(Pageable pageable) {
+        Page<Car> carPage = carRepository.findAll(pageable);
+        List<CarResponse> carResponses = carPage.getContent().stream()
+                .map(carMapper::toResponse)
+                .toList();
+
+        return PaginatedResponse.fromPage(carPage, carResponses);
     }
 
     @Override

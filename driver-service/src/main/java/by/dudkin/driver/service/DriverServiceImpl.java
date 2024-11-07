@@ -7,12 +7,15 @@ import by.dudkin.driver.repository.DriverRepository;
 import by.dudkin.driver.rest.advice.DriverNotFoundException;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
+import by.dudkin.driver.rest.dto.response.PaginatedResponse;
 import by.dudkin.driver.service.api.DriverService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author Alexander Dudkin
@@ -27,8 +30,13 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<DriverResponse> findAll(Pageable pageable) {
-        return driverRepository.findAll(pageable).map(driverMapper::toResponse);
+    public PaginatedResponse<DriverResponse> findAll(Pageable pageable) {
+        Page<Driver> driverPage = driverRepository.findAll(pageable);
+        List<DriverResponse> driverResponses = driverPage.getContent().stream()
+                .map(driverMapper::toResponse)
+                .toList();
+
+        return PaginatedResponse.fromPage(driverPage, driverResponses);
     }
 
     @Override
