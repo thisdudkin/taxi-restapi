@@ -83,7 +83,7 @@ public class AssignmentServiceImpl implements AssignmentService {
         assignmentRepository.delete(assignment);
     }
 
-    private DriverCarAssignment getOrThrow(long assignmentId) {
+    public DriverCarAssignment getOrThrow(long assignmentId) {
         return assignmentRepository.findWithDriverAndCarById(assignmentId)
                 .orElseThrow(() -> new AssignmentNotFoundException(ErrorMessages.ASSIGNMENT_NOT_FOUND));
     }

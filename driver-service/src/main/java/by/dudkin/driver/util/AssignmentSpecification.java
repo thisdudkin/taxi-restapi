@@ -1,4 +1,4 @@
-package by.dudkin.driver.service;
+package by.dudkin.driver.util;
 
 import by.dudkin.driver.domain.DriverCarAssignment;
 import org.springframework.data.jpa.domain.Specification;
