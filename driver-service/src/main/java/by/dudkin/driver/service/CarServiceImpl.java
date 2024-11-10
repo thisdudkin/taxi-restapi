@@ -5,10 +5,9 @@ import by.dudkin.driver.domain.Car;
 import by.dudkin.driver.mapper.CarMapper;
 import by.dudkin.driver.repository.CarRepository;
 import by.dudkin.driver.rest.advice.CarNotFoundException;
-import by.dudkin.driver.rest.advice.DuplicateLicensePlateException;
 import by.dudkin.driver.rest.dto.request.CarRequest;
 import by.dudkin.driver.rest.dto.response.CarResponse;
-import by.dudkin.driver.rest.dto.response.PaginatedResponse;
+import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.service.api.CarService;
 import by.dudkin.driver.util.CarValidator;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 /**

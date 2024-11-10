@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-rides-indexes
+      author: Alexander Dudkin
+      changes:
+        - createIndex:
+            tableName: rides
+            indexName: idx_rides_passenger
+            columns:
+              - column:
+                  name: passenger
+
+        - createIndex:
+            tableName: rides
+            indexName: idx_rides_driver
+            columns:
+              - column:
+                  name: driver
+
+        - createIndex:
+            tableName: rides
+            indexName: idx_rides_status
+            columns:
+              - column:
+                  name: status

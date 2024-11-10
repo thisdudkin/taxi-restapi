@@ -3,11 +3,8 @@ package by.dudkin.driver.service.api;
 import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
-import by.dudkin.driver.rest.dto.response.PaginatedResponse;
-import org.springframework.data.domain.Page;
+import by.dudkin.common.util.PaginatedResponse;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Collection;
 
 /**
  * @author Alexander Dudkin
