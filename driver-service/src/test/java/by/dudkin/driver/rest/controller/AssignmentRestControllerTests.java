@@ -1,9 +1,9 @@
 package by.dudkin.driver.rest.controller;
 
 import by.dudkin.common.enums.AssignmentStatus;
+import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
 import by.dudkin.driver.rest.dto.response.CarResponse;
-import by.dudkin.driver.rest.dto.response.PaginatedResponse;
 import by.dudkin.driver.util.TestDataGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

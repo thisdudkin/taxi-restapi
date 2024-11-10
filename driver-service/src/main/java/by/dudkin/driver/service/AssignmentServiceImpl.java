@@ -2,6 +2,7 @@ package by.dudkin.driver.service;
 
 import by.dudkin.common.enums.AssignmentStatus;
 import by.dudkin.common.util.ErrorMessages;
+import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.domain.Car;
 import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.domain.DriverCarAssignment;
@@ -10,7 +11,6 @@ import by.dudkin.driver.repository.AssignmentRepository;
 import by.dudkin.driver.rest.advice.AssignmentNotFoundException;
 import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
-import by.dudkin.driver.rest.dto.response.PaginatedResponse;
 import by.dudkin.driver.service.api.AssignmentService;
 import by.dudkin.driver.service.api.CarService;
 import by.dudkin.driver.service.api.DriverService;

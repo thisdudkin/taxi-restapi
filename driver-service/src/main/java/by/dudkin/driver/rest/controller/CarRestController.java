@@ -1,9 +1,9 @@
 package by.dudkin.driver.rest.controller;
 
+import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.rest.api.CarApi;
 import by.dudkin.driver.rest.dto.request.CarRequest;
 import by.dudkin.driver.rest.dto.response.CarResponse;
-import by.dudkin.driver.rest.dto.response.PaginatedResponse;
 import by.dudkin.driver.service.api.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

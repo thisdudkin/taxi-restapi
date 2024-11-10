@@ -1,13 +1,13 @@
 package by.dudkin.driver.service.unit;
 
 import by.dudkin.common.util.ErrorMessages;
+import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.mapper.DriverMapper;
 import by.dudkin.driver.repository.DriverRepository;
 import by.dudkin.driver.rest.advice.DriverNotFoundException;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
-import by.dudkin.driver.rest.dto.response.PaginatedResponse;
 import by.dudkin.driver.service.DriverServiceImpl;
 import by.dudkin.driver.util.TestDataGenerator;
 import org.junit.jupiter.api.BeforeEach;
