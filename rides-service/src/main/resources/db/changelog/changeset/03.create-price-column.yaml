@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-price-column
+      author: Alexander Dudkin
+      changes:
+        - addColumn:
+            tableName: rides
+            columns:
+              - column:
+                  name: price
+                  type: DECIMAL(10, 2)
+                  constraints:
+                    nullable: false

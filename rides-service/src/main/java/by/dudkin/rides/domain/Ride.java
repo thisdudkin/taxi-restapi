@@ -90,7 +90,7 @@ public class Ride implements BaseEntity<Long> {
     private BigDecimal price;
 
     @NotNull
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentMethod paymentMethod;
 
