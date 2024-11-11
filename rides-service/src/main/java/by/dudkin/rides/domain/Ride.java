@@ -15,7 +15,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,25 +48,20 @@ public class Ride implements BaseEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @Column(name = "passenger", nullable = false, updatable = false)
     private Long passengerId;
 
-    @NotNull
     @Column(name = "driver", nullable = false, updatable = false)
     private Long driverId;
 
-    @NotNull
     @Column(name = "car", nullable = false, updatable = false)
     private Long carId;
 
-    @NotNull
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RideStatus status = RideStatus.ACTIVE;
 
-    @NotNull
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "county", column = @Column(name = "from_county")),
@@ -76,7 +70,6 @@ public class Ride implements BaseEntity<Long> {
     })
     private Location from;
 
-    @NotNull
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "county", column = @Column(name = "to_county")),
@@ -85,11 +78,9 @@ public class Ride implements BaseEntity<Long> {
     })
     private Location to;
 
-    @NotNull
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @NotNull
     @Enumerated
     @Column(nullable = false)
     private PaymentMethod paymentMethod;
