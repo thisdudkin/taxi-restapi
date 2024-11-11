@@ -17,9 +17,6 @@ import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,12 +37,14 @@ import java.util.Set;
  * @author Alexander Dudkin
  */
 @NamedEntityGraph(name = "car-assignments-drivers", attributeNodes = {
-    @NamedAttributeNode(value = "assignments", subgraph = "assignments-subgraph")
+        @NamedAttributeNode(value = "assignments", subgraph = "assignments-subgraph")
 },
-    subgraphs = @NamedSubgraph(name = "assignments-subgraph", attributeNodes = @NamedAttributeNode("driver"))
+        subgraphs = @NamedSubgraph(name = "assignments-subgraph", attributeNodes = @NamedAttributeNode("driver"))
 )
-@Entity @Builder
-@Getter @Setter
+@Entity
+@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "cars")
@@ -60,7 +59,6 @@ public class Car implements BaseEntity<Long> {
     @Column(name = "license_plate", unique = true, nullable = false)
     private String licensePlate;
 
-    @NotEmpty
     @Column(name = "model", nullable = false)
     private String model;
 
@@ -68,11 +66,9 @@ public class Car implements BaseEntity<Long> {
     @Column(name = "type", nullable = false)
     private CarType type;
 
-    @NotNull
     @Column(name = "year", nullable = false)
     private Integer year;
 
-    @NotEmpty
     @Column(name = "color", nullable = false)
     private String color;
 

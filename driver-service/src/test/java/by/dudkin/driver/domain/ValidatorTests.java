@@ -1,6 +1,7 @@
 package by.dudkin.driver.domain;
 
 import by.dudkin.common.enums.CarType;
+import by.dudkin.driver.rest.dto.request.CarRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
@@ -29,21 +30,21 @@ class ValidatorTests {
     void shouldNotValidateWhenModelEmpty() {
 
         LocaleContextHolder.setLocale(Locale.ENGLISH);
-        Car car = Car.builder()
-                .licensePlate("4324EM-6")
-                .model("")
-                .type(CarType.PREMIUM)
-                .year(2015)
-                .color("White")
-                .build();
+        var request = new CarRequest(
+                "License",
+                "Model",
+                null,
+                2017,
+                "Color"
+        );
 
         Validator validator = createValidator();
-        Set<ConstraintViolation<Car>> constraintViolations = validator.validate(car);
+        Set<ConstraintViolation<CarRequest>> constraintViolations = validator.validate(request);
 
         assertThat(constraintViolations.size()).isEqualTo(1);
-        ConstraintViolation<Car> violation = constraintViolations.iterator().next();
-        assertThat(violation.getPropertyPath().toString()).isEqualTo("model");
-        assertThat(violation.getMessage()).isEqualTo("must not be empty");
+        ConstraintViolation<CarRequest> violation = constraintViolations.iterator().next();
+        assertThat(violation.getPropertyPath().toString()).isEqualTo("type");
+        assertThat(violation.getMessage()).isEqualTo("must not be null");
     }
 
 }
