@@ -64,15 +64,12 @@ public class Driver implements BaseEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @Column(name = "username", nullable = false)
     private String username;
 
-    @NotBlank
     @Column(name = "email", nullable = false)
     private String email;
 
-    @NotBlank
     @Column(name = "password", nullable = false)
     private String password;
 

@@ -5,12 +5,14 @@ import by.dudkin.driver.repository.CarRepository;
 import by.dudkin.driver.rest.advice.DuplicateLicensePlateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Alexander Dudkin
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CarValidator {
 
     private final CarRepository carRepository;

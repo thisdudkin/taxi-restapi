@@ -37,12 +37,14 @@ import java.util.Set;
  * @author Alexander Dudkin
  */
 @NamedEntityGraph(name = "car-assignments-drivers", attributeNodes = {
-    @NamedAttributeNode(value = "assignments", subgraph = "assignments-subgraph")
+        @NamedAttributeNode(value = "assignments", subgraph = "assignments-subgraph")
 },
-    subgraphs = @NamedSubgraph(name = "assignments-subgraph", attributeNodes = @NamedAttributeNode("driver"))
+        subgraphs = @NamedSubgraph(name = "assignments-subgraph", attributeNodes = @NamedAttributeNode("driver"))
 )
-@Entity @Builder
-@Getter @Setter
+@Entity
+@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "cars")
