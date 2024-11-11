@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: update-start-end-time-type
+      author: Alexander Dudkin
+      changes:
+        - modifyDataType:
+            tableName: rides
+            columnName: start_time
+            newDataType: TIMESTAMP
+
+        - modifyDataType:
+            tableName: rides
+            columnName: end_time
+            newDataType: TIMESTAMP
