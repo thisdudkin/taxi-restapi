@@ -63,6 +63,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: price
+                  type: DECIMAL(10, 2)
+                  constraints:
+                    nullable: false
+              - column:
                   name: payment_method
                   type: VARCHAR(30)
                   constraints:
@@ -74,13 +79,13 @@ databaseChangeLog:
                   name: end_time
                   type: TIMESTAMP WITHOUT TIMEZONE
               - column:
-                  name: created_utc
+                  name: created_at
                   type: TIMESTAMP WITHOUT TIMEZONE
                   defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
               - column:
-                  name: updated_utc
+                  name: updated_at
                   type: TIMESTAMP WITHOUT TIMEZONE
                   defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
