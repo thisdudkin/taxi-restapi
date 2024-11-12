@@ -27,7 +27,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -65,17 +64,17 @@ public class Ride implements BaseEntity<Long> {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "county", column = @Column(name = "from_county")),
-            @AttributeOverride(name = "city", column = @Column(name = "from_city")),
-            @AttributeOverride(name = "street", column = @Column(name = "from_street"))
+        @AttributeOverride(name = "county", column = @Column(name = "from_county")),
+        @AttributeOverride(name = "city", column = @Column(name = "from_city")),
+        @AttributeOverride(name = "street", column = @Column(name = "from_street"))
     })
     private Location from;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "county", column = @Column(name = "to_county")),
-            @AttributeOverride(name = "city", column = @Column(name = "to_city")),
-            @AttributeOverride(name = "street", column = @Column(name = "to_street"))
+        @AttributeOverride(name = "county", column = @Column(name = "to_county")),
+        @AttributeOverride(name = "city", column = @Column(name = "to_city")),
+        @AttributeOverride(name = "street", column = @Column(name = "to_street"))
     })
     private Location to;
 
@@ -94,11 +93,11 @@ public class Ride implements BaseEntity<Long> {
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at")
-    private Instant updatedAt;
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     @Override
     public final boolean equals(Object o) {
