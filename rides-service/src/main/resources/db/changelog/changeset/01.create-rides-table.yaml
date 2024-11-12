@@ -1,0 +1,87 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-rides
+      author: Alexander Dudkin
+      changes:
+        - createTable:
+            tableName: rides
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: passenger
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: driver
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: car
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: from_county
+                  type: VARCHAR(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: from_city
+                  type: VARCHAR(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: from_street
+                  type: VARCHAR(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: to_county
+                  type: VARCHAR(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: to_city
+                  type: VARCHAR(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: to_street
+                  type: VARCHAR(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: payment_method
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_time
+                  type: TIMESTAMP WITHOUT TIMEZONE
+              - column:
+                  name: end_time
+                  type: TIMESTAMP WITHOUT TIMEZONE
+              - column:
+                  name: created_utc
+                  type: TIMESTAMP WITHOUT TIMEZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_utc
+                  type: TIMESTAMP WITHOUT TIMEZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false

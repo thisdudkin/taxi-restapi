@@ -1,8 +1,8 @@
 package by.dudkin.driver.rest.api;
 
+import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.rest.dto.request.CarRequest;
 import by.dudkin.driver.rest.dto.response.CarResponse;
-import by.dudkin.driver.rest.dto.response.PaginatedResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

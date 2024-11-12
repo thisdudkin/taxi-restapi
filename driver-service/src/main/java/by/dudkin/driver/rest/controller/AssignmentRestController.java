@@ -1,9 +1,9 @@
 package by.dudkin.driver.rest.controller;
 
+import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.rest.api.AssignmentApi;
 import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
-import by.dudkin.driver.rest.dto.response.PaginatedResponse;
 import by.dudkin.driver.util.AssignmentSpecification;
 import by.dudkin.driver.service.api.AssignmentService;
 import lombok.RequiredArgsConstructor;

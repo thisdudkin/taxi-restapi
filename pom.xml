@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
+        <version>3.3.5</version>
     </parent>
 
     <groupId>by.dudkin</groupId>
@@ -29,7 +29,9 @@
         <!-- Third-party libraries -->
         <lombok.version>1.18.34</lombok.version>
         <spring-cloud.version>2023.0.3</spring-cloud.version>
+        <spring-boot.version>3.3.5</spring-boot.version>
         <mapstruct.version>1.6.0</mapstruct.version>
+        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
 
         <!-- Maven plugins -->
         <java.version>21</java.version>

@@ -7,7 +7,7 @@ import by.dudkin.driver.repository.DriverRepository;
 import by.dudkin.driver.rest.advice.DriverNotFoundException;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
-import by.dudkin.driver.rest.dto.response.PaginatedResponse;
+import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.service.api.DriverService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

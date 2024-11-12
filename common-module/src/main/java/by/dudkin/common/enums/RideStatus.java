@@ -3,7 +3,8 @@ package by.dudkin.common.enums;
 /**
  * @author Alexander Dudkin
  */
-public enum PaymentMethod {
-    CREDIT_CARD,
-    CASH
+public enum RideStatus {
+    ACTIVE,
+    DONE,
+    CANCEL
 }
