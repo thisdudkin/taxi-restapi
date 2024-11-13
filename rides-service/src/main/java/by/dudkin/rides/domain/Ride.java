@@ -81,7 +81,7 @@ public class Ride implements BaseEntity<Long> {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentMethod paymentMethod;
 
