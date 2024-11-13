@@ -1,6 +1,7 @@
 package by.dudkin.driver.rest.controller;
 
 import by.dudkin.common.util.PaginatedResponse;
+import by.dudkin.driver.rest.dto.request.CarRequest;
 import by.dudkin.driver.rest.dto.response.CarResponse;
 import by.dudkin.driver.util.TestDataGenerator;
 import org.junit.jupiter.api.Test;
@@ -9,14 +10,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,7 +43,6 @@ class CarRestControllerTests {
 
     private static final String CARS_URI = "/cars";
     private static final String COLOR_BLUE = "Blue";
-    private static final String COLOR_RED = "Red";
 
     @Test
     @SuppressWarnings("unchecked")
@@ -52,7 +57,7 @@ class CarRestControllerTests {
     }
 
     @Test
-    void shouldFindCarWhenValidCarID() {
+    void shouldFindCarWhenValidId() {
         // Arrange
         var URI = "%s/%d".formatted(CARS_URI, 100L);
 
@@ -63,6 +68,22 @@ class CarRestControllerTests {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().color()).isEqualTo(COLOR_BLUE);
+    }
+
+    @Test
+    void shouldNotFindCarWhenInvalidId() {
+        // Arrange
+        var URI = "%s/%d".formatted(CARS_URI, 999L);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        // Act
+        ResponseEntity<ProblemDetail> response = restTemplate.exchange(URI, HttpMethod.GET, new HttpEntity<>(headers), ProblemDetail.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody()).isNotNull();
     }
 
     @Test
@@ -78,6 +99,22 @@ class CarRestControllerTests {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().color()).isNotEmpty();
+    }
+
+    @Test
+    void shouldNotCreateCarWhenValidationFails() {
+        // Arrange
+        var invalid = new CarRequest("", "", null, 0, "");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        // Act
+        ResponseEntity<ProblemDetail> response = restTemplate.exchange(CARS_URI, HttpMethod.POST, new HttpEntity<>(invalid, headers), ProblemDetail.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).isNotNull();
     }
 
     @Test

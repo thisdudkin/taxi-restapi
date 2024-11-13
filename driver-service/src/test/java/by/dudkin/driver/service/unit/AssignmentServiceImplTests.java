@@ -1,13 +1,12 @@
 package by.dudkin.driver.service.unit;
 
-import by.dudkin.common.enums.AssignmentStatus;
 import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.driver.domain.Car;
 import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.domain.DriverCarAssignment;
 import by.dudkin.driver.mapper.AssignmentMapper;
 import by.dudkin.driver.repository.AssignmentRepository;
-import by.dudkin.driver.rest.advice.AssignmentNotFoundException;
+import by.dudkin.driver.rest.advice.custom.AssignmentNotFoundException;
 import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
 import by.dudkin.driver.service.AssignmentServiceImpl;
@@ -30,7 +29,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -98,7 +96,7 @@ class AssignmentServiceImplTests {
         long assignmentId = 1L;
         when(assignmentRepository.findWithDriverAndCarById(assignmentId)).thenReturn(Optional.ofNullable(assignment));
         when(assignmentMapper.toResponse(assignment)).thenReturn(assignmentResponse);
-        
+
         // Act
         var response = assignmentService.findById(assignmentId);
 
