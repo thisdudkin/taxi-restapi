@@ -91,6 +91,9 @@ public class Ride implements BaseEntity<Long> {
     @Column(name = "end_time")
     private LocalDateTime endTime;
 
+    @Column(name = "rating")
+    private Integer rating;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

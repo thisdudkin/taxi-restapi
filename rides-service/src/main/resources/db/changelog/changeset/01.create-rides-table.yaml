@@ -79,6 +79,11 @@ databaseChangeLog:
                   name: end_time
                   type: TIMESTAMP WITHOUT TIMEZONE
               - column:
+                  name: rating
+                  type: INTEGER
+                  constraints:
+                    nullable: true
+              - column:
                   name: created_at
                   type: TIMESTAMP WITHOUT TIMEZONE
                   defaultValueComputed: CURRENT_TIMESTAMP
