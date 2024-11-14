@@ -1,4 +1,4 @@
-package by.dudkin.driver.rest.advice;
+package by.dudkin.driver.rest.advice.custom;
 
 /**
  * @author Alexander Dudkin

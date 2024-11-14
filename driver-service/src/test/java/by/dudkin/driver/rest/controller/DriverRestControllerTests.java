@@ -1,6 +1,8 @@
 package by.dudkin.driver.rest.controller;
 
 import by.dudkin.common.util.PaginatedResponse;
+import by.dudkin.driver.rest.dto.request.CarRequest;
+import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
 import by.dudkin.driver.util.TestDataGenerator;
 import org.junit.jupiter.api.Test;
@@ -9,14 +11,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,7 +58,7 @@ class DriverRestControllerTests {
     }
 
     @Test
-    void shouldFindDriverWhenValidDriverID() {
+    void shouldFindDriverWhenValidID() {
         // Arrange
         var URI = "%s/%d".formatted(DRIVERS_URI, 103L);
 
@@ -62,6 +69,22 @@ class DriverRestControllerTests {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().info().getFirstName()).isEqualTo(BOB_FIRSTNAME);
+    }
+
+    @Test
+    void shouldNotFindDriverWhenInvalidId() {
+        // Arrange
+        var URI = "%s/%d".formatted(DRIVERS_URI, 999L);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        // Act
+        ResponseEntity<ProblemDetail> response = restTemplate.exchange(URI, HttpMethod.GET, new HttpEntity<>(headers), ProblemDetail.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody()).isNotNull();
     }
 
     @Test
@@ -77,6 +100,22 @@ class DriverRestControllerTests {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().info().getPhone()).isNotEmpty();
+    }
+
+    @Test
+    void shouldNotCreateDriverWhenValidationFails() {
+        // Arrange
+        var invalid = new DriverRequest("", "", "", TestDataGenerator.randomInfo(), null, 1);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        // Act
+        ResponseEntity<ProblemDetail> response = restTemplate.exchange(DRIVERS_URI, HttpMethod.POST, new HttpEntity<>(invalid, headers), ProblemDetail.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).isNotNull();
     }
 
     @Test

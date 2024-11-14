@@ -9,7 +9,7 @@ import java.time.Instant;
  * @author Alexander Dudkin
  */
 public record AssignmentResponse(
-        long id,
+        Long id,
         DriverResponse driver,
         CarResponse car,
         Instant assignmentDate,

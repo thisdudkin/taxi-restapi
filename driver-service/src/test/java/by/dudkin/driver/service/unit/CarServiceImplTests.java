@@ -4,7 +4,7 @@ import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.driver.domain.Car;
 import by.dudkin.driver.mapper.CarMapper;
 import by.dudkin.driver.repository.CarRepository;
-import by.dudkin.driver.rest.advice.CarNotFoundException;
+import by.dudkin.driver.rest.advice.custom.CarNotFoundException;
 import by.dudkin.driver.rest.dto.request.CarRequest;
 import by.dudkin.driver.rest.dto.response.CarResponse;
 import by.dudkin.driver.service.CarServiceImpl;

@@ -8,7 +8,7 @@ import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.domain.DriverCarAssignment;
 import by.dudkin.driver.mapper.AssignmentMapper;
 import by.dudkin.driver.repository.AssignmentRepository;
-import by.dudkin.driver.rest.advice.AssignmentNotFoundException;
+import by.dudkin.driver.rest.advice.custom.AssignmentNotFoundException;
 import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
 import by.dudkin.driver.service.api.AssignmentService;

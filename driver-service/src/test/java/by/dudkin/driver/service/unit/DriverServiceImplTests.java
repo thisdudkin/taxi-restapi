@@ -5,7 +5,7 @@ import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.mapper.DriverMapper;
 import by.dudkin.driver.repository.DriverRepository;
-import by.dudkin.driver.rest.advice.DriverNotFoundException;
+import by.dudkin.driver.rest.advice.custom.DriverNotFoundException;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
 import by.dudkin.driver.service.DriverServiceImpl;

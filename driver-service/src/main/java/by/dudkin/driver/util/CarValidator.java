@@ -2,7 +2,7 @@ package by.dudkin.driver.util;
 
 import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.driver.repository.CarRepository;
-import by.dudkin.driver.rest.advice.DuplicateLicensePlateException;
+import by.dudkin.driver.rest.advice.custom.DuplicateLicensePlateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

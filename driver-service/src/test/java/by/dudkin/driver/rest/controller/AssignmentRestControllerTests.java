@@ -2,6 +2,7 @@ package by.dudkin.driver.rest.controller;
 
 import by.dudkin.common.enums.AssignmentStatus;
 import by.dudkin.common.util.PaginatedResponse;
+import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
 import by.dudkin.driver.rest.dto.response.CarResponse;
 import by.dudkin.driver.util.TestDataGenerator;
@@ -11,14 +12,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,7 +58,7 @@ class AssignmentRestControllerTests {
     }
 
     @Test
-    void shouldFindAssignmentWhenValidAssignmentID() {
+    void shouldFindAssignmentWhenValidId() {
         // Arrange
         var URI = "%s/%d".formatted(ASSIGNMENTS_URI, 100L);
 
@@ -64,6 +70,22 @@ class AssignmentRestControllerTests {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().car().id()).isEqualTo(100L);
         assertThat(response.getBody().driver().id()).isEqualTo(100L);
+    }
+
+    @Test
+    void shouldNotFindAssignmentWhenInvalidId() {
+        // Arrange
+        var URI = "%s/%d".formatted(ASSIGNMENTS_URI, 999L);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        // Act
+        ResponseEntity<?> response = restTemplate.exchange(URI, HttpMethod.GET, new HttpEntity<>(headers), ProblemDetail.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody()).isNotNull();
     }
 
     @Test
@@ -80,6 +102,23 @@ class AssignmentRestControllerTests {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().driver().id()).isEqualTo(100L);
         assertThat(response.getBody().car().id()).isEqualTo(105L);
+    }
+
+    @Test
+    void shouldNotCreateAssignmentWhenValidationFails() {
+        // Arrange
+        var invalid = new AssignmentRequest(100L, 105L, null);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        // Act
+        ResponseEntity<ProblemDetail> response = restTemplate.exchange(ASSIGNMENTS_URI, HttpMethod.POST, new HttpEntity<>(invalid, headers), ProblemDetail.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).isNotNull();
     }
 
     @Test

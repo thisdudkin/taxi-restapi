@@ -9,7 +9,9 @@ import java.time.Instant;
  * @author Alexander Dudkin
  */
 public record AssignmentRequest(
-        long driverId,
-        long carId,
+        Long driverId,
+        Long carId,
+        @NotNull
         Instant assignmentDate
-) implements Serializable {}
+) implements Serializable {
+}
