@@ -66,7 +66,9 @@ public class Ride implements BaseEntity<Long> {
     @AttributeOverrides({
         @AttributeOverride(name = "county", column = @Column(name = "from_county")),
         @AttributeOverride(name = "city", column = @Column(name = "from_city")),
-        @AttributeOverride(name = "street", column = @Column(name = "from_street"))
+        @AttributeOverride(name = "street", column = @Column(name = "from_street")),
+        @AttributeOverride(name = "lat", column = @Column(name = "from_lat")),
+        @AttributeOverride(name = "lng", column = @Column(name = "from_lng"))
     })
     private Location from;
 
@@ -74,7 +76,9 @@ public class Ride implements BaseEntity<Long> {
     @AttributeOverrides({
         @AttributeOverride(name = "county", column = @Column(name = "to_county")),
         @AttributeOverride(name = "city", column = @Column(name = "to_city")),
-        @AttributeOverride(name = "street", column = @Column(name = "to_street"))
+        @AttributeOverride(name = "street", column = @Column(name = "to_street")),
+        @AttributeOverride(name = "lat", column = @Column(name = "to_lat")),
+        @AttributeOverride(name = "lng", column = @Column(name = "to_lng"))
     })
     private Location to;
 

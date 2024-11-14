@@ -62,7 +62,6 @@ class RideMapperTests {
             DEFAULT_CAR_ID,
             DEFAULT_LOCATION_FROM,
             DEFAULT_LOCATION_TO,
-            DEFAULT_PRICE,
             DEFAULT_PAYMENT_METHOD);
     }
 
@@ -98,7 +97,6 @@ class RideMapperTests {
         assertEquals(request.carId(), ride.getCarId());
         assertEquals(request.from(), ride.getFrom());
         assertEquals(request.to(), ride.getTo());
-        assertEquals(request.price(), ride.getPrice());
         assertEquals(request.paymentMethod(), ride.getPaymentMethod());
     }
 

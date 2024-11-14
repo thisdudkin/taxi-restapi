@@ -21,9 +21,10 @@ import lombok.Setter;
 public class Location {
 
     private String county;
-
     private String city;
-
     private String street;
+
+    private Double lat;
+    private Double lng;
 
 }
