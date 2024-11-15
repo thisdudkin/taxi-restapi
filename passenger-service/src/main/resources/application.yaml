@@ -1,0 +1,30 @@
+server:
+  port: 9090
+  servlet:
+    context-path: /api/
+
+spring:
+  profiles:
+    active: postgres
+
+  liquibase:
+    enabled: true
+  messages:
+    basename: messages
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    liquibase: INFO
+    org:
+      springframework: INFO
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false

@@ -1,220 +1,148 @@
 package by.dudkin.passenger.rest.controller;
 
-import by.dudkin.passenger.entity.Passenger;
-import by.dudkin.passenger.mapper.PassengerMapper;
-import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
+import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
-import by.dudkin.passenger.service.PassengerService;
-import by.dudkin.passenger.util.ApplicationTestConfig;
-import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.passenger.util.TestDataGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.jdbc.Sql;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.Objects;
 
-import static org.mockito.BDDMockito.doThrow;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Alexander Dudkin
  */
-@SpringBootTest
-@ContextConfiguration(classes = ApplicationTestConfig.class)
-@WebAppConfiguration
+@Testcontainers
+@Sql("classpath:data.sql")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PassengerRestControllerTests {
 
-    @Autowired
-    private PassengerRestController passengerRestController;
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.0");
 
     @Autowired
-    private PassengerMapper passengerMapper;
+    TestRestTemplate restTemplate;
 
-    @MockBean
-    private PassengerService passengerService;
+    private static final String PASSENGERS_URI = "/passengers";
 
-    private MockMvc mockMvc;
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldFindAllPassengers() {
+        // Act
+        PaginatedResponse<PassengerResponse> response = restTemplate.getForObject(PASSENGERS_URI, PaginatedResponse.class);
 
-    private List<Passenger> passengers;
-
-    private static final String URI_PASSENGERS = "/passengers";
-    private static final String URI_ID_ONE = "/passengers/1";
-    private static final String URI_UNDEFINED_ID = "/passengers/999";
-
-    @BeforeEach
-    void initPassengers() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(passengerRestController)
-                .build();
-        passengers = new ArrayList<>();
-
-
-        Passenger passenger = TestDataGenerator.createRandomPassengerWithId(1L);
-        passengers.add(passenger);
-
-        passenger = TestDataGenerator.createRandomPassengerWithId(2L);
-        passengers.add(passenger);
-
-        passenger = TestDataGenerator.createRandomPassengerWithId(3L);
-        passengers.add(passenger);
+        // Assert
+        assertNotNull(response);
+        assertThat(response.getContent().size()).isGreaterThan(5);
     }
 
     @Test
-    void testGetPassengerSuccess() throws Exception {
-        given(this.passengerService.findById(1)).willReturn(passengerMapper.toResponse(passengers.getFirst()));
+    void shouldFindPassengerWithValidId() {
+        // Arrange
+        var URI = "%s/%d".formatted(PASSENGERS_URI, 3L);
 
-        this.mockMvc.perform(get(URI_ID_ONE)
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.username").value(passengers.getFirst().getUsername()));
+        // Act
+        ResponseEntity<PassengerResponse> response = restTemplate.exchange(URI, HttpMethod.GET, null, PassengerResponse.class);
+
+        // Assert
+        assertNotNull(response);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(Objects.requireNonNull(response.getBody()).info()).isNotNull();
     }
 
     @Test
-    void testGetPassengerNotFound() throws Exception {
-        given(this.passengerService.findById(999)).willThrow(PassengerNotFoundException.class);
+    void shouldNotFindPassengerWithInvalidId() {
+        // Arrange
+        var URI = "%s/%d".formatted(PASSENGERS_URI, 999L);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-        this.mockMvc.perform(get(URI_UNDEFINED_ID)
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isNotFound());
+        // Act
+        ResponseEntity<ProblemDetail> response = restTemplate.exchange(URI, HttpMethod.GET, new HttpEntity<>(headers), ProblemDetail.class);
+
+        // Assert
+        assertNotNull(response);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody()).isNotNull();
     }
 
     @Test
-    void testGetAllPassengersSuccess() throws Exception {
-        given(this.passengerService.findAll()).willReturn(passengerMapper.toPassengerDtos(passengers));
+    void shouldCreatePassenger() {
+        // Arrange
+        PassengerRequest request = TestDataGenerator.randomRequest();
 
-        this.mockMvc.perform(get(URI_PASSENGERS)
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.[0].id").value(1))
-                .andExpect(jsonPath("$.[0].username").value(passengers.getFirst().getUsername()))
-                .andExpect(jsonPath("$.[1].id").value(2))
-                .andExpect(jsonPath("$.[1].username").value(passengers.get(1).getUsername()));
+        // Act
+        ResponseEntity<PassengerResponse> response = restTemplate.exchange(PASSENGERS_URI, HttpMethod.POST, new HttpEntity<>(request), PassengerResponse.class);
+
+        // Assert
+        assertNotNull(response);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(Objects.requireNonNull(response.getBody()).info()).isEqualTo(request.info());
     }
 
     @Test
-    void testGetAllPassengersWithNoPassengersShouldReturnOk() throws Exception {
-        passengers.clear();
-        given(this.passengerService.findAll()).willReturn(passengerMapper.toPassengerDtos(passengers));
+    void shouldNotCreatePassengerWhenValidationFails() {
+        // Arrange
+        PassengerRequest request = TestDataGenerator.randomRequestWithInfo(null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-        this.mockMvc.perform(get(URI_PASSENGERS)
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk());
+        // Act
+        ResponseEntity<ProblemDetail> response = restTemplate.exchange(PASSENGERS_URI, HttpMethod.POST, new HttpEntity<>(request, headers), ProblemDetail.class);
+
+        // Assert
+        assertNotNull(response);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).isNotNull();
     }
 
     @Test
-    void testCreatePassengerSuccess() throws Exception {
-        PassengerRequest newPassenger = TestDataGenerator.createRandomRequest();
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String newPassengerAsJSON = mapper.writeValueAsString(newPassenger);
+    void shouldUpdatePassenger() {
+        // Arrange
+        PassengerRequest request = TestDataGenerator.randomRequest();
+        String URI = "%s/%d".formatted(PASSENGERS_URI, 6L);
 
-        this.mockMvc.perform(post(URI_PASSENGERS)
-                        .content(newPassengerAsJSON)
-                        .accept(MediaType.APPLICATION_JSON_VALUE)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isCreated());
+        // Act
+        ResponseEntity<PassengerResponse> response = restTemplate.exchange(URI, HttpMethod.PUT, new HttpEntity<>(request), PassengerResponse.class);
+
+        // Assert
+        assertNotNull(response);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(Objects.requireNonNull(response.getBody()).info()).isEqualTo(request.info());
     }
 
     @Test
-    void testCreatePassengerError() throws Exception {
-        Passenger newPassenger = passengers.getFirst();
-        newPassenger.setId(null);
-        newPassenger.setUsername(null);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String newPassengerAsJSON = mapper.writeValueAsString(passengerMapper.toResponse(newPassenger));
+    void shouldDeletePassenger() {
+        // Arrange
+        var URI = "%s/%d".formatted(PASSENGERS_URI, 6L);
 
-        this.mockMvc.perform(post(URI_PASSENGERS)
-                        .content(newPassengerAsJSON)
-                        .accept(MediaType.APPLICATION_JSON_VALUE)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isBadRequest());
-    }
+        // Act
+        ResponseEntity<Void> response = restTemplate.exchange(URI, HttpMethod.DELETE, null, Void.class);
 
-    @Test
-    void testUpdatePassengerSuccess() throws Exception {
-        PassengerResponse firstDto = passengerMapper.toResponse(passengers.getFirst());
-        PassengerRequest updated = new PassengerRequest(
-                TestDataGenerator.randomUsername(),
-                firstDto.email(),
-                TestDataGenerator.randomPassword(),
-                firstDto.info(),
-                TestDataGenerator.randomBalance(),
-                firstDto.paymentMethod()
-        );
-        given(this.passengerService.update(1, updated)).willReturn(firstDto);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String newPassengerAsJSON = mapper.writeValueAsString(updated);
-
-        this.mockMvc.perform(put(URI_ID_ONE)
-                        .content(newPassengerAsJSON)
-                        .accept(MediaType.APPLICATION_JSON_VALUE)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void testUpdatePassengerError() throws Exception {
-        Passenger newPassenger = passengers.getFirst();
-        newPassenger.setUsername(null);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String newPassengerAsJSON = mapper.writeValueAsString(passengerMapper.toResponse(newPassenger));
-
-        this.mockMvc.perform(put(URI_ID_ONE)
-                        .content(newPassengerAsJSON)
-                        .accept(MediaType.APPLICATION_JSON_VALUE)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void testDeletePassengerSuccess() throws Exception {
-        Passenger newPassenger = passengers.getFirst();
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String newPassengerAsJSON = mapper.writeValueAsString(passengerMapper.toResponse(newPassenger));
-        given(this.passengerService.findById(1)).willReturn(passengerMapper.toResponse(passengers.getFirst()));
-
-        this.mockMvc.perform(delete(URI_ID_ONE)
-                        .contentType(newPassengerAsJSON)
-                        .accept(MediaType.APPLICATION_JSON_VALUE)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isNoContent());
-    }
-
-    @Test
-    void testDeletePassengerError() throws Exception {
-        doThrow(new PassengerNotFoundException(ErrorMessages.PASSENGER_NOT_FOUND))
-                .when(passengerService).delete(999L);
-
-        this.mockMvc.perform(delete(URI_UNDEFINED_ID)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .accept(MediaType.APPLICATION_JSON_VALUE)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isNotFound());
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(response.getBody()).isNull();
     }
 
 }

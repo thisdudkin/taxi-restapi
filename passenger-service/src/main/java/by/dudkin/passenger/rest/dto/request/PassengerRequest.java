@@ -17,17 +17,6 @@ import java.math.BigDecimal;
  */
 public record PassengerRequest(
 
-        @NotBlank
-        @Pattern(regexp = USERNAME_PATTERN)
-        String username,
-
-        @Email
-        @NotBlank
-        String email,
-
-        @Size(min = 8)
-        String password,
-
         @NotNull
         PersonalInfo info,
 
@@ -37,6 +26,4 @@ public record PassengerRequest(
         @NotNull
         PaymentMethod paymentMethod
 
-) implements Serializable {
-        public static final String USERNAME_PATTERN = "^[a-zA-Z]*$";
-}
+) implements Serializable { }

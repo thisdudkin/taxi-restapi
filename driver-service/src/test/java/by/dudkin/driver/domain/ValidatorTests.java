@@ -28,7 +28,6 @@ class ValidatorTests {
 
     @Test
     void shouldNotValidateWhenModelEmpty() {
-
         LocaleContextHolder.setLocale(Locale.ENGLISH);
         var request = new CarRequest(
                 "License",

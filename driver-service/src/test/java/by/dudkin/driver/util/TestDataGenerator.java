@@ -18,6 +18,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -92,147 +93,136 @@ public class TestDataGenerator {
 
     public static PersonalInfo randomInfo() {
         return PersonalInfo.builder()
-                .firstName(randomFirstName())
-                .lastName(randomLastName())
-                .phone(randomPhone())
-                .dateOfBirth(randomDateOfBirth())
-                .build();
+            .firstName(randomFirstName())
+            .lastName(randomLastName())
+            .phone(randomPhone())
+            .dateOfBirth(randomDateOfBirth())
+            .build();
     }
 
     public static PersonalInfo randomInfoWithFirstname(String firstname) {
         return PersonalInfo.builder()
-                .firstName(firstname)
-                .lastName(randomLastName())
-                .phone(randomPhone())
-                .dateOfBirth(randomDateOfBirth())
-                .build();
+            .firstName(firstname)
+            .lastName(randomLastName())
+            .phone(randomPhone())
+            .dateOfBirth(randomDateOfBirth())
+            .build();
     }
 
     public static Driver randomDriver() {
         return Driver.builder()
-                .username(randomUsername())
-                .email(randomEmail())
-                .password(randomPassword())
-                .info(randomInfo())
-                .balance(randomBalance())
-                .experience(randomExperience())
-                .build();
+            .info(randomInfo())
+            .balance(randomBalance())
+            .experience(randomExperience())
+            .build();
     }
 
     public static DriverRequest randomDriverRequest() {
         return new DriverRequest(
-                randomUsername(),
-                randomEmail(),
-                randomPassword(),
-                randomInfo(),
-                randomBalance(),
-                randomExperience()
+            randomInfo(),
+            randomBalance(),
+            randomExperience()
         );
     }
 
     public static DriverRequest randomDriverRequestWithFirstname(String firstname) {
         return new DriverRequest(
-                randomUsername(),
-                randomEmail(),
-                randomPassword(),
-                randomInfoWithFirstname(firstname),
-                randomBalance(),
-                randomExperience()
+            randomInfoWithFirstname(firstname),
+            randomBalance(),
+            randomExperience()
         );
     }
 
 
     public static DriverResponse randomDriverResponse() {
         return new DriverResponse(
-                randomId(),
-                randomUsername(),
-                randomEmail(),
-                randomInfo(),
-                randomBalance(),
-                DriverStatus.READY,
-                randomExperience(),
-                randomRating(),
-                Instant.now(),
-                Instant.now()
+            randomId(),
+            randomInfo(),
+            randomBalance(),
+            DriverStatus.READY,
+            randomExperience(),
+            randomRating(),
+            LocalDateTime.now(),
+            LocalDateTime.now()
         );
     }
 
     public static Car randomCar() {
         return Car.builder()
-                .licensePlate(randomLicensePlate())
-                .model(randomModel())
-                .type(CarType.PREMIUM)
-                .year(randomYear())
-                .color(randomColor())
-                .build();
+            .licensePlate(randomLicensePlate())
+            .model(randomModel())
+            .type(CarType.PREMIUM)
+            .year(randomYear())
+            .color(randomColor())
+            .build();
     }
 
     public static CarRequest randomCarRequest() {
         return new CarRequest(
-                randomLicensePlate(),
-                randomModel(),
-                CarType.PREMIUM,
-                randomYear(),
-                randomColor()
+            randomLicensePlate(),
+            randomModel(),
+            CarType.PREMIUM,
+            randomYear(),
+            randomColor()
         );
     }
 
     public static CarRequest randomCarRequestWithColor(String color) {
         return new CarRequest(
-                randomLicensePlate(),
-                randomModel(),
-                CarType.PREMIUM,
-                randomYear(),
-                color
+            randomLicensePlate(),
+            randomModel(),
+            CarType.PREMIUM,
+            randomYear(),
+            color
         );
     }
 
     public static CarResponse randomCarResponse() {
         return new CarResponse(
-                randomId(),
-                randomLicensePlate(),
-                randomModel(),
-                CarType.PREMIUM,
-                randomYear(),
-                randomColor(),
-                Instant.now(),
-                Instant.now()
+            randomId(),
+            randomLicensePlate(),
+            randomModel(),
+            CarType.PREMIUM,
+            randomYear(),
+            randomColor(),
+            Instant.now(),
+            Instant.now()
         );
     }
 
     public static DriverCarAssignment randomAssignment(Driver driver, Car car) {
         return DriverCarAssignment.builder()
-                .driver(driver)
-                .car(car)
-                .assignmentDate(Instant.now())
-                .build();
+            .driver(driver)
+            .car(car)
+            .assignmentDate(Instant.now())
+            .build();
     }
 
     public static AssignmentRequest randomAssignmentRequest() {
         return new AssignmentRequest(
-                randomId(),
-                randomId(),
-                Instant.now()
+            randomId(),
+            randomId(),
+            Instant.now()
         );
     }
 
     public static AssignmentRequest randomAssignmentRequestWithIds(long driverId, long carId) {
         return new AssignmentRequest(
-                driverId,
-                carId,
-                Instant.now()
+            driverId,
+            carId,
+            Instant.now()
         );
     }
 
     public static AssignmentResponse randomAssignmentResponse() {
         return new AssignmentResponse(
-                randomId(),
-                randomDriverResponse(),
-                randomCarResponse(),
-                Instant.now(),
-                AssignmentStatus.ACTIVE,
-                Instant.now(),
-                Instant.now()
+            randomId(),
+            randomDriverResponse(),
+            randomCarResponse(),
+            Instant.now(),
+            AssignmentStatus.ACTIVE,
+            Instant.now(),
+            Instant.now()
         );
     }
 

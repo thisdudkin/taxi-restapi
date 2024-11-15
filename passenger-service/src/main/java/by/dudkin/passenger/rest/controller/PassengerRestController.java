@@ -1,10 +1,12 @@
 package by.dudkin.passenger.rest.controller;
 
+import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.passenger.rest.api.PassengerApi;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import by.dudkin.passenger.service.PassengerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,9 +28,8 @@ public class PassengerRestController implements PassengerApi {
     private final PassengerService passengerService;
 
     @Override
-    public ResponseEntity<List<PassengerResponse>> getAll() {
-        List<PassengerResponse> passengers = new ArrayList<>(passengerService.findAll());
-        return new ResponseEntity<>(passengers, OK);
+    public ResponseEntity<PaginatedResponse<PassengerResponse>> getAll(Pageable pageable) {
+        return new ResponseEntity<>(passengerService.findAll(pageable), OK);
     }
 
     @Override

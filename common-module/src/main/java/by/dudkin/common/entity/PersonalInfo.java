@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Builder @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class PersonalInfo {
 
     @Column(name = "firstname", nullable = false)

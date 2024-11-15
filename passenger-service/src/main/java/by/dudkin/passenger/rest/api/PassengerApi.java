@@ -1,5 +1,6 @@
 package by.dudkin.passenger.rest.api;
 
+import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -218,7 +220,7 @@ public interface PassengerApi {
         value = {"/passengers"},
         produces = {"application/json"}
     )
-    default ResponseEntity<List<PassengerResponse>> getAll() {
+    default ResponseEntity<PaginatedResponse<PassengerResponse>> getAll(Pageable pageable) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 

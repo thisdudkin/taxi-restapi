@@ -1,5 +1,7 @@
-package by.dudkin.passenger.entity;
+package by.dudkin.passenger.domain;
 
+import by.dudkin.passenger.rest.dto.request.PassengerRequest;
+import by.dudkin.passenger.util.TestDataGenerator;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
@@ -25,22 +27,18 @@ class ValidatorTests {
     }
 
     @Test
-    void shouldNotValidateWhenUsernameEmpty() {
+    void shouldNotValidateWhenModelEmpty() {
 
         LocaleContextHolder.setLocale(Locale.ENGLISH);
-        Passenger passenger = Passenger.builder()
-            .username("")
-            .email("smth@gmail.com")
-            .password("password")
-            .build();
+        var request = TestDataGenerator.randomRequestWithInfo(null);
 
         Validator validator = createValidator();
-        Set<ConstraintViolation<Passenger>> constraintViolations = validator.validate(passenger);
+        Set<ConstraintViolation<PassengerRequest>> constraintViolations = validator.validate(request);
 
         assertThat(constraintViolations.size()).isEqualTo(1);
-        ConstraintViolation<Passenger> violation = constraintViolations.iterator().next();
-        assertThat(violation.getPropertyPath().toString()).isEqualTo("username");
-        assertThat(violation.getMessage()).isEqualTo("must not be blank");
+        ConstraintViolation<PassengerRequest> violation = constraintViolations.iterator().next();
+        assertThat(violation.getPropertyPath().toString()).isEqualTo("info");
+        assertThat(violation.getMessage()).isEqualTo("must not be null");
     }
 
 }
