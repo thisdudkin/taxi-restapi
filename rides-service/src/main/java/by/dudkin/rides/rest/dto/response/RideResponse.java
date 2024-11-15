@@ -22,7 +22,7 @@ public record RideResponse(Long id,
                            PaymentMethod paymentMethod,
                            LocalDateTime startTime,
                            LocalDateTime endTime,
-                           Double rating,
+                           Integer rating,
                            LocalDateTime createdAt,
                            LocalDateTime updatedAt
 ) implements Serializable { }
