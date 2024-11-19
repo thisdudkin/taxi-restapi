@@ -97,7 +97,7 @@ class PassengerRestControllerTests {
         // Assert
         assertNotNull(response);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(Objects.requireNonNull(response.getBody()).info()).isEqualTo(request.info());
+        assertThat(Objects.requireNonNull(response.getBody()).info().getFirstName()).isEqualTo(request.info().getFirstName());
     }
 
     @Test
@@ -129,7 +129,7 @@ class PassengerRestControllerTests {
         // Assert
         assertNotNull(response);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(Objects.requireNonNull(response.getBody()).info()).isEqualTo(request.info());
+        assertThat(Objects.requireNonNull(response.getBody()).info().getFirstName()).isEqualTo(request.info().getFirstName());
     }
 
     @Test

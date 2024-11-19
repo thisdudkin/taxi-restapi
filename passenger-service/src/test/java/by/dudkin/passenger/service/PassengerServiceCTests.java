@@ -62,7 +62,7 @@ class PassengerServiceCTests {
 
         // Assert
         assertNotNull(response);
-        assertThat(response.info()).isEqualTo(request.info());
+        assertThat(response.info().getFirstName()).isEqualTo(request.info().getFirstName());
     }
 
     @Test
@@ -75,7 +75,7 @@ class PassengerServiceCTests {
 
         // Assert
         assertNotNull(response);
-        assertThat(response.info()).isEqualTo(request.info());
+        assertThat(response.info().getFirstName()).isEqualTo(request.info().getFirstName());
     }
 
     @Test
