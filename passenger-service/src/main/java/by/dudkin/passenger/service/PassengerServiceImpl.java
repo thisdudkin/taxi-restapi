@@ -1,5 +1,6 @@
 package by.dudkin.passenger.service;
 
+import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.passenger.entity.Passenger;
 import by.dudkin.passenger.mapper.PassengerMapper;
 import by.dudkin.passenger.repository.PassengerRepository;
@@ -8,10 +9,13 @@ import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import by.dudkin.common.util.ErrorMessages;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Alexander Dudkin
@@ -32,8 +36,13 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<PassengerResponse> findAll() {
-        return passengerMapper.toPassengerDtos(passengerRepository.findAll());
+    public PaginatedResponse<PassengerResponse> findAll(Pageable pageable) {
+        Page<Passenger> passengerPage = passengerRepository.findAll(pageable);
+        List<PassengerResponse> responseList = passengerPage.getContent().stream()
+            .map(passengerMapper::toResponse)
+            .toList();
+
+        return PaginatedResponse.fromPage(passengerPage, responseList);
     }
 
     @Override
@@ -47,6 +56,7 @@ public class PassengerServiceImpl implements PassengerService {
     public PassengerResponse update(long passengerId, PassengerRequest passengerRequest) {
         Passenger passenger = getOrThrow(passengerId);
         passengerMapper.updatePassenger(passengerRequest, passenger);
+        passengerRepository.save(passenger);
         return passengerMapper.toResponse(passenger);
     }
 
@@ -56,7 +66,7 @@ public class PassengerServiceImpl implements PassengerService {
         passengerRepository.delete(passenger);
     }
 
-    private Passenger getOrThrow(long id) {
+    Passenger getOrThrow(long id) {
         return passengerRepository.findById(id)
                 .orElseThrow(() -> new PassengerNotFoundException(ErrorMessages.PASSENGER_NOT_FOUND));
     }

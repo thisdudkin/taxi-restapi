@@ -5,31 +5,28 @@ import by.dudkin.common.enums.DriverStatus;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * @author Alexander Dudkin
  */
 public record DriverResponse(
 
-        long id,
+    Long id,
 
-        String username,
+    PersonalInfo info,
 
-        String email,
+    BigDecimal balance,
 
-        PersonalInfo info,
+    DriverStatus status,
 
-        BigDecimal balance,
+    Integer experience,
 
-        DriverStatus status,
+    Double rating,
 
-        long experience,
+    LocalDateTime createdAt,
 
-        double rating,
+    LocalDateTime updatedAt
 
-        Instant createdAt,
-
-        Instant updatedAt
-
-) implements Serializable {}
+) implements Serializable {
+}

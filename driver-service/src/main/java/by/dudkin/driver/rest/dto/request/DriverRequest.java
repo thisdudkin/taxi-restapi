@@ -1,12 +1,8 @@
 package by.dudkin.driver.rest.dto.request;
 
 import by.dudkin.common.entity.PersonalInfo;
-import by.dudkin.common.enums.DriverStatus;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,25 +12,14 @@ import java.math.BigDecimal;
  */
 public record DriverRequest(
 
-        @NotBlank
-        @Size(min = 3, max = 128)
-        String username,
+    @NotNull
+    PersonalInfo info,
 
-        @NotBlank
-        @Email
-        String email,
+    @PositiveOrZero
+    BigDecimal balance,
 
-        @NotBlank
-        @Size(min = 8, max = 128)
-        String password,
+    @PositiveOrZero
+    Integer experience
 
-        @NotNull
-        PersonalInfo info,
-
-        @PositiveOrZero
-        BigDecimal balance,
-
-        @PositiveOrZero
-        int experience
-
-) implements Serializable { }
+) implements Serializable {
+}

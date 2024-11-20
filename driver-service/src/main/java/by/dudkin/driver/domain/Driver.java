@@ -22,7 +22,6 @@ import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,7 +34,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -48,11 +47,13 @@ import java.util.Set;
 @NamedEntityGraph(name = "driver-assignments-cars", attributeNodes = {
     @NamedAttributeNode(value = "assignments", subgraph = "assignments-subgraph"),
     @NamedAttributeNode("ratings")
-    },
+},
     subgraphs = @NamedSubgraph(name = "assignments-subgraph", attributeNodes = @NamedAttributeNode("car"))
 )
-@Entity @Builder
-@Getter @Setter
+@Entity
+@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "drivers")
@@ -63,15 +64,6 @@ public class Driver implements BaseEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "username", nullable = false)
-    private String username;
-
-    @Column(name = "email", nullable = false)
-    private String email;
-
-    @Column(name = "password", nullable = false)
-    private String password;
 
     @Embedded
     private PersonalInfo info;
@@ -98,12 +90,12 @@ public class Driver implements BaseEntity<Long> {
     private List<Integer> ratings = new ArrayList<>();
 
     @CreatedDate
-    @Column(name = "created_utc", nullable = false, updatable = false)
-    private Instant createdAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_utc")
-    private Instant updatedAt;
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     @Override
     public final boolean equals(Object o) {

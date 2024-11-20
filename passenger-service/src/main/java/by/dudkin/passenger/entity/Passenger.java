@@ -8,18 +8,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,9 +23,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,31 +42,21 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "passengers")
-@ToString(exclude = "password")
+@ToString(exclude = "ratings")
+@EntityListeners(AuditingEntityListener.class)
 public class Passenger implements BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String username;
-
-    @Size(min = 8)
-    @Column(nullable = false)
-    private String password;
-
-    @Email
-    @Column(nullable = false, unique = true)
-    private String email;
-
     @Embedded
     private PersonalInfo info;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", nullable = false)
-    private PaymentMethod preferredPaymentMethod;
+    private PaymentMethod preferredPaymentMethod = PaymentMethod.CASH;
 
     @Column
     private BigDecimal balance;
@@ -77,21 +67,13 @@ public class Passenger implements BaseEntity<Long> {
     @Column(name = "rating")
     private List<Integer> ratings = new ArrayList<>();
 
-    @Column(name = "created_utc", nullable = false)
-    private Instant createdAt;
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated_utc")
-    private Instant updatedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = Instant.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = Instant.now();
-    }
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     @Override
     public final boolean equals(Object o) {

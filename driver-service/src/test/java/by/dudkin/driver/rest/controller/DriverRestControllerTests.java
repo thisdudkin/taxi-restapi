@@ -105,7 +105,7 @@ class DriverRestControllerTests {
     @Test
     void shouldNotCreateDriverWhenValidationFails() {
         // Arrange
-        var invalid = new DriverRequest("", "", "", TestDataGenerator.randomInfo(), null, 1);
+        var invalid = new DriverRequest(null, null, null);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));

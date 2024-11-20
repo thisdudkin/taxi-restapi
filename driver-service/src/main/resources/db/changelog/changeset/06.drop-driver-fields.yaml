@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: drop-driver-fields
+      author: Alexander Dudkin
+      changes:
+        - dropColumn:
+            tableName: drivers
+            columnName: username
+        - dropColumn:
+            tableName: drivers
+            columnName: email
+        - dropColumn:
+            tableName: drivers
+            columnName: password

@@ -6,17 +6,14 @@ import by.dudkin.common.enums.PaymentMethod;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * @author Alexander Dudkin
  */
 public record PassengerResponse(
 
-        long id,
-
-        String username,
-
-        String email,
+        Long id,
 
         PersonalInfo info,
 
@@ -24,10 +21,10 @@ public record PassengerResponse(
 
         BigDecimal balance,
 
-        double rating,
+        Double rating,
 
-        Instant createdAt,
+        LocalDateTime createdAt,
 
-        Instant updatedAt
+        LocalDateTime updatedAt
 
 ) implements Serializable { }
