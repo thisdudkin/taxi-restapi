@@ -97,7 +97,7 @@ class RideServiceImplCTests {
         var pageable = PageRequest.of(0, 2);
 
         // Act
-        var response = rideService.readAll(pageable);
+        var response = rideService.readAll(null, pageable);
 
         // Assert
         assertNotNull(response);

@@ -6,7 +6,7 @@ import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.domain.Ride;
 import by.dudkin.rides.mapper.RideMapper;
 import by.dudkin.rides.repository.RideRepository;
-import by.dudkin.rides.rest.advice.RideNotFoundException;
+import by.dudkin.rides.rest.advice.custom.RideNotFoundException;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.RideResponse;
@@ -15,9 +15,11 @@ import by.dudkin.rides.utils.GeospatialUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -63,8 +65,8 @@ public class RideServiceImpl implements RideService {
 
     @Override
     @Transactional(readOnly = true)
-    public PaginatedResponse<RideResponse> readAll(Pageable pageable) {
-        Page<Ride> ridePage = rideRepository.findAll(pageable);
+    public PaginatedResponse<RideResponse> readAll(Specification<Ride> spec, Pageable pageable) {
+        Page<Ride> ridePage = rideRepository.findAll(spec, pageable);
         List<RideResponse> rideResponses = ridePage.getContent().stream()
                 .map(rideMapper::toResponse)
                 .toList();
@@ -75,6 +77,9 @@ public class RideServiceImpl implements RideService {
     @Override
     public RideResponse changeStatus(long rideId, RideStatus newStatus) {
         Ride ride = getOrThrow(rideId);
+        if (newStatus == RideStatus.DONE) {
+            ride.setEndTime(LocalDateTime.now());
+        }
         ride.setStatus(newStatus);
         return rideMapper.toResponse(rideRepository.save(ride));
     }

@@ -28,7 +28,7 @@ public abstract class TestDataGenerator {
 
     private static Location randomLocation() {
         return Location.builder()
-                .county(RandomStringUtils.randomAlphabetic(12))
+                .country(RandomStringUtils.randomAlphabetic(12))
                 .city(RandomStringUtils.randomAlphabetic(6))
                 .street(RandomStringUtils.randomAlphabetic(12))
                 .lat(ThreadLocalRandom.current().nextDouble())

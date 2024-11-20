@@ -33,7 +33,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: from_county
+                  name: from_country
                   type: VARCHAR(128)
                   constraints:
                     nullable: false
@@ -68,7 +68,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: to_county
+                  name: to_country
                   type: VARCHAR(128)
                   constraints:
                     nullable: false

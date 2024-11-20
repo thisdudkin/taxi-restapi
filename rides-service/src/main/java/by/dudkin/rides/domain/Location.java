@@ -20,7 +20,7 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class Location {
 
-    private String county;
+    private String country;
     private String city;
     private String street;
 

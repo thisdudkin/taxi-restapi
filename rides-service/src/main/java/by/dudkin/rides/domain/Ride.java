@@ -60,11 +60,11 @@ public class Ride implements BaseEntity<Long> {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RideStatus status = RideStatus.ACTIVE;
+    private RideStatus status = RideStatus.PENDING;
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "county", column = @Column(name = "from_county")),
+        @AttributeOverride(name = "country", column = @Column(name = "from_country")),
         @AttributeOverride(name = "city", column = @Column(name = "from_city")),
         @AttributeOverride(name = "street", column = @Column(name = "from_street")),
         @AttributeOverride(name = "lat", column = @Column(name = "from_lat")),
@@ -74,7 +74,7 @@ public class Ride implements BaseEntity<Long> {
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "county", column = @Column(name = "to_county")),
+        @AttributeOverride(name = "country", column = @Column(name = "to_country")),
         @AttributeOverride(name = "city", column = @Column(name = "to_city")),
         @AttributeOverride(name = "street", column = @Column(name = "to_street")),
         @AttributeOverride(name = "lat", column = @Column(name = "to_lat")),
