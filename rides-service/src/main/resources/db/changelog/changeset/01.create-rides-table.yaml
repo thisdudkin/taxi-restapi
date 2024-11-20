@@ -48,6 +48,26 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: from_lat
+                  type: DECIMAL(10, 8)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: from_lng
+                  type: DECIMAL(11, 8)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: to_lat
+                  type: DECIMAL(10, 8)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: to_lng
+                  type: DECIMAL(11, 8)
+                  constraints:
+                    nullable: false
+              - column:
                   name: to_county
                   type: VARCHAR(128)
                   constraints:

@@ -17,6 +17,5 @@ public record RideRequest(@NotNull @Positive Long passengerId,
                           @NotNull @Positive Long carId,
                           @NotNull Location from,
                           @NotNull Location to,
-                          @NotNull @Min(1) BigDecimal price,
                           @NotNull PaymentMethod paymentMethod
 ) implements Serializable { }

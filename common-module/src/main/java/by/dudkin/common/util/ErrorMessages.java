@@ -28,4 +28,9 @@ public class ErrorMessages {
     public static final String DUPLICATE_LICENSE_PLATE = "error.duplicate.licensePlate";
     public static final String CAR_ALREADY_BOOKED = "error.car.already.booked";
 
+    /**
+     * Ride Service Errors
+     */
+    public static final String RIDE_NOT_FOUND = "error.ride.notfound";
+
 }
