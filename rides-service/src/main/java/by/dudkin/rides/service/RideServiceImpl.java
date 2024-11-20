@@ -11,6 +11,7 @@ import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.service.api.RideService;
+import by.dudkin.rides.utils.GeospatialUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,13 +33,12 @@ public class RideServiceImpl implements RideService {
     private final PriceCalculator priceCalculator;
 
     @Override
-    public RideResponse create(RideRequest rideRequest) {
-        Ride ride = rideMapper.toRide(rideRequest);
-        ride.setPrice(priceCalculator.calculatePrice(
-                rideRequest.from().getLat(),
-                rideRequest.from().getLng(),
-                rideRequest.to().getLat(),
-                rideRequest.to().getLng()));
+    public RideResponse create(RideRequest req) {
+        Ride ride = rideMapper.toRide(req);
+        ride.setPrice(priceCalculator.calculatePrice(GeospatialUtils.calculateDistance(
+                req.from().getLat(), req.from().getLng(),
+                req.to().getLat(), req.to().getLng())
+        ));
         return rideMapper.toResponse(rideRepository.save(ride));
     }
 
