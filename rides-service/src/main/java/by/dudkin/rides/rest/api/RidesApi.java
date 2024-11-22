@@ -122,6 +122,22 @@ public interface RidesApi {
     );
 
     @Operation(
+        operationId = "activateRide",
+        summary = "Mark a ride as active",
+        description = "Updates the status of a ride to 'ACTIVE'.",
+        tags = {"ride"},
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Ride status updated to ACTIVE.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RideResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Ride not found.")
+        }
+    )
+    @PatchMapping(value = "/api/rides/{rideId}/activate", produces = "application/json")
+    ResponseEntity<RideResponse> activate(
+        @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
+        @PathVariable("rideId") Long rideId
+    );
+
+    @Operation(
         operationId = "markRideDone",
         summary = "Mark a ride as done",
         description = "Updates the status of a ride to 'DONE'.",

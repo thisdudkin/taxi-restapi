@@ -50,9 +50,10 @@ class RideRestControllerTests {
     TestRestTemplate restTemplate;
 
     private static final String BASE_URI = "/api/rides";
-    private static final String DONE_URI = "/api/rides/1/done";
+    private static final String DONE_URI = "/api/rides/2/done";
+    private static final String ACTIVATE_URI = "/api/rides/1/activate";
     private static final String CANCEL_URI = "/api/rides/1/cancel";
-    private static final String RATE_URI = "/api/rides/1/rate";
+    private static final String RATE_URI = "/api/rides/2/rate";
 
     @BeforeEach
     void init() {
@@ -180,6 +181,22 @@ class RideRestControllerTests {
 
     @Test
     @Rollback
+    void shouldActivateRide() {
+        // Act
+        ResponseEntity<RideResponse> response = restTemplate.exchange(ACTIVATE_URI, HttpMethod.PATCH, null, RideResponse.class);
+
+        // Assert
+        assertNotNull(response);
+        assertAll(
+            () -> assertNotNull(response.getBody()),
+            () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
+            () -> assertEquals(RideStatus.ACTIVE, requireNonNull(response.getBody()).status()),
+            () -> assertNotNull(requireNonNull(response.getBody()).startTime())
+        );
+    }
+
+    @Test
+    @Rollback
     void shouldMarkDoneRide() {
         // Act
         ResponseEntity<RideResponse> response = restTemplate.exchange(DONE_URI, HttpMethod.PATCH, null, RideResponse.class);
@@ -189,7 +206,9 @@ class RideRestControllerTests {
         assertAll(
             () -> assertNotNull(response.getBody()),
             () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
-            () -> assertEquals(RideStatus.DONE, requireNonNull(response.getBody()).status())
+            () -> assertEquals(RideStatus.DONE, requireNonNull(response.getBody()).status()),
+            () -> assertNotNull(requireNonNull(response.getBody()).startTime()),
+            () -> assertNotNull(requireNonNull(response.getBody()).endTime())
         );
     }
 

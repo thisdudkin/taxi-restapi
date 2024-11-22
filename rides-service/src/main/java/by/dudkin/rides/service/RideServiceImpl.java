@@ -12,6 +12,7 @@ import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.utils.GeospatialUtils;
+import by.dudkin.rides.utils.RideValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,7 @@ public class RideServiceImpl implements RideService {
     private final RideMapper rideMapper;
     private final RideRepository rideRepository;
     private final PriceCalculator priceCalculator;
+    private final RideValidation rideValidation;
 
     @Override
     public RideResponse create(RideRequest req) {
@@ -75,12 +77,28 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public RideResponse changeStatus(long rideId, RideStatus newStatus) {
+    public RideResponse cancel(long rideId) {
         Ride ride = getOrThrow(rideId);
-        if (newStatus == RideStatus.DONE) {
-            ride.setEndTime(LocalDateTime.now());
-        }
-        ride.setStatus(newStatus);
+        rideValidation.validateStatusTransition(ride.getStatus(), RideStatus.CANCEL);
+        ride.setStatus(RideStatus.CANCEL);
+        return rideMapper.toResponse(rideRepository.save(ride));
+    }
+
+    @Override
+    public RideResponse complete(long rideId) {
+        Ride ride = getOrThrow(rideId);
+        rideValidation.validateStatusTransition(ride.getStatus(), RideStatus.DONE);
+        ride.setStatus(RideStatus.DONE);
+        ride.setEndTime(LocalDateTime.now());
+        return rideMapper.toResponse(rideRepository.save(ride));
+    }
+
+    @Override
+    public RideResponse activate(long rideId) {
+        Ride ride = getOrThrow(rideId);
+        rideValidation.validateStatusTransition(ride.getStatus(), RideStatus.ACTIVE);
+        ride.setStatus(RideStatus.ACTIVE);
+        ride.setStartTime(LocalDateTime.now());
         return rideMapper.toResponse(rideRepository.save(ride));
     }
 

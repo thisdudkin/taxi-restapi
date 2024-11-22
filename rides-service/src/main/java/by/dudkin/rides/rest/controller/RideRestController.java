@@ -1,6 +1,5 @@
 package by.dudkin.rides.rest.controller;
 
-import by.dudkin.common.enums.RideStatus;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.rest.api.RidesApi;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
@@ -54,13 +53,18 @@ public class RideRestController implements RidesApi {
     }
 
     @Override
+    public ResponseEntity<RideResponse> activate(Long rideId) {
+        return new ResponseEntity<>(this.rideService.activate(rideId), HttpStatus.OK);
+    }
+
+    @Override
     public ResponseEntity<RideResponse> markDone(Long rideId) {
-        return new ResponseEntity<>(this.rideService.changeStatus(rideId, RideStatus.DONE), HttpStatus.OK);
+        return new ResponseEntity<>(this.rideService.complete(rideId), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<RideResponse> cancel(Long rideId) {
-        return new ResponseEntity<>(this.rideService.changeStatus(rideId, RideStatus.CANCEL), HttpStatus.OK);
+        return new ResponseEntity<>(this.rideService.cancel(rideId), HttpStatus.OK);
     }
 
     @Override

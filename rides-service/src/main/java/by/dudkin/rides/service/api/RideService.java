@@ -20,7 +20,9 @@ public interface RideService {
     RideResponse update(long rideId, RideRequest rideRequest);
     void delete(long rideId);
 
-    RideResponse changeStatus(long rideId, RideStatus newStatus);
+    RideResponse cancel(long rideId);
+    RideResponse complete(long rideId);
+    RideResponse activate(long rideId);
     RideResponse rate(long rideId, RideCompletionRequest request);
 
 }
