@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>passenger-service</artifactId>
+    <artifactId>taxi-restapi-passenger-service</artifactId>
     <packaging>jar</packaging>
     <description>Cab Aggregator Passenger Service</description>
 
     <parent>
         <groupId>by.dudkin</groupId>
-        <artifactId>cab-aggregator</artifactId>
+        <artifactId>taxi-restapi</artifactId>
         <version>1.0</version>
     </parent>
 
@@ -84,7 +84,7 @@
         <!-- Common -->
         <dependency>
             <groupId>by.dudkin</groupId>
-            <artifactId>common-module</artifactId>
+            <artifactId>taxi-restapi-common-module</artifactId>
             <version>1.0</version>
         </dependency>
     </dependencies>

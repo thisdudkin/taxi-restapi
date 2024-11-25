@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>by.dudkin</groupId>
-        <artifactId>cab-aggregator</artifactId>
+        <artifactId>taxi-restapi</artifactId>
         <version>1.0</version>
     </parent>
 
-    <artifactId>authentication-server</artifactId>
+    <artifactId>taxi-restapi-authentication-server</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

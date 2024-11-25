@@ -11,15 +11,15 @@
     </parent>
 
     <groupId>by.dudkin</groupId>
-    <artifactId>cab-aggregator</artifactId>
+    <artifactId>taxi-restapi</artifactId>
     <version>1.0</version>
     <name>${project.artifactId}</name>
     <modules>
-        <module>passenger-service</module>
-        <module>authentication-server</module>
-        <module>driver-service</module>
-        <module>rides-service</module>
-        <module>common-module</module>
+        <module>taxi-restapi-passenger-service</module>
+        <module>taxi-restapi-authentication-server</module>
+        <module>taxi-restapi-driver-service</module>
+        <module>taxi-restapi-rides-service</module>
+        <module>taxi-restapi-common-module</module>
     </modules>
     <packaging>pom</packaging>
 
