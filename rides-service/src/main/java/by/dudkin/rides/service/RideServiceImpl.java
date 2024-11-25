@@ -6,18 +6,21 @@ import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.domain.Ride;
 import by.dudkin.rides.mapper.RideMapper;
 import by.dudkin.rides.repository.RideRepository;
-import by.dudkin.rides.rest.advice.RideNotFoundException;
+import by.dudkin.rides.rest.advice.custom.RideNotFoundException;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.utils.GeospatialUtils;
+import by.dudkin.rides.utils.RideValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -31,6 +34,7 @@ public class RideServiceImpl implements RideService {
     private final RideMapper rideMapper;
     private final RideRepository rideRepository;
     private final PriceCalculator priceCalculator;
+    private final RideValidation rideValidation;
 
     @Override
     public RideResponse create(RideRequest req) {
@@ -63,8 +67,8 @@ public class RideServiceImpl implements RideService {
 
     @Override
     @Transactional(readOnly = true)
-    public PaginatedResponse<RideResponse> readAll(Pageable pageable) {
-        Page<Ride> ridePage = rideRepository.findAll(pageable);
+    public PaginatedResponse<RideResponse> readAll(Specification<Ride> spec, Pageable pageable) {
+        Page<Ride> ridePage = rideRepository.findAll(spec, pageable);
         List<RideResponse> rideResponses = ridePage.getContent().stream()
                 .map(rideMapper::toResponse)
                 .toList();
@@ -73,9 +77,28 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public RideResponse changeStatus(long rideId, RideStatus newStatus) {
+    public RideResponse cancel(long rideId) {
         Ride ride = getOrThrow(rideId);
-        ride.setStatus(newStatus);
+        rideValidation.validateStatusTransition(ride.getStatus(), RideStatus.CANCEL);
+        ride.setStatus(RideStatus.CANCEL);
+        return rideMapper.toResponse(rideRepository.save(ride));
+    }
+
+    @Override
+    public RideResponse complete(long rideId) {
+        Ride ride = getOrThrow(rideId);
+        rideValidation.validateStatusTransition(ride.getStatus(), RideStatus.DONE);
+        ride.setStatus(RideStatus.DONE);
+        ride.setEndTime(LocalDateTime.now());
+        return rideMapper.toResponse(rideRepository.save(ride));
+    }
+
+    @Override
+    public RideResponse activate(long rideId) {
+        Ride ride = getOrThrow(rideId);
+        rideValidation.validateStatusTransition(ride.getStatus(), RideStatus.ACTIVE);
+        ride.setStatus(RideStatus.ACTIVE);
+        ride.setStartTime(LocalDateTime.now());
         return rideMapper.toResponse(rideRepository.save(ride));
     }
 

@@ -34,7 +34,7 @@ class RideMapperTests {
 
     private static Location createLocation(String street) {
         return Location.builder()
-            .county(COUNTRY_BELARUS)
+            .country(COUNTRY_BELARUS)
             .city(CITY_MINSK)
             .street(street)
             .build();

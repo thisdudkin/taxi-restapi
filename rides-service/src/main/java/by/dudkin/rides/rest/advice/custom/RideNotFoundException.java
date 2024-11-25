@@ -1,4 +1,4 @@
-package by.dudkin.rides.rest.advice;
+package by.dudkin.rides.rest.advice.custom;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -1,7 +1,5 @@
 server:
   port: 9093
-  servlet:
-    context-path: /api/
 
 spring:
   profiles:

@@ -5,7 +5,7 @@ import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.domain.Ride;
 import by.dudkin.rides.mapper.RideMapper;
 import by.dudkin.rides.repository.RideRepository;
-import by.dudkin.rides.rest.advice.RideNotFoundException;
+import by.dudkin.rides.rest.advice.custom.RideNotFoundException;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.util.TestDataGenerator;
@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -64,11 +65,11 @@ class RideServiceImplUTests {
         Pageable pageable = Pageable.unpaged();
         List<Ride> rides = List.of(ride);
         PageImpl<Ride> ridePage = new PageImpl<>(rides);
-        when(rideRepository.findAll(pageable)).thenReturn(ridePage);
+        when(rideRepository.findAll((Specification<Ride>) null, pageable)).thenReturn(ridePage);
         when(rideMapper.toResponse(ride)).thenReturn(rideResponse);
 
         // Act
-        PaginatedResponse<RideResponse> response = rideService.readAll(pageable);
+        PaginatedResponse<RideResponse> response = rideService.readAll(null, pageable);
 
         // Assert
         assertNotNull(response);
