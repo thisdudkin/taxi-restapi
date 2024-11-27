@@ -4,10 +4,13 @@ import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.rest.api.RidesApi;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
+import by.dudkin.rides.rest.dto.response.AvailableDriver;
+import by.dudkin.rides.rest.dto.response.PendingRide;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.utils.RideSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +40,11 @@ public class RideRestController implements RidesApi {
     }
 
     @Override
+    public ResponseEntity<Page<PendingRide>> getPendingRides(Pageable pageable) {
+        return new ResponseEntity<>(this.rideService.findAllPendingRides(pageable), HttpStatus.OK);
+    }
+
+    @Override
     public ResponseEntity<RideResponse> save(RideRequest rideRequest) {
         return new ResponseEntity<>(this.rideService.create(rideRequest), HttpStatus.CREATED);
     }
@@ -55,6 +63,11 @@ public class RideRestController implements RidesApi {
     @Override
     public ResponseEntity<RideResponse> activate(Long rideId) {
         return new ResponseEntity<>(this.rideService.activate(rideId), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<RideResponse> assignDriver(Long rideId, AvailableDriver availableDriver) {
+        return new ResponseEntity<>(this.rideService.assign(rideId, availableDriver), HttpStatus.OK);
     }
 
     @Override

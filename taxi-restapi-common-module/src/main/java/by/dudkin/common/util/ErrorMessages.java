@@ -33,5 +33,6 @@ public class ErrorMessages {
      */
     public static final String RIDE_NOT_FOUND = "error.ride.notfound";
     public static final String INVALID_STATUS_TRANSITION = "error.ride.invalid.status.transition";
+    public static final String AVAILABLE_DRIVER_NOT_FOUND = "error.available.driver.notfound";
 
 }

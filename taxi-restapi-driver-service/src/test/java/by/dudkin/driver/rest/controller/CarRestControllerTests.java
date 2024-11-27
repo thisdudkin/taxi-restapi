@@ -43,7 +43,7 @@ class CarRestControllerTests {
     @Autowired
     TestRestTemplate restTemplate;
 
-    private static final String CARS_URI = "/cars";
+    private static final String CARS_URI = "/api/cars";
     private static final String COLOR_BLUE = "Blue";
 
     @Test

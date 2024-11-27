@@ -3,6 +3,8 @@ package by.dudkin.rides.rest.api;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
+import by.dudkin.rides.rest.dto.response.AvailableDriver;
+import by.dudkin.rides.rest.dto.response.PendingRide;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,11 +24,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author Alexander Dudkin
  */
+@RequestMapping("/api")
 public interface RidesApi {
 
     @Operation(
@@ -38,7 +43,7 @@ public interface RidesApi {
             @ApiResponse(responseCode = "404", description = "Ride not found.")
         }
     )
-    @GetMapping(value = "/api/rides/{rideId}", produces = "application/json")
+    @GetMapping(value = "/rides/{rideId}", produces = "application/json")
     ResponseEntity<RideResponse> get(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
         @PathVariable("rideId") Long rideId
@@ -61,7 +66,7 @@ public interface RidesApi {
             @ApiResponse(responseCode = "500", description = "Server error.")
         }
     )
-    @GetMapping(value = "/api/rides", produces = "application/json")
+    @GetMapping(value = "/rides", produces = "application/json")
     ResponseEntity<PaginatedResponse<RideResponse>> getAll(
         @Parameter(name = "passengerId", description = "Filter rides by passenger ID", required = false)
         @RequestParam(required = false) Long passengerId,
@@ -69,7 +74,28 @@ public interface RidesApi {
         @RequestParam(required = false) Long driverId,
         @Parameter(name = "carId", description = "Filter rides by car ID", required = false)
         @RequestParam(required = false) Long carId,
-        @Parameter(hidden = true) Pageable pageable);
+        @Parameter(hidden = true) Pageable pageable
+    );
+
+    @Operation(
+        operationId = "pendingRides",
+        summary = "Lists of pending rides",
+        description = "Returns a paginated list of pending rides.",
+        tags = {"ride"},
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Rides found and returned.",
+                content = @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = PendingRide.class))
+                )
+            ),
+            @ApiResponse(responseCode = "500", description = "Server error.")
+        }
+    )
+    @GetMapping(value = "/rides/pending", produces = "application/json")
+    ResponseEntity<Page<PendingRide>> getPendingRides(@Parameter(hidden = true) Pageable pageable);
 
     @Operation(
         operationId = "addRide",
@@ -81,7 +107,7 @@ public interface RidesApi {
             @ApiResponse(responseCode = "400", description = "Invalid input.")
         }
     )
-    @PostMapping(value = "/api/rides", produces = "application/json", consumes = "application/json")
+    @PostMapping(value = "/rides", produces = "application/json", consumes = "application/json")
     ResponseEntity<RideResponse> save(
         @Parameter(name = "RideRequest", description = "Ride data", required = true)
         @RequestBody @Valid RideRequest rideRequest
@@ -97,7 +123,7 @@ public interface RidesApi {
             @ApiResponse(responseCode = "404", description = "Ride not found.")
         }
     )
-    @PutMapping(value = "/api/rides/{rideId}", produces = "application/json", consumes = "application/json")
+    @PutMapping(value = "/rides/{rideId}", produces = "application/json", consumes = "application/json")
     ResponseEntity<RideResponse> update(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
         @PathVariable("rideId") Long rideId,
@@ -115,7 +141,7 @@ public interface RidesApi {
             @ApiResponse(responseCode = "404", description = "Ride not found.")
         }
     )
-    @DeleteMapping(value = "/api/rides/{rideId}")
+    @DeleteMapping(value = "/rides/{rideId}")
     ResponseEntity<Void> delete(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
         @PathVariable("rideId") Long rideId
@@ -131,11 +157,28 @@ public interface RidesApi {
             @ApiResponse(responseCode = "404", description = "Ride not found.")
         }
     )
-    @PatchMapping(value = "/api/rides/{rideId}/activate", produces = "application/json")
+    @PatchMapping(value = "/rides/{rideId}/activate", produces = "application/json")
     ResponseEntity<RideResponse> activate(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
         @PathVariable("rideId") Long rideId
     );
+
+    @Operation(
+        operationId = "assignDriver",
+        summary = "Assign a driver to the ride.",
+        tags = {"ride"},
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Driver has been assigned.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RideResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Ride not found.")
+        }
+    )
+    @PostMapping(value = "/rides/{rideId}/assign", produces = "application/json", consumes = "application/json")
+    ResponseEntity<RideResponse> assignDriver(
+        @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
+        @PathVariable("rideId") Long rideId,
+        @RequestBody AvailableDriver availableDriver
+    );
+
 
     @Operation(
         operationId = "markRideDone",
@@ -147,7 +190,7 @@ public interface RidesApi {
             @ApiResponse(responseCode = "404", description = "Ride not found.")
         }
     )
-    @PatchMapping(value = "/api/rides/{rideId}/done", produces = "application/json")
+    @PatchMapping(value = "/rides/{rideId}/done", produces = "application/json")
     ResponseEntity<RideResponse> markDone(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
         @PathVariable("rideId") Long rideId
@@ -163,7 +206,7 @@ public interface RidesApi {
             @ApiResponse(responseCode = "404", description = "Ride not found.")
         }
     )
-    @PatchMapping(value = "/api/rides/{rideId}/cancel", produces = "application/json")
+    @PatchMapping(value = "/rides/{rideId}/cancel", produces = "application/json")
     ResponseEntity<RideResponse> cancel(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
         @PathVariable("rideId") Long rideId
@@ -179,7 +222,7 @@ public interface RidesApi {
             @ApiResponse(responseCode = "404", description = "Ride not found.")
         }
     )
-    @PatchMapping(value = "/api/rides/{rideId}/rate", produces = "application/json", consumes = "application/json")
+    @PatchMapping(value = "/rides/{rideId}/rate", produces = "application/json", consumes = "application/json")
     ResponseEntity<RideResponse> rate(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
         @PathVariable("rideId") Long rideId,

@@ -24,7 +24,7 @@ INSERT INTO rides (
     updated_at
 ) VALUES
       (1, 101, 1001, 'PENDING', 'Orange County', 'Los Angeles', 'Sunset Blvd', 34.0522, -118.2437, 'Orange County', 'Irvine', 'University Dr', 33.6846, -117.8265, 1000.00, 'CREDIT_CARD', '2023-11-01 10:00:00', '2023-11-01 10:30:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-      (2, 102, 1002, 'ACTIVE', 'San Diego County', 'San Diego', 'Market St', 32.7157, -117.1611, 'Orange County', 'Anaheim', 'Harbor Blvd', 33.8003, -117.9190, 1000.00, 'CASH', '2023-11-02 11:00:00', '2023-11-02 11:45:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+      (2, 102, 1002, 'ASSIGNED', 'San Diego County', 'San Diego', 'Market St', 32.7157, -117.1611, 'Orange County', 'Anaheim', 'Harbor Blvd', 33.8003, -117.9190, 1000.00, 'CASH', '2023-11-02 11:00:00', '2023-11-02 11:45:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
       (3, 103, 1003, 'ACTIVE', 'Orange County', 'Santa Ana', 'Main St', 33.7455, -117.8677, 'Orange County', 'Fullerton', 'Valencia Dr', 33.8705, -117.9258, 1000.00, 'CREDIT_CARD', '2023-11-03 12:00:00', NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
       (4, 104, 1004, 'ACTIVE', 'Riverside County', 'Riverside', 'Magnolia Ave', 33.9533, -117.3962, 'Los Angeles County', 'Pasadena', 'Colorado Blvd', 34.1478, -118.1445, 1000.00, 'CASH', '2023-11-04 13:00:00', '2023-11-04 13:35:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
       (5, 105, 1005, 'ACTIVE', 'Los Angeles County', 'Long Beach', 'Ocean Blvd', 33.7701, -118.1937, 'San Diego County', 'La Jolla', 'Torrey Pines Rd', 32.8736, -117.2712, 1000.00, 'CREDIT_CARD', '2023-11-05 14:00:00', NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),

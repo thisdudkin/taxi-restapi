@@ -5,6 +5,7 @@ package by.dudkin.common.enums;
  */
 public enum RideStatus {
     PENDING,
+    ASSIGNED,
     ACTIVE,
     DONE,
     CANCEL

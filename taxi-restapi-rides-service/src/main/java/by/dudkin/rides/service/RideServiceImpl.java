@@ -5,10 +5,13 @@ import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.domain.Ride;
 import by.dudkin.rides.mapper.RideMapper;
+import by.dudkin.rides.repository.PendingRideService;
 import by.dudkin.rides.repository.RideRepository;
 import by.dudkin.rides.rest.advice.custom.RideNotFoundException;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
+import by.dudkin.rides.rest.dto.response.AvailableDriver;
+import by.dudkin.rides.rest.dto.response.PendingRide;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.utils.GeospatialUtils;
@@ -33,6 +36,7 @@ public class RideServiceImpl implements RideService {
 
     private final RideMapper rideMapper;
     private final RideRepository rideRepository;
+    private final PendingRideService pendingRideService;
     private final PriceCalculator priceCalculator;
     private final RideValidation rideValidation;
 
@@ -107,6 +111,22 @@ public class RideServiceImpl implements RideService {
         Ride ride = getOrThrow(rideId);
         ride.setRating(request.rating());
         return rideMapper.toResponse(rideRepository.save(ride));
+    }
+
+    @Override
+    public RideResponse assign(long rideId, AvailableDriver availableDriver) {
+        Ride ride = getOrThrow(rideId);
+        rideValidation.validateStatusTransition(ride.getStatus(), RideStatus.ASSIGNED);
+        ride.setDriverId(availableDriver.driverId());
+        ride.setCarId(availableDriver.carId());
+        ride.setStatus(RideStatus.ASSIGNED);
+        Ride saved = rideRepository.save(ride);
+        return rideMapper.toResponse(saved);
+    }
+
+    @Override
+    public Page<PendingRide> findAllPendingRides(Pageable pageable) {
+        return pendingRideService.findAllPendingRides(pageable);
     }
 
     Ride getOrThrow(long rideId) {

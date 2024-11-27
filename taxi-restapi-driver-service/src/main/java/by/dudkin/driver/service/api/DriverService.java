@@ -1,9 +1,9 @@
 package by.dudkin.driver.service.api;
 
+import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
-import by.dudkin.common.util.PaginatedResponse;
 import org.springframework.data.domain.Pageable;
 
 /**
