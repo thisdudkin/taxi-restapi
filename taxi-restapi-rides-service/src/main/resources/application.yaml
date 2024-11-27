@@ -1,9 +1,10 @@
-server:
-  port: 9093
+server.port: 8083
 
 spring:
   profiles:
     active: postgres
+  application:
+    name: rides-service
 
   liquibase:
     enabled: true
@@ -21,3 +22,10 @@ logging:
     liquibase: INFO
     org:
       springframework: INFO
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true

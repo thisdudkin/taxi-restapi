@@ -1,11 +1,10 @@
-server:
-  port: 9091
-  servlet:
-    context-path: /api/
+server.port: 8082
 
 spring:
   profiles:
     active: postgres
+  application:
+    name: drivers-service
 
   liquibase:
     enabled: true
@@ -26,5 +25,7 @@ logging:
 
 eureka:
   client:
-    fetch-registry: false
-    register-with-eureka: false
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
