@@ -16,7 +16,8 @@ import java.util.Set;
 public class RideValidation {
 
     private static final Map<RideStatus, Set<RideStatus>> allowedTransitionsMap = Map.of(
-        RideStatus.PENDING, Set.of(RideStatus.ACTIVE, RideStatus.CANCEL),
+        RideStatus.PENDING, Set.of(RideStatus.ASSIGNED, RideStatus.CANCEL),
+        RideStatus.ASSIGNED, Set.of(RideStatus.ACTIVE, RideStatus.CANCEL),
         RideStatus.ACTIVE, Set.of(RideStatus.DONE, RideStatus.CANCEL),
         RideStatus.DONE, Collections.emptySet(),
         RideStatus.CANCEL, Collections.emptySet()

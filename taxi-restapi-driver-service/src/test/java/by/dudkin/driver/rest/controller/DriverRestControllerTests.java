@@ -44,7 +44,7 @@ class DriverRestControllerTests {
     @Autowired
     TestRestTemplate restTemplate;
 
-    private static final String DRIVERS_URI = "/drivers";
+    private static final String DRIVERS_URI = "/api/drivers";
     private static final String BOB_FIRSTNAME = "Bob";
 
     @Test

@@ -75,8 +75,6 @@ public abstract class TestDataGenerator {
     public static RideRequest randomRideRequest() {
         return new RideRequest(
                 randomId(),
-                randomId(),
-                randomId(),
                 randomLocation(),
                 randomLocation(),
                 randomPaymentMethod()

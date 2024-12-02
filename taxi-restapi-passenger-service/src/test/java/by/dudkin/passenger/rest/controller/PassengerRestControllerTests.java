@@ -44,7 +44,7 @@ class PassengerRestControllerTests {
     @Autowired
     TestRestTemplate restTemplate;
 
-    private static final String PASSENGERS_URI = "/passengers";
+    private static final String PASSENGERS_URI = "/api/passengers";
 
     @Test
     @SuppressWarnings("unchecked")

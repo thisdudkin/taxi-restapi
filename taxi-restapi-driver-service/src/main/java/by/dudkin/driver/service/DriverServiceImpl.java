@@ -1,17 +1,18 @@
 package by.dudkin.driver.service;
 
 import by.dudkin.common.util.ErrorMessages;
+import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.mapper.DriverMapper;
 import by.dudkin.driver.repository.DriverRepository;
 import by.dudkin.driver.rest.advice.custom.DriverNotFoundException;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
-import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.service.api.DriverService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ import java.util.List;
 public class DriverServiceImpl implements DriverService {
 
     private final DriverMapper driverMapper;
+    private final JdbcTemplate jdbcTemplate;
     private final DriverRepository driverRepository;
 
     @Override

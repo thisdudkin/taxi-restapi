@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
  * @author Alexander Dudkin
  */
+@RequestMapping("/api")
 public interface PassengerApi {
     default Optional<NativeWebRequest> getRequest() {
         return Optional.empty();

@@ -45,7 +45,7 @@ class AssignmentRestControllerTests {
     @Autowired
     TestRestTemplate restTemplate;
 
-    private static final String ASSIGNMENTS_URI = "/assignments";
+    private static final String ASSIGNMENTS_URI = "/api/assignments";
 
     @Test
     @SuppressWarnings("unchecked")

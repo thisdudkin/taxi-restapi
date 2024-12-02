@@ -5,6 +5,7 @@ import by.dudkin.driver.rest.advice.custom.AssignmentNotFoundException;
 import by.dudkin.driver.rest.advice.custom.CarNotFoundException;
 import by.dudkin.driver.rest.advice.custom.DriverNotFoundException;
 import by.dudkin.driver.rest.advice.custom.DuplicateLicensePlateException;
+import by.dudkin.driver.rest.advice.custom.NoAvailableDriverException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -36,6 +37,12 @@ public class RestExceptionHandler {
             .collect(joining("; "));
         String message = messageSource.getMessage(ErrorMessages.VALIDATION_FAILED, new Object[]{errors}, Locale.getDefault());
         return new ResponseEntity<>(forStatusAndDetail(BAD_REQUEST, message), BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoAvailableDriverException.class)
+    public ResponseEntity<ProblemDetail> handleNoAvailableDriverException(NoAvailableDriverException e) {
+        String message = messageSource.getMessage(e.getMessage(), null, Locale.getDefault());
+        return new ResponseEntity<>(forStatusAndDetail(NOT_FOUND, message), NOT_FOUND);
     }
 
     @ExceptionHandler(IllegalStateException.class)

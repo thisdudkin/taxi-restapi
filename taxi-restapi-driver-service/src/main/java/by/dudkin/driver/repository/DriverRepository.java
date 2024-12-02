@@ -17,10 +17,4 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
     @EntityGraph(value = "driver-assignments-cars")
     Optional<Driver> findWithAssignmentsAndCarsById(long id);
 
-    @EntityGraph(value = "driver-assignments-cars")
-    Page<Driver> findAll(Pageable pageable);
-
-    @EntityGraph(value = "driver-assignments-cars")
-    List<Driver> findAll();
-
 }

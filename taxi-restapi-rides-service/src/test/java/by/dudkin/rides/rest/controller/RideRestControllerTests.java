@@ -52,8 +52,8 @@ class RideRestControllerTests {
     TestRestTemplate restTemplate;
 
     private static final String BASE_URI = "/api/rides";
-    private static final String DONE_URI = "/api/rides/2/done";
-    private static final String ACTIVATE_URI = "/api/rides/1/activate";
+    private static final String DONE_URI = "/api/rides/3/done";
+    private static final String ACTIVATE_URI = "/api/rides/2/activate";
     private static final String CANCEL_URI = "/api/rides/1/cancel";
     private static final String RATE_URI = "/api/rides/2/rate";
 
@@ -130,7 +130,7 @@ class RideRestControllerTests {
     @Test
     void shouldNotCreateRideWhenValidationFails() {
         // Arrange
-        RideRequest request = new RideRequest(null, null, null, null, null, null);
+        RideRequest request = new RideRequest(null, null, null, null);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));

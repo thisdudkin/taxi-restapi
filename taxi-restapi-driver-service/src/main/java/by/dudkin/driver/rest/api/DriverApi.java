@@ -2,6 +2,7 @@ package by.dudkin.driver.rest.api;
 
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
+import by.dudkin.driver.rest.dto.request.AvailableDriver;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,12 +20,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author Alexander Dudkin
  */
+@RequestMapping("/api")
 public interface DriverApi {
-
 
     @Operation(
         operationId = "getDriver",

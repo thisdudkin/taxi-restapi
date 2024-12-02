@@ -51,10 +51,10 @@ public class Ride implements BaseEntity<Long> {
     @Column(name = "passenger", nullable = false, updatable = false)
     private Long passengerId;
 
-    @Column(name = "driver", nullable = false, updatable = false)
+    @Column(name = "driver")
     private Long driverId;
 
-    @Column(name = "car", nullable = false, updatable = false)
+    @Column(name = "car")
     private Long carId;
 
     @Builder.Default

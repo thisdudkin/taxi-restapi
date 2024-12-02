@@ -20,13 +20,9 @@ databaseChangeLog:
               - column:
                   name: driver
                   type: BIGINT
-                  constraints:
-                    nullable: false
               - column:
                   name: car
                   type: BIGINT
-                  constraints:
-                    nullable: false
               - column:
                   name: status
                   type: VARCHAR(30)
