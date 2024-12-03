@@ -1,0 +1,25 @@
+server.port: 8084
+
+spring:
+  profiles:
+    active: postgres, kafka
+  application:
+    name: notification-service
+
+  liquibase:
+    enabled: true
+  messages:
+    basename: messages
+
+logging:
+  level:
+    liquibase: INFO
+    org:
+      springframework: INFO
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
