@@ -1,7 +1,7 @@
 package by.dudkin.rides.repository;
 
-import by.dudkin.rides.domain.Location;
-import by.dudkin.rides.rest.dto.response.PendingRide;
+import by.dudkin.common.util.Location;
+import by.dudkin.rides.rest.dto.request.PendingRide;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

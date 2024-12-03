@@ -2,7 +2,7 @@ package by.dudkin.rides.rest.dto.response;
 
 import by.dudkin.common.enums.PaymentMethod;
 import by.dudkin.common.enums.RideStatus;
-import by.dudkin.rides.domain.Location;
+import by.dudkin.common.util.Location;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

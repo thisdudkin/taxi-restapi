@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -40,7 +41,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  */
 @Testcontainers
 @Sql("classpath:data.sql")
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "kafka"})
+@EmbeddedKafka(partitions = 1, topics = {"ride-requests"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RideRestControllerTests {
 

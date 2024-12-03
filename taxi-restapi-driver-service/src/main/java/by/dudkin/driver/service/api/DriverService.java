@@ -4,6 +4,7 @@ import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
+import by.dudkin.driver.rest.dto.response.PendingRide;
 import org.springframework.data.domain.Pageable;
 
 /**
@@ -22,5 +23,7 @@ public interface DriverService {
     void delete(long driverId);
 
     Driver getOrThrow(long driverId);
+
+    void handleDriver(PendingRide ride);
 
 }
