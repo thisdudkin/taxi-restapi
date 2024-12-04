@@ -1,5 +1,6 @@
 package by.dudkin.driver.configuration;
 
+import by.dudkin.common.util.KafkaConstants;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,13 +20,10 @@ public class AvailableDriverProducerConfig {
     @Value("${kafka.replicas.count}")
     private int replicas;
 
-    @Value("${spring.kafka.topic.name.available-drivers}")
-    private String availableDrivers;
-
     @Bean
     public NewTopic topic() {
         return TopicBuilder
-            .name(availableDrivers)
+            .name(KafkaConstants.AVAILABLE_DRIVERS_TOPIC)
             .partitions(partitions)
             .replicas(replicas)
             .build();

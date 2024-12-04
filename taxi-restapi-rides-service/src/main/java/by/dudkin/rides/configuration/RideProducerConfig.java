@@ -1,5 +1,6 @@
 package by.dudkin.rides.configuration;
 
+import by.dudkin.common.util.KafkaConstants;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +23,7 @@ public class RideProducerConfig {
     @Bean
     public NewTopic topic() {
         return TopicBuilder
-            .name("ride-requests")
+            .name(KafkaConstants.RIDE_REQUESTS_TOPIC)
             .partitions(partitions)
             .replicas(replicas)
             .build();

@@ -1,5 +1,6 @@
 package by.dudkin.driver.kafka.consumer;
 
+import by.dudkin.common.util.KafkaConstants;
 import by.dudkin.driver.rest.dto.response.PendingRide;
 import by.dudkin.driver.service.api.DriverService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class RideRequestConsumer {
 
     private final DriverService driverService;
 
-    @KafkaListener(topics = "${spring.kafka.topic.name.ride-requests}")
+    @KafkaListener(topics = KafkaConstants.RIDE_REQUESTS_TOPIC)
     public void consume(PendingRide ride) {
         log.info("Json message received -> {}", ride.toString());
         driverService.handleDriver(ride);
