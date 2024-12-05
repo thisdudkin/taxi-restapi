@@ -1,5 +1,6 @@
 package by.dudkin.notification.kafka;
 
+import by.dudkin.common.util.KafkaConstants;
 import by.dudkin.notification.domain.AvailableDriver;
 import by.dudkin.notification.service.dao.DriverDao;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class AvailableDriverConsumer {
 
     private final DriverDao driverDao;
 
-    @KafkaListener(topics = "${spring.kafka.topic.name.available-drivers}")
+    @KafkaListener(topics = KafkaConstants.AVAILABLE_DRIVERS_TOPIC)
     public void consume(AvailableDriver driver) {
         log.info("Json message received -> {}", driver.toString());
         driverDao.insertAvailableDriver(driver);

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.util.Collections;
@@ -15,6 +16,7 @@ import java.util.Set;
  * @author Alexander Dudkin
  */
 @Repository
+@Transactional
 @AllArgsConstructor
 public class RideDao {
 
@@ -33,6 +35,7 @@ public class RideDao {
             });
     }
 
+    @Transactional(readOnly = true)
     public Set<RideRequest> findNearbyRequestsForDriver(Long driverId) {
         Set<RideRequest> requests = new HashSet<>();
         jdbcTemplate.execute("select driver_id, st_y(location::geometry) as lat, st_x(location::geometry) as lng " +
