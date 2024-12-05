@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -32,8 +33,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Alexander Dudkin
  */
 @Testcontainers
-@ActiveProfiles("test")
 @Sql("classpath:data.sql")
+@ActiveProfiles({"test", "kafka"})
+@EmbeddedKafka(partitions = 1, topics = {"available-drivers", "ride-requests"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class DriverRestControllerTests {
 

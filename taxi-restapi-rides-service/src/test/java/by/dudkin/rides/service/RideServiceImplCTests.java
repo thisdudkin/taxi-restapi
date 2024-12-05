@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -31,7 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @Testcontainers
 @Sql("classpath:data.sql")
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "kafka"})
+@EmbeddedKafka(partitions = 1, topics = {"ride-requests"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class RideServiceImplCTests {
 

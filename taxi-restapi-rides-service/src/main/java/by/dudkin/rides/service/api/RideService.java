@@ -5,7 +5,7 @@ import by.dudkin.rides.domain.Ride;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.AvailableDriver;
-import by.dudkin.rides.rest.dto.response.PendingRide;
+import by.dudkin.rides.rest.dto.request.PendingRide;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

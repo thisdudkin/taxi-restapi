@@ -3,16 +3,20 @@ package by.dudkin.driver.service;
 import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.domain.Driver;
+import by.dudkin.driver.kafka.producer.AvailableDriverProducer;
 import by.dudkin.driver.mapper.DriverMapper;
+import by.dudkin.driver.repository.AvailableDriverService;
 import by.dudkin.driver.repository.DriverRepository;
 import by.dudkin.driver.rest.advice.custom.DriverNotFoundException;
+import by.dudkin.driver.rest.dto.request.AvailableDriver;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
+import by.dudkin.driver.rest.dto.response.PendingRide;
 import by.dudkin.driver.service.api.DriverService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,14 +25,16 @@ import java.util.List;
 /**
  * @author Alexander Dudkin
  */
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService {
 
     private final DriverMapper driverMapper;
-    private final JdbcTemplate jdbcTemplate;
     private final DriverRepository driverRepository;
+    private final AvailableDriverService availableDriverService;
+    private final AvailableDriverProducer availableDriverProducer;
 
     @Override
     @Transactional(readOnly = true)
@@ -70,6 +76,16 @@ public class DriverServiceImpl implements DriverService {
     public Driver getOrThrow(long driverId) {
         return driverRepository.findWithAssignmentsAndCarsById(driverId)
                 .orElseThrow(() -> new DriverNotFoundException(ErrorMessages.DRIVER_NOT_FOUND));
+    }
+
+    @Override
+    public void handleDriver(PendingRide ride) {
+        AvailableDriver availableDriver = availableDriverService.findAvailableDriver(ride);
+        if (availableDriver == null) {
+            log.info(ErrorMessages.AVAILABLE_DRIVER_NOT_FOUND);
+        } else {
+            availableDriverProducer.sendMessage(availableDriver);
+        }
     }
 
 }

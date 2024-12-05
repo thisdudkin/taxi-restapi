@@ -3,6 +3,7 @@ package by.dudkin.rides.service;
 import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.domain.Ride;
+import by.dudkin.rides.kafka.producer.RideRequestProducer;
 import by.dudkin.rides.mapper.RideMapper;
 import by.dudkin.rides.repository.RideRepository;
 import by.dudkin.rides.rest.advice.custom.RideNotFoundException;
@@ -42,6 +43,9 @@ class RideServiceImplUTests {
 
     @Mock
     private PriceCalculator priceCalculator;
+
+    @Mock
+    private RideRequestProducer rideRequestProducer;
 
     @InjectMocks
     private RideServiceImpl rideService;

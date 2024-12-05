@@ -2,7 +2,7 @@ server.port: 8083
 
 spring:
   profiles:
-    active: postgres
+    active: postgres, kafka
   application:
     name: rides-service
 

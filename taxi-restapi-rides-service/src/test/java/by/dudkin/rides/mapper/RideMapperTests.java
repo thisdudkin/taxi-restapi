@@ -1,7 +1,7 @@
 package by.dudkin.rides.mapper;
 
 import by.dudkin.common.enums.PaymentMethod;
-import by.dudkin.rides.domain.Location;
+import by.dudkin.common.util.Location;
 import by.dudkin.rides.domain.Ride;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import org.junit.jupiter.api.Test;

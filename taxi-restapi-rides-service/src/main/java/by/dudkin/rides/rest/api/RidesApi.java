@@ -4,7 +4,7 @@ import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.AvailableDriver;
-import by.dudkin.rides.rest.dto.response.PendingRide;
+import by.dudkin.rides.rest.dto.request.PendingRide;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
