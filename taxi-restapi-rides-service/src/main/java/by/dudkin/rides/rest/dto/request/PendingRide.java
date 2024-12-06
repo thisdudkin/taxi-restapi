@@ -1,6 +1,6 @@
-package by.dudkin.rides.rest.dto.response;
+package by.dudkin.rides.rest.dto.request;
 
-import by.dudkin.rides.domain.Location;
+import by.dudkin.common.util.Location;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

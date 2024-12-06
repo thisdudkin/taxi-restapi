@@ -4,6 +4,7 @@ import by.dudkin.common.enums.RideStatus;
 import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.domain.Ride;
+import by.dudkin.rides.kafka.producer.RideRequestProducer;
 import by.dudkin.rides.mapper.RideMapper;
 import by.dudkin.rides.repository.PendingRideService;
 import by.dudkin.rides.repository.RideRepository;
@@ -11,7 +12,7 @@ import by.dudkin.rides.rest.advice.custom.RideNotFoundException;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.AvailableDriver;
-import by.dudkin.rides.rest.dto.response.PendingRide;
+import by.dudkin.rides.rest.dto.request.PendingRide;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.utils.GeospatialUtils;
@@ -40,6 +41,8 @@ public class RideServiceImpl implements RideService {
     private final PriceCalculator priceCalculator;
     private final RideValidation rideValidation;
 
+    private final RideRequestProducer rideRequestProducer;
+
     @Override
     public RideResponse create(RideRequest req) {
         Ride ride = rideMapper.toRide(req);
@@ -47,7 +50,9 @@ public class RideServiceImpl implements RideService {
                 req.from().getLat(), req.from().getLng(),
                 req.to().getLat(), req.to().getLng())
         ));
-        return rideMapper.toResponse(rideRepository.save(ride));
+        Ride saved = rideRepository.save(ride);
+        rideRequestProducer.sendMessage(new PendingRide(saved.getId(), saved.getFrom(), saved.getTo(), saved.getPrice()));
+        return rideMapper.toResponse(saved);
     }
 
     @Override

@@ -5,7 +5,7 @@ import by.dudkin.rides.rest.api.RidesApi;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.AvailableDriver;
-import by.dudkin.rides.rest.dto.response.PendingRide;
+import by.dudkin.rides.rest.dto.request.PendingRide;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.utils.RideSpecification;

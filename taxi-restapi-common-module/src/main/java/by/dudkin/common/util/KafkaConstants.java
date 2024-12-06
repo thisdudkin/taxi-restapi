@@ -1,8 +1,8 @@
 package by.dudkin.common.util;
 
 /**
- * @author Alexander Dudkin
- */
+  * @author Alexander Dudkin
+  */
 public final class KafkaConstants {
 
     private KafkaConstants() {}

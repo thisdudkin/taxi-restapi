@@ -3,6 +3,7 @@ package by.dudkin.rides.domain;
 import by.dudkin.common.entity.BaseEntity;
 import by.dudkin.common.enums.PaymentMethod;
 import by.dudkin.common.enums.RideStatus;
+import by.dudkin.common.util.Location;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;

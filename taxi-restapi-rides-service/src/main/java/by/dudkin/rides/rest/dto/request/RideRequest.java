@@ -1,7 +1,7 @@
 package by.dudkin.rides.rest.dto.request;
 
 import by.dudkin.common.enums.PaymentMethod;
-import by.dudkin.rides.domain.Location;
+import by.dudkin.common.util.Location;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
