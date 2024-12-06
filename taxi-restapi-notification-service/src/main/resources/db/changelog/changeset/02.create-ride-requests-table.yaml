@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: ride-requests-table
+      author: Alexander Dudkin
+      changes:
+        - createTable:
+            tableName: ride_requests
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: ride_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: location
+                  type: geometry(Point, 4326)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: DECIMAL(10, 2)
+                  constraints:
+                    nullable: false

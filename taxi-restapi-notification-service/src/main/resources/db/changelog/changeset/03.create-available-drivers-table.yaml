@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: available-drivers
+      author: Alexander Dudkin
+      changes:
+        - createTable:
+            tableName: available_drivers
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: driver_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: car_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: location
+                  type: geometry(Point, 4326)
+                  constraints:
+                    nullable: false
