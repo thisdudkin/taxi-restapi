@@ -13,17 +13,17 @@ import org.springframework.data.domain.Pageable;
 public interface DriverService {
 
     PaginatedResponse<DriverResponse> findAll(Pageable pageable);
-
     DriverResponse findById(long driverId);
-
     DriverResponse create(DriverRequest driverRequest);
-
     DriverResponse update(long driverId, DriverRequest driverRequest);
-
     void delete(long driverId);
 
     Driver getOrThrow(long driverId);
 
     void handleDriver(PendingRide ride);
+
+    DriverResponse markAvailable(long driverId);
+    DriverResponse markBusy(long driverId);
+    DriverResponse markOffline(long driverId);
 
 }

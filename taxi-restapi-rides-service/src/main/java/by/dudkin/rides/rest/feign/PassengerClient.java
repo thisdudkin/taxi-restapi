@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
     value = "passengers-service",
     path = "/api/passengers"
 )
-public interface PassengerFeignClient {
+public interface PassengerClient {
 
     @GetMapping("/{id}")
     PassengerResponse getPassengerById(@PathVariable Long id);

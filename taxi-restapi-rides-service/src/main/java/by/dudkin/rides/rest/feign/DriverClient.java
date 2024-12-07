@@ -5,6 +5,7 @@ import by.dudkin.rides.rest.dto.response.DriverResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 /**
  * @author Alexander Dudkin
@@ -13,12 +14,15 @@ import org.springframework.web.bind.annotation.PathVariable;
     value = "drivers-service",
     path = "/api/"
 )
-public interface DriverFeignClient {
+public interface DriverClient {
 
-    @GetMapping("/drivers/{id}")
-    DriverResponse getDriverById(@PathVariable Long id);
+    @GetMapping("/drivers/{driverId}")
+    DriverResponse getDriverById(@PathVariable long driverId);
 
-    @GetMapping("/cars/{id}")
-    CarResponse getCarById(@PathVariable Long id);
+    @PutMapping("/drivers/{driverId}/status/busy")
+    void markDriverBusy(@PathVariable long driverId);
+
+    @GetMapping("/cars/{carId}")
+    CarResponse getCarById(@PathVariable long carId);
 
 }
