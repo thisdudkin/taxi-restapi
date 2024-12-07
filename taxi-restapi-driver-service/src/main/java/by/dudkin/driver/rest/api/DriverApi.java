@@ -2,7 +2,6 @@ package by.dudkin.driver.rest.api;
 
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
-import by.dudkin.driver.rest.dto.request.AvailableDriver;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -100,5 +99,59 @@ public interface DriverApi {
     )
     @DeleteMapping(value = "/drivers/{driverId}")
     ResponseEntity<Void> delete(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable("driverId") long driverId);
+
+    @PutMapping(value = "/drivers/{driverId}/status/available")
+    @Operation(
+        operationId = "markDriverAsAvailable",
+        summary = "Mark a driver as available",
+        description = "Sets the driver's status to READY, indicating that the driver is available for new rides.",
+        tags = {"driver"},
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Driver status updated to READY successfully.",
+                content = @Content(mediaType = "application/json", schema = @Schema(implementation = DriverResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Driver not found."),
+            @ApiResponse(responseCode = "400", description = "Invalid state transition.")
+        }
+    )
+    ResponseEntity<DriverResponse> markAvailable(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable long driverId);
+
+    @PutMapping(value = "/drivers/{driverId}/status/busy")
+    @Operation(
+        operationId = "markDriverAsBusy",
+        summary = "Mark a driver as busy",
+        description = "Sets the driver's status to ON_TRIP, indicating that the driver is currently on a trip.",
+        tags = {"driver"},
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Driver status updated to ON_TRIP successfully.",
+                content = @Content(mediaType = "application/json", schema = @Schema(implementation = DriverResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Driver not found."),
+            @ApiResponse(responseCode = "400", description = "Invalid state transition.")
+        }
+    )
+    ResponseEntity<DriverResponse> markOnTrip(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable long driverId);
+
+    @PutMapping(value = "/drivers/{driverId}/status/offline")
+    @Operation(
+        operationId = "markDriverAsOffline",
+        summary = "Mark a driver as offline",
+        description = "Sets the driver's status to OFFLINE, indicating that the driver is not available for rides.",
+        tags = {"driver"},
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Driver status updated to OFFLINE successfully.",
+                content = @Content(mediaType = "application/json", schema = @Schema(implementation = DriverResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Driver not found."),
+            @ApiResponse(responseCode = "400", description = "Invalid state transition.")
+        }
+    )
+    ResponseEntity<DriverResponse> markOffline(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable long driverId);
 
 }
