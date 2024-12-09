@@ -15,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -35,6 +36,10 @@ class AssignmentServiceComponentTests {
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.0");
+
+    @Container
+    @ServiceConnection
+    static ElasticsearchContainer elastic = new ElasticsearchContainer("elasticsearch:7.17.22");
 
     @Autowired
     AssignmentService assignmentService;

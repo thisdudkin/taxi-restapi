@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /**
  * @author Alexander Dudkin
  */
@@ -22,7 +24,7 @@ public class Location {
     private String city;
     private String street;
 
-    private Double lat;
-    private Double lng;
+    private BigDecimal lat;
+    private BigDecimal lng;
 
 }

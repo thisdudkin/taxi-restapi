@@ -38,15 +38,15 @@ public class PendingRideService {
                     rs.getString("from_country"),
                     rs.getString("from_city"),
                     rs.getString("from_street"),
-                    rs.getDouble("from_lat"),
-                    rs.getDouble("from_lng")
+                    rs.getBigDecimal("from_lat"),
+                    rs.getBigDecimal("from_lng")
                 ),
                 new Location(
                     rs.getString("to_country"),
                     rs.getString("to_city"),
                     rs.getString("to_street"),
-                    rs.getDouble("to_lat"),
-                    rs.getDouble("to_lng")
+                    rs.getBigDecimal("to_lat"),
+                    rs.getBigDecimal("to_lng")
                 ),
                 rs.getBigDecimal("price")
             )

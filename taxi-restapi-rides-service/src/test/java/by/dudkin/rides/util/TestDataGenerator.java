@@ -31,8 +31,8 @@ public abstract class TestDataGenerator {
                 .country(RandomStringUtils.randomAlphabetic(12))
                 .city(RandomStringUtils.randomAlphabetic(6))
                 .street(RandomStringUtils.randomAlphabetic(12))
-                .lat(ThreadLocalRandom.current().nextDouble())
-                .lng(ThreadLocalRandom.current().nextDouble())
+                .lat(BigDecimal.valueOf(ThreadLocalRandom.current().nextDouble()))
+                .lng(BigDecimal.valueOf(ThreadLocalRandom.current().nextDouble()))
                 .build();
     }
 

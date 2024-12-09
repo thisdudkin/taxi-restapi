@@ -1,5 +1,7 @@
 package by.dudkin.rides.utils;
 
+import java.math.BigDecimal;
+
 /**
  * @author Alexander Dudkin
  */
@@ -7,11 +9,11 @@ public abstract class GeospatialUtils {
 
     private static final double EARTH_RADIUS = 6371.0;
 
-    public static double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
-        double lat1Rad = Math.toRadians(lat1);
-        double lng1Rad = Math.toRadians(lng1);
-        double lat2Rad = Math.toRadians(lat2);
-        double lng2Rad = Math.toRadians(lng2);
+    public static double calculateDistance(BigDecimal lat1, BigDecimal lng1, BigDecimal lat2, BigDecimal lng2) {
+        double lat1Rad = Math.toRadians(lat1.doubleValue());
+        double lng1Rad = Math.toRadians(lng1.doubleValue());
+        double lat2Rad = Math.toRadians(lat2.doubleValue());
+        double lng2Rad = Math.toRadians(lng2.doubleValue());
 
         double deltaLat = lat2Rad - lat1Rad;
         double deltaLon = lng2Rad - lng1Rad;
