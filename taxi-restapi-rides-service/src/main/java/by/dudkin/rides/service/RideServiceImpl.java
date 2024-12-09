@@ -9,20 +9,24 @@ import by.dudkin.rides.mapper.RideMapper;
 import by.dudkin.rides.repository.PendingRideService;
 import by.dudkin.rides.repository.RideRepository;
 import by.dudkin.rides.rest.advice.custom.RideNotFoundException;
+import by.dudkin.rides.rest.dto.request.PendingRide;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.AvailableDriver;
-import by.dudkin.rides.rest.dto.request.PendingRide;
+import by.dudkin.rides.rest.dto.response.DriverResponse;
 import by.dudkin.rides.rest.dto.response.RideResponse;
+import by.dudkin.rides.rest.feign.DriverClient;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.utils.GeospatialUtils;
-import by.dudkin.rides.utils.RideValidation;
+import by.dudkin.rides.utils.RideStatusTransition;
+import by.dudkin.rides.utils.RideStatusTransitionValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,9 +43,11 @@ public class RideServiceImpl implements RideService {
     private final RideRepository rideRepository;
     private final PendingRideService pendingRideService;
     private final PriceCalculator priceCalculator;
-    private final RideValidation rideValidation;
 
+    private final RideStatusTransitionValidator transitionValidator;
     private final RideRequestProducer rideRequestProducer;
+    private final DriverClient driverClient;
+    private final RideAssignmentService rideAssignmentService;
 
     @Override
     public RideResponse create(RideRequest req) {
@@ -87,26 +93,19 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public RideResponse cancel(long rideId) {
-        Ride ride = getOrThrow(rideId);
-        rideValidation.validateStatusTransition(ride.getStatus(), RideStatus.CANCEL);
-        ride.setStatus(RideStatus.CANCEL);
-        return rideMapper.toResponse(rideRepository.save(ride));
+        return rideMapper.toResponse(updateRideStatus(rideId, RideStatus.CANCEL));
     }
 
     @Override
     public RideResponse complete(long rideId) {
-        Ride ride = getOrThrow(rideId);
-        rideValidation.validateStatusTransition(ride.getStatus(), RideStatus.DONE);
-        ride.setStatus(RideStatus.DONE);
+        Ride ride = updateRideStatus(rideId, RideStatus.DONE);
         ride.setEndTime(LocalDateTime.now());
         return rideMapper.toResponse(rideRepository.save(ride));
     }
 
     @Override
     public RideResponse activate(long rideId) {
-        Ride ride = getOrThrow(rideId);
-        rideValidation.validateStatusTransition(ride.getStatus(), RideStatus.ACTIVE);
-        ride.setStatus(RideStatus.ACTIVE);
+        Ride ride = updateRideStatus(rideId, RideStatus.ACTIVE);
         ride.setStartTime(LocalDateTime.now());
         return rideMapper.toResponse(rideRepository.save(ride));
     }
@@ -121,12 +120,11 @@ public class RideServiceImpl implements RideService {
     @Override
     public RideResponse assign(long rideId, AvailableDriver availableDriver) {
         Ride ride = getOrThrow(rideId);
-        rideValidation.validateStatusTransition(ride.getStatus(), RideStatus.ASSIGNED);
-        ride.setDriverId(availableDriver.driverId());
-        ride.setCarId(availableDriver.carId());
-        ride.setStatus(RideStatus.ASSIGNED);
-        Ride saved = rideRepository.save(ride);
-        return rideMapper.toResponse(saved);
+        RideStatusTransition transition = new RideStatusTransition(ride.getStatus(), RideStatus.ASSIGNED);
+        transitionValidator.validate(transition, new BeanPropertyBindingResult(transition, transition.getClass().getSimpleName()));
+        DriverResponse driver = driverClient.getDriverById(availableDriver.driverId());
+        ride = rideAssignmentService.assignDriverToRide(ride, availableDriver, driver);
+        return rideMapper.toResponse(rideRepository.save(ride));
     }
 
     @Override
@@ -137,6 +135,14 @@ public class RideServiceImpl implements RideService {
     Ride getOrThrow(long rideId) {
         return rideRepository.findById(rideId)
                 .orElseThrow(() -> new RideNotFoundException(ErrorMessages.RIDE_NOT_FOUND));
+    }
+
+    private Ride updateRideStatus(long rideId, RideStatus newStatus) {
+        Ride ride = getOrThrow(rideId);
+        RideStatusTransition transition = new RideStatusTransition(ride.getStatus(), newStatus);
+        transitionValidator.validate(transition, new BeanPropertyBindingResult(transition, transition.getClass().getSimpleName()));
+        ride.setStatus(newStatus);
+        return rideRepository.save(ride);
     }
 
 }

@@ -48,4 +48,19 @@ public class DriverRestController implements DriverApi {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @Override
+    public ResponseEntity<DriverResponse> markAvailable(long driverId) {
+        return new ResponseEntity<>(driverService.markAvailable(driverId), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<DriverResponse> markOnTrip(long driverId) {
+        return new ResponseEntity<>(driverService.markBusy(driverId), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<DriverResponse> markOffline(long driverId) {
+        return new ResponseEntity<>(driverService.markOffline(driverId), HttpStatus.OK);
+    }
+
 }
