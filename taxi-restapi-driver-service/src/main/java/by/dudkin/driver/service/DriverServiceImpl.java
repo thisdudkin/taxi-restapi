@@ -6,7 +6,6 @@ import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.kafka.producer.AvailableDriverProducer;
 import by.dudkin.driver.mapper.DriverMapper;
-import by.dudkin.driver.repository.AvailableDriverService;
 import by.dudkin.driver.repository.DriverRepository;
 import by.dudkin.driver.rest.advice.custom.DriverNotFoundException;
 import by.dudkin.driver.rest.dto.request.AvailableDriver;
