@@ -30,4 +30,14 @@ public class DriverDao {
             });
     }
 
+    public void removeAvailableDriver(long driverId, long carId) {
+        jdbcTemplate.execute("delete from available_drivers " +
+            "where driver_id = ? and car_id = ?", (PreparedStatementCallback<?>) ps -> {
+            ps.setLong(1, driverId);
+            ps.setLong(2, carId);
+            ps.execute();
+            return null;
+        });
+    }
+
 }

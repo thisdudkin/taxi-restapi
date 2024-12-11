@@ -12,26 +12,15 @@ import org.springframework.kafka.support.converter.StringJsonMessageConverter;
  * @author Alexander Dudkin
  */
 @Configuration
-public class RideProducerConfig {
-
-    @Value("${kafka.partitions.count}")
-    private int partitions;
-
-    @Value("${kafka.replicas.count}")
-    private int replicas;
+public class RideProducerConfiguration {
 
     @Bean
-    public NewTopic topic() {
+    public NewTopic rideRequestsTopic() {
         return TopicBuilder
             .name(KafkaConstants.RIDE_REQUESTS_TOPIC)
-            .partitions(partitions)
-            .replicas(replicas)
+            .partitions(KafkaConstants.PARTITIONS_COUNT)
+            .replicas(KafkaConstants.REPLICAS_COUNT)
             .build();
-    }
-
-    @Bean
-    public StringJsonMessageConverter stringJsonMessageConverter() {
-        return new StringJsonMessageConverter();
     }
 
 }
