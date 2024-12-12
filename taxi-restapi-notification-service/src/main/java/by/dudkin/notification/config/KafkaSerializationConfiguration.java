@@ -8,7 +8,7 @@ import org.springframework.kafka.support.converter.StringJsonMessageConverter;
  * @author Alexander Dudkin
  */
 @Configuration
-public class KafkaConfig {
+public class KafkaSerializationConfiguration {
 
     @Bean
     public StringJsonMessageConverter stringJsonMessageConverter() {

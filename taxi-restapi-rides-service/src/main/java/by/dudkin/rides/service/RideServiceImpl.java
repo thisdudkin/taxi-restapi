@@ -4,6 +4,7 @@ import by.dudkin.common.enums.RideStatus;
 import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.domain.Ride;
+import by.dudkin.rides.kafka.domain.AcceptedRideEvent;
 import by.dudkin.rides.kafka.producer.RideRequestProducer;
 import by.dudkin.rides.mapper.RideMapper;
 import by.dudkin.rides.repository.PendingRideService;
@@ -21,6 +22,7 @@ import by.dudkin.rides.utils.GeospatialUtils;
 import by.dudkin.rides.utils.RideStatusTransition;
 import by.dudkin.rides.utils.RideStatusTransitionValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -44,6 +46,7 @@ public class RideServiceImpl implements RideService {
     private final PendingRideService pendingRideService;
     private final PriceCalculator priceCalculator;
 
+    private final ApplicationEventPublisher eventPublisher;
     private final RideStatusTransitionValidator transitionValidator;
     private final RideRequestProducer rideRequestProducer;
     private final DriverClient driverClient;
@@ -124,7 +127,9 @@ public class RideServiceImpl implements RideService {
         transitionValidator.validate(transition, new BeanPropertyBindingResult(transition, transition.getClass().getSimpleName()));
         DriverResponse driver = driverClient.getDriverById(availableDriver.driverId());
         ride = rideAssignmentService.assignDriverToRide(ride, availableDriver, driver);
-        return rideMapper.toResponse(rideRepository.save(ride));
+        Ride saved = rideRepository.save(ride);
+        eventPublisher.publishEvent(new AcceptedRideEvent(saved.getId(), saved.getDriverId(), saved.getCarId()));
+        return rideMapper.toResponse(saved);
     }
 
     @Override

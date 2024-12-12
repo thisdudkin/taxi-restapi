@@ -74,4 +74,13 @@ public class RideDao {
         return Collections.unmodifiableSet(requests);
     }
 
+    public void removeAcceptedRide(long rideId) {
+        jdbcTemplate.execute("delete from ride_requests " +
+            "where ride_id = ?", (PreparedStatementCallback<?>) ps -> {
+            ps.setLong(1, rideId);
+            ps.execute();
+            return null;
+        });
+    }
+
 }
