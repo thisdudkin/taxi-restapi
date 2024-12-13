@@ -1,4 +1,4 @@
-package by.dudkin.rides.service;
+package by.dudkin.rides.utils;
 
 import org.springframework.stereotype.Component;
 

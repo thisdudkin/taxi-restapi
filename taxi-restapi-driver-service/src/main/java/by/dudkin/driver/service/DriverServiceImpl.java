@@ -19,10 +19,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -39,6 +42,7 @@ public class DriverServiceImpl implements DriverService {
     private final AvailableDriverService availableDriverService;
     private final AvailableDriverProducer availableDriverProducer;
     private final DriverStatusTransitionValidator transitionValidator;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     @Transactional(readOnly = true)
@@ -117,6 +121,17 @@ public class DriverServiceImpl implements DriverService {
         transitionValidator.validate(transition, new BeanPropertyBindingResult(transition, transition.getClass().getSimpleName()));
         driver.setStatus(DriverStatus.OFFLINE);
         return driverMapper.toResponse(driverRepository.save(driver));
+    }
+
+    @Override
+    public void updateBalance(long driverId, BigDecimal amount) {
+        jdbcTemplate.execute("update drivers set balance = balance + ? " +
+            "where id = ?", (PreparedStatementCallback<?>) updateDriver -> {
+            updateDriver.setBigDecimal(1, amount);
+            updateDriver.setLong(2, driverId);
+            updateDriver.execute();
+            return null;
+        });
     }
 
 }

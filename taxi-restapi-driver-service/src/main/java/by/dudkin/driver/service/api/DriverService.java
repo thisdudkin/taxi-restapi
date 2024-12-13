@@ -7,6 +7,8 @@ import by.dudkin.driver.rest.dto.response.DriverResponse;
 import by.dudkin.driver.rest.dto.response.PendingRide;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
+
 /**
  * @author Alexander Dudkin
  */
@@ -25,5 +27,7 @@ public interface DriverService {
     DriverResponse markAvailable(long driverId);
     DriverResponse markBusy(long driverId);
     DriverResponse markOffline(long driverId);
+
+    void updateBalance(long driverId, BigDecimal amount);
 
 }

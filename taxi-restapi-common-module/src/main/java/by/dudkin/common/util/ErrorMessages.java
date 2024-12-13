@@ -40,5 +40,6 @@ public class ErrorMessages {
     public static final String INVALID_TRANSITION = "error.validation.invalid.transition";
     public static final String DRIVER_IS_NOT_READY = "error.validation.invalid.driver.status";
     public static final String RIDE_IS_NOT_PENDING = "error.validation.invalid.ride.status";
+    public static final String INSUFFICIENT_FUNDS = "error.validation.insufficient.funds";
 
 }

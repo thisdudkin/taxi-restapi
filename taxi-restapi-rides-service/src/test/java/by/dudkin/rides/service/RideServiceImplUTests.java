@@ -10,11 +10,13 @@ import by.dudkin.rides.rest.advice.custom.RideNotFoundException;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.util.TestDataGenerator;
+import by.dudkin.rides.utils.PriceCalculator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -40,6 +42,12 @@ class RideServiceImplUTests {
 
     @Mock
     private RideRepository rideRepository;
+
+    @Mock
+    private RideCreationService rideCreationService;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @Mock
     private PriceCalculator priceCalculator;
@@ -112,6 +120,7 @@ class RideServiceImplUTests {
     void whenCreateRide_thenReturnRideResponse() {
         // Arrange
         when(rideMapper.toRide(rideRequest)).thenReturn(ride);
+        when(rideCreationService.createRide(ride)).thenReturn(ride);
         when(rideRepository.save(ride)).thenReturn(ride);
         when(rideMapper.toResponse(ride)).thenReturn(rideResponse);
 

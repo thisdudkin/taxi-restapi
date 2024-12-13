@@ -1,12 +1,14 @@
 package by.dudkin.driver.rest.controller;
 
 import by.dudkin.common.util.PaginatedResponse;
+import by.dudkin.driver.repository.DriverLocationRepository;
 import by.dudkin.driver.rest.dto.request.CarRequest;
 import by.dudkin.driver.rest.dto.response.CarResponse;
 import by.dudkin.driver.util.TestDataGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpEntity;
@@ -43,9 +45,8 @@ class CarRestControllerTests {
     @ServiceConnection
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.0");
 
-    @Container
-    @ServiceConnection
-    static ElasticsearchContainer elastic = new ElasticsearchContainer("elasticsearch:7.17.22");
+    @MockBean
+    DriverLocationRepository driverLocationRepository;
 
     @Autowired
     TestRestTemplate restTemplate;

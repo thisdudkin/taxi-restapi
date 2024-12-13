@@ -1,15 +1,22 @@
 package by.dudkin.rides.rest.controller;
 
 import by.dudkin.common.enums.RideStatus;
+import by.dudkin.common.util.BalanceResponse;
 import by.dudkin.common.util.PaginatedResponse;
+import by.dudkin.common.util.TransactionRequest;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.RideResponse;
+import by.dudkin.rides.rest.feign.DriverClient;
+import by.dudkin.rides.rest.feign.PassengerClient;
+import by.dudkin.rides.rest.feign.PaymentClient;
 import by.dudkin.rides.util.TestDataGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpEntity;
@@ -28,6 +35,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 import static java.util.Objects.requireNonNull;
@@ -52,6 +60,15 @@ class RideRestControllerTests {
 
     @Autowired
     TestRestTemplate restTemplate;
+
+    @MockBean
+    private PassengerClient passengerClient;
+
+    @MockBean
+    private PaymentClient paymentClient;
+
+    @MockBean
+    private DriverClient driverClient;
 
     private static final String BASE_URI = "/api/rides";
     private static final String DONE_URI = "/api/rides/3/done";
@@ -117,6 +134,8 @@ class RideRestControllerTests {
     void shouldCreateRide() {
         // Arrange
         RideRequest request = TestDataGenerator.randomRideRequest();
+        BalanceResponse<Long> mockResponse = new BalanceResponse<>(request.passengerId(), BigDecimal.valueOf(1000));
+        Mockito.when(passengerClient.checkBalance(request.passengerId())).thenReturn(mockResponse);
 
         // Act
         ResponseEntity<RideResponse> response = restTemplate.exchange(BASE_URI, HttpMethod.POST, new HttpEntity<>(request), RideResponse.class);
@@ -125,7 +144,8 @@ class RideRestControllerTests {
         assertNotNull(response);
         assertAll(
             () -> assertNotNull(response.getBody()),
-            () -> assertEquals(HttpStatus.CREATED, response.getStatusCode())
+            () -> assertEquals(HttpStatus.CREATED, response.getStatusCode()),
+            () -> assertEquals(request.passengerId(), requireNonNull(response.getBody()).passengerId())
         );
     }
 
@@ -202,6 +222,10 @@ class RideRestControllerTests {
     @Test
     @Rollback
     void shouldMarkDoneRide() {
+        // Arrange
+        Mockito.doNothing().when(paymentClient).processTransaction(Mockito.any(TransactionRequest.class));
+        Mockito.doNothing().when(driverClient).markDriverAvailable(103);
+
         // Act
         ResponseEntity<RideResponse> response = restTemplate.exchange(DONE_URI, HttpMethod.PATCH, null, RideResponse.class);
 

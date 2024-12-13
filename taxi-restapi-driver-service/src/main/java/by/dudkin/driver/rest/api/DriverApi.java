@@ -20,11 +20,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.math.BigDecimal;
 
 /**
  * @author Alexander Dudkin
  */
-@RequestMapping("/api")
+@RequestMapping("/api/drivers")
 public interface DriverApi {
 
     @Operation(
@@ -37,7 +40,7 @@ public interface DriverApi {
             @ApiResponse(responseCode = "404", description = "Driver not found.")
         }
     )
-    @GetMapping(value = "/drivers/{driverId}", produces = "application/json")
+    @GetMapping(value = "/{driverId}", produces = "application/json")
     ResponseEntity<DriverResponse> get(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable("driverId") long driverId);
 
     @Operation(
@@ -57,7 +60,7 @@ public interface DriverApi {
             @ApiResponse(responseCode = "500", description = "Server error.")
         }
     )
-    @GetMapping(value = "/drivers", produces = "application/json")
+    @GetMapping(produces = "application/json")
     ResponseEntity<PaginatedResponse<DriverResponse>> getAll(@Parameter(hidden = true) Pageable pageable);
 
 
@@ -71,7 +74,7 @@ public interface DriverApi {
             @ApiResponse(responseCode = "400", description = "Invalid input.")
         }
     )
-    @PostMapping(value = "/drivers", produces = "application/json", consumes = "application/json")
+    @PostMapping(produces = "application/json", consumes = "application/json")
     ResponseEntity<DriverResponse> save(@Parameter(name = "DriverRequest", description = "Driver data", required = true) @RequestBody @Valid DriverRequest driverRequest);
 
     @Operation(
@@ -84,7 +87,7 @@ public interface DriverApi {
             @ApiResponse(responseCode = "404", description = "Driver not found.")
         }
     )
-    @PutMapping(value = "/drivers/{driverId}", produces = "application/json", consumes = "application/json")
+    @PutMapping(value = "/{driverId}", produces = "application/json", consumes = "application/json")
     ResponseEntity<DriverResponse> update(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable("driverId") long driverId, @Parameter(name = "DriverRequest", description = "Driver data", required = true) @RequestBody @Valid DriverRequest driverRequest);
 
     @Operation(
@@ -97,10 +100,10 @@ public interface DriverApi {
             @ApiResponse(responseCode = "404", description = "Driver not found.")
         }
     )
-    @DeleteMapping(value = "/drivers/{driverId}")
+    @DeleteMapping(value = "/{driverId}")
     ResponseEntity<Void> delete(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable("driverId") long driverId);
 
-    @PutMapping(value = "/drivers/{driverId}/status/available")
+    @PutMapping(value = "/{driverId}/status/available")
     @Operation(
         operationId = "markDriverAsAvailable",
         summary = "Mark a driver as available",
@@ -118,7 +121,7 @@ public interface DriverApi {
     )
     ResponseEntity<DriverResponse> markAvailable(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable long driverId);
 
-    @PutMapping(value = "/drivers/{driverId}/status/busy")
+    @PutMapping(value = "/{driverId}/status/busy")
     @Operation(
         operationId = "markDriverAsBusy",
         summary = "Mark a driver as busy",
@@ -136,7 +139,7 @@ public interface DriverApi {
     )
     ResponseEntity<DriverResponse> markOnTrip(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable long driverId);
 
-    @PutMapping(value = "/drivers/{driverId}/status/offline")
+    @PutMapping(value = "/{driverId}/status/offline")
     @Operation(
         operationId = "markDriverAsOffline",
         summary = "Mark a driver as offline",
@@ -153,5 +156,24 @@ public interface DriverApi {
         }
     )
     ResponseEntity<DriverResponse> markOffline(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable long driverId);
+
+    @Operation(
+        operationId = "updateDriverBalance",
+        summary = "Update driver balance",
+        description = "Updates the balance of a driver by ID.",
+        tags = {"driver"},
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Balance updated successfully."),
+            @ApiResponse(responseCode = "404", description = "Driver not found."),
+            @ApiResponse(responseCode = "400", description = "Invalid input.")
+        }
+    )
+    @PutMapping(value = "/{driverId}/balance", produces = "application/json")
+    ResponseEntity<Void> updateBalance(
+        @Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH)
+        @PathVariable("driverId") long driverId,
+        @Parameter(name = "amount", description = "The amount to adjust the balance by.", required = true)
+        @RequestParam BigDecimal amount
+    );
 
 }
