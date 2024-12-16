@@ -8,6 +8,7 @@ import by.dudkin.driver.kafka.producer.AvailableDriverProducer;
 import by.dudkin.driver.mapper.DriverMapper;
 import by.dudkin.driver.repository.DriverRepository;
 import by.dudkin.driver.rest.advice.custom.DriverNotFoundException;
+import by.dudkin.driver.rest.advice.custom.NoAvailableDriverException;
 import by.dudkin.driver.rest.dto.request.AvailableDriver;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
@@ -89,11 +90,11 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public void handleDriver(PendingRide ride) {
-        AvailableDriver availableDriver = availableDriverService.findAvailableDriver(ride);
-        if (availableDriver == null) {
-            log.info(ErrorMessages.AVAILABLE_DRIVER_NOT_FOUND);
-        } else {
+        try {
+            AvailableDriver availableDriver = availableDriverService.findAvailableDriver(ride);
             availableDriverProducer.sendMessage(availableDriver);
+        } catch (NoAvailableDriverException e) {
+            log.warn(ErrorMessages.AVAILABLE_DRIVER_NOT_FOUND);
         }
     }
 
