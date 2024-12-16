@@ -1,5 +1,6 @@
 package by.dudkin.passenger.rest.controller;
 
+import by.dudkin.common.util.BalanceResponse;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.passenger.rest.api.PassengerApi;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
@@ -12,8 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -48,8 +48,19 @@ public class PassengerRestController implements PassengerApi {
     }
 
     @Override
-    public ResponseEntity<Void> deletePassenger(long passengerId) {
+    public ResponseEntity<Void> delete(long passengerId) {
         passengerService.delete(passengerId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public ResponseEntity<BalanceResponse<Long>> checkBalance(Long passengerId) {
+        return new ResponseEntity<>(passengerService.checkBalance(passengerId), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> updateBalance(long passengerId, BigDecimal amount) {
+        passengerService.updateBalance(passengerId, amount);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

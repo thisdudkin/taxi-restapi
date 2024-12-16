@@ -42,25 +42,20 @@ import java.util.List;
 public class RideServiceImpl implements RideService {
 
     private final RideMapper rideMapper;
+    private final DriverClient driverClient;
     private final RideRepository rideRepository;
     private final PendingRideService pendingRideService;
-    private final PriceCalculator priceCalculator;
-
+    private final RideCreationService rideCreationService;
     private final ApplicationEventPublisher eventPublisher;
-    private final RideStatusTransitionValidator transitionValidator;
-    private final RideRequestProducer rideRequestProducer;
-    private final DriverClient driverClient;
     private final RideAssignmentService rideAssignmentService;
+    private final RideCompletionService rideCompletionService;
+    private final RideStatusTransitionValidator transitionValidator;
 
     @Override
     public RideResponse create(RideRequest req) {
         Ride ride = rideMapper.toRide(req);
-        ride.setPrice(priceCalculator.calculatePrice(GeospatialUtils.calculateDistance(
-                req.from().getLat(), req.from().getLng(),
-                req.to().getLat(), req.to().getLng())
-        ));
-        Ride saved = rideRepository.save(ride);
-        rideRequestProducer.sendMessage(new PendingRide(saved.getId(), saved.getFrom(), saved.getTo(), saved.getPrice()));
+        Ride saved = rideRepository.save(rideCreationService.createRide(ride));
+        eventPublisher.publishEvent(new PendingRide(saved.getId(), saved.getFrom(), saved.getTo(), saved.getPrice()));
         return rideMapper.toResponse(saved);
     }
 
@@ -102,8 +97,7 @@ public class RideServiceImpl implements RideService {
     @Override
     public RideResponse complete(long rideId) {
         Ride ride = updateRideStatus(rideId, RideStatus.DONE);
-        ride.setEndTime(LocalDateTime.now());
-        return rideMapper.toResponse(rideRepository.save(ride));
+        return rideMapper.toResponse(rideRepository.save(rideCompletionService.completeRide(ride)));
     }
 
     @Override

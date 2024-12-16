@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+
 /**
  * @author Alexander Dudkin
  */
@@ -61,6 +63,12 @@ public class DriverRestController implements DriverApi {
     @Override
     public ResponseEntity<DriverResponse> markOffline(long driverId) {
         return new ResponseEntity<>(driverService.markOffline(driverId), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> updateBalance(long driverId, BigDecimal amount) {
+        driverService.updateBalance(driverId, amount);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

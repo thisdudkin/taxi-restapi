@@ -22,6 +22,9 @@ public interface DriverClient {
     @PutMapping("/drivers/{driverId}/status/busy")
     void markDriverBusy(@PathVariable long driverId);
 
+    @PutMapping("/drivers/{driverId}/status/available")
+    void markDriverAvailable(@PathVariable long driverId);
+
     @GetMapping("/cars/{carId}")
     CarResponse getCarById(@PathVariable long carId);
 

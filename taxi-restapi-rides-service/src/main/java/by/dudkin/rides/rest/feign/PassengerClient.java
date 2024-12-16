@@ -1,5 +1,6 @@
 package by.dudkin.rides.rest.feign;
 
+import by.dudkin.common.util.BalanceResponse;
 import by.dudkin.rides.rest.dto.response.PassengerResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,5 +17,8 @@ public interface PassengerClient {
 
     @GetMapping("/{id}")
     PassengerResponse getPassengerById(@PathVariable Long id);
+
+    @GetMapping("/{passengerId}/balance")
+    BalanceResponse<Long> checkBalance(@PathVariable Long passengerId);
 
 }

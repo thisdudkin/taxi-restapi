@@ -2,12 +2,14 @@ package by.dudkin.driver.service.component;
 
 import by.dudkin.common.enums.AssignmentStatus;
 import by.dudkin.driver.repository.AssignmentRepository;
+import by.dudkin.driver.repository.DriverLocationRepository;
 import by.dudkin.driver.service.api.AssignmentService;
 import by.dudkin.driver.util.TestDataGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
@@ -37,9 +39,8 @@ class AssignmentServiceComponentTests {
     @ServiceConnection
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.0");
 
-    @Container
-    @ServiceConnection
-    static ElasticsearchContainer elastic = new ElasticsearchContainer("elasticsearch:7.17.22");
+    @MockBean
+    DriverLocationRepository driverLocationRepository;
 
     @Autowired
     AssignmentService assignmentService;

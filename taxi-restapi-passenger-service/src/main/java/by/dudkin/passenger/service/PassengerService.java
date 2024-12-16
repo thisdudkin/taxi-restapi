@@ -1,10 +1,12 @@
 package by.dudkin.passenger.service;
 
+import by.dudkin.common.util.BalanceResponse;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
 /**
@@ -21,5 +23,9 @@ public interface PassengerService {
     PassengerResponse update(long passengerId, PassengerRequest passengerRequest);
 
     void delete(long passengerId);
+
+    BalanceResponse<Long> checkBalance(Long passengerId);
+
+    void updateBalance(long passengerId, BigDecimal amount);
 
 }

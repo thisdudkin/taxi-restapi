@@ -1,16 +1,20 @@
 package by.dudkin.rides.service;
 
+import by.dudkin.common.util.BalanceResponse;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.domain.Ride;
 import by.dudkin.rides.repository.RideRepository;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.RideResponse;
+import by.dudkin.rides.rest.feign.PassengerClient;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.util.TestDataGenerator;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
@@ -20,6 +24,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,6 +52,9 @@ class RideServiceImplCTests {
     @Autowired
     RideRepository rideRepository;
 
+    @MockBean
+    PassengerClient passengerClient;
+
     @Test
     void shouldFindRide() {
         // Act
@@ -61,6 +69,7 @@ class RideServiceImplCTests {
     void shouldCreateRide() {
         // Arrange
         RideRequest request = TestDataGenerator.randomRideRequest();
+        Mockito.when(passengerClient.checkBalance(request.passengerId())).thenReturn(new BalanceResponse<>(request.passengerId(), BigDecimal.valueOf(1000)));
 
         // Act
         RideResponse response = rideService.create(request);

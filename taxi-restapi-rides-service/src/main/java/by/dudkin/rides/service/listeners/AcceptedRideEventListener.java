@@ -1,4 +1,4 @@
-package by.dudkin.rides.service;
+package by.dudkin.rides.service.listeners;
 
 import by.dudkin.rides.kafka.domain.AcceptedRideEvent;
 import by.dudkin.rides.kafka.producer.AcceptedRideProducer;
