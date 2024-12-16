@@ -7,14 +7,15 @@ import by.dudkin.common.util.Location;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * DTO for {@link by.dudkin.rides.domain.Ride}
  */
-public record RideResponse(Long id,
-                           Long passengerId,
-                           Long driverId,
-                           Long carId,
+public record RideResponse(UUID id,
+                           UUID passengerId,
+                           UUID driverId,
+                           UUID carId,
                            RideStatus status,
                            Location from,
                            Location to,

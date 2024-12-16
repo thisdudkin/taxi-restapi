@@ -20,6 +20,8 @@ import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -53,7 +55,7 @@ class DriverServiceComponentTests {
     @Sql("classpath:data.sql")
     void shouldFindDriverById() {
         // Act
-        var response = driverService.findById(100L);
+        var response = driverService.findById(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981"));
 
         // Assert
         assertThat(response).isNotNull();
@@ -82,7 +84,7 @@ class DriverServiceComponentTests {
         var updatedRequest = TestDataGenerator.randomDriverRequestWithFirstname(UPDATED_FIRSTNAME);
 
         // Act
-        var response = driverService.update(103L, updatedRequest);
+        var response = driverService.update(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6983"), updatedRequest);
 
         // Assert
         assertThat(response).isNotNull();
@@ -93,10 +95,10 @@ class DriverServiceComponentTests {
     @Sql("classpath:data.sql")
     void shouldDeleteDriver() {
         // Act
-        driverService.delete(103L);
+        driverService.delete(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6983"));
 
         // Assert
-        var deletedDriver = driverRepository.findById(103L).orElse(null);
+        var deletedDriver = driverRepository.findById(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6983")).orElse(null);
         assertThat(deletedDriver).isNull();
     }
 

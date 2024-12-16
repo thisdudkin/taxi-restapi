@@ -8,21 +8,21 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGSERIAL
-                  autoIncrement: true
+                  type: UUID
                   constraints:
                     primaryKey: true
+                    nullable: false
               - column:
                   name: passenger
-                  type: BIGINT
+                  type: UUID
                   constraints:
                     nullable: false
               - column:
                   name: driver
-                  type: BIGINT
+                  type: UUID
               - column:
                   name: car
-                  type: BIGINT
+                  type: UUID
               - column:
                   name: status
                   type: VARCHAR(30)

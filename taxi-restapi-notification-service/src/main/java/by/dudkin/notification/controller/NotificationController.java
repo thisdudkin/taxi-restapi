@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -24,7 +25,7 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping("/requests/{driverId}")
-    public CompletableFuture<Set<RideRequest>> getNearbyRequests(@PathVariable long driverId, @RequestParam long timeout) {
+    public CompletableFuture<Set<RideRequest>> getNearbyRequests(@PathVariable UUID driverId, @RequestParam long timeout) {
         return notificationService.getNearbyRequestsForDriverAsync(driverId, timeout);
     }
 

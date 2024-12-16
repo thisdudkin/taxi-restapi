@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
@@ -23,7 +25,7 @@ public class CarRestController implements CarApi {
     private final CarService carService;
 
     @Override
-    public ResponseEntity<CarResponse> get(long carId) {
+    public ResponseEntity<CarResponse> get(UUID carId) {
         return new ResponseEntity<>(carService.findById(carId), HttpStatus.OK);
     }
 
@@ -38,12 +40,12 @@ public class CarRestController implements CarApi {
     }
 
     @Override
-    public ResponseEntity<CarResponse> update(long carId, CarRequest carRequest) {
+    public ResponseEntity<CarResponse> update(UUID carId, CarRequest carRequest) {
         return new ResponseEntity<>(carService.update(carId, carRequest), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> delete(long carId) {
+    public ResponseEntity<Void> delete(UUID carId) {
         carService.delete(carId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

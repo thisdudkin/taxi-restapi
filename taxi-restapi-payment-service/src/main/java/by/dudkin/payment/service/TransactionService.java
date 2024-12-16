@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -28,7 +29,7 @@ public class TransactionService {
     private final TransactionDao transactionDao;
 
     @Transactional
-    public void handleTransaction(TransactionRequest<Long> req) throws SQLException {
+    public void handleTransaction(TransactionRequest<UUID> req) throws SQLException {
         CompletableFuture<Void> updateDriverBalance = updateDriverBalance(req.driverId(), req.amount());
         CompletableFuture<Void> updatePassengerBalance = updatePassengerBalance(req.passengerId(), req.amount());
 
@@ -37,13 +38,13 @@ public class TransactionService {
     }
 
     @Async
-    CompletableFuture<Void> updateDriverBalance(long driverId, BigDecimal amount) {
+    CompletableFuture<Void> updateDriverBalance(UUID driverId, BigDecimal amount) {
         driverClient.updateBalance(driverId, amount);
         return CompletableFuture.completedFuture(null);
     }
 
     @Async
-    CompletableFuture<Void> updatePassengerBalance(long passengerId, BigDecimal amount) {
+    CompletableFuture<Void> updatePassengerBalance(UUID passengerId, BigDecimal amount) {
         passengerClient.updateBalance(passengerId, amount);
         return CompletableFuture.completedFuture(null);
     }

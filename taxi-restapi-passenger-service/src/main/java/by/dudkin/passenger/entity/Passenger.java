@@ -28,11 +28,11 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -44,11 +44,11 @@ import java.util.Objects;
 @Table(name = "passengers")
 @ToString(exclude = "ratings")
 @EntityListeners(AuditingEntityListener.class)
-public class Passenger implements BaseEntity<Long> {
+public class Passenger implements BaseEntity<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Embedded
     private PersonalInfo info;

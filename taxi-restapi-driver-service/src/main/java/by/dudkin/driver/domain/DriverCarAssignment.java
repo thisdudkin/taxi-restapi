@@ -30,6 +30,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -47,11 +48,11 @@ import java.util.Objects;
 @ToString(exclude = {"driver", "car"})
 @Table(name = "driver_car_assignments")
 @EntityListeners(AuditingEntityListener.class)
-public class DriverCarAssignment implements BaseEntity<Long> {
+public class DriverCarAssignment implements BaseEntity<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id", nullable = false)

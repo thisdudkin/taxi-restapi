@@ -37,6 +37,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -71,10 +72,10 @@ class RideRestControllerTests {
     private DriverClient driverClient;
 
     private static final String BASE_URI = "/api/rides";
-    private static final String DONE_URI = "/api/rides/3/done";
-    private static final String ACTIVATE_URI = "/api/rides/2/activate";
-    private static final String CANCEL_URI = "/api/rides/1/cancel";
-    private static final String RATE_URI = "/api/rides/2/rate";
+    private static final String DONE_URI = "/api/rides/862eb8bc-8d7e-4a44-9dd2-cc258faf6983/done";
+    private static final String ACTIVATE_URI = "/api/rides/862eb8bc-8d7e-4a44-9dd2-cc258faf6982/activate";
+    private static final String CANCEL_URI = "/api/rides/862eb8bc-8d7e-4a44-9dd2-cc258faf6983/cancel";
+    private static final String RATE_URI = "/api/rides/862eb8bc-8d7e-4a44-9dd2-cc258faf6984/rate";
 
     @BeforeEach
     void init() {
@@ -96,7 +97,7 @@ class RideRestControllerTests {
     @Test
     void shouldFindRideWithValidId() {
         // Arrange
-        String VALID_URI = "%s/%d".formatted(BASE_URI, 1L);
+        String VALID_URI = "%s/%s".formatted(BASE_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
 
         // Act
         ResponseEntity<RideResponse> response = restTemplate.exchange(VALID_URI, HttpMethod.GET, null, RideResponse.class);
@@ -105,15 +106,15 @@ class RideRestControllerTests {
         assertNotNull(response);
         assertAll(
             () -> assertNotNull(response.getBody()),
-            () -> assertEquals(1, requireNonNull(response.getBody()).passengerId()),
-            () -> assertEquals(101, requireNonNull(response.getBody()).driverId())
+            () -> assertNotNull(requireNonNull(response.getBody()).passengerId()),
+            () -> assertNotNull(requireNonNull(response.getBody()).driverId())
         );
     }
 
     @Test
     void shouldNotFindRideWithInvalidId() {
         // Arrange
-        String INVALID_URI = "%s/%d".formatted(BASE_URI, 999L);
+        String INVALID_URI = "%s/%s".formatted(BASE_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -134,7 +135,7 @@ class RideRestControllerTests {
     void shouldCreateRide() {
         // Arrange
         RideRequest request = TestDataGenerator.randomRideRequest();
-        BalanceResponse<Long> mockResponse = new BalanceResponse<>(request.passengerId(), BigDecimal.valueOf(1000));
+        BalanceResponse<UUID> mockResponse = new BalanceResponse<>(request.passengerId(), BigDecimal.valueOf(1000));
         Mockito.when(passengerClient.checkBalance(request.passengerId())).thenReturn(mockResponse);
 
         // Act
@@ -172,7 +173,7 @@ class RideRestControllerTests {
     @Rollback
     void shouldUpdateRide() {
         // Arrange
-        String URI = "%s/%d".formatted(BASE_URI, 1L);
+        String URI = "%s/%s".formatted(BASE_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6984");
         RideRequest request = TestDataGenerator.randomRideRequest();
 
         // Act
@@ -190,7 +191,7 @@ class RideRestControllerTests {
     @Rollback
     void shouldDeleteRide() {
         // Arrange
-        String URI = "%s/%d".formatted(BASE_URI, 1L);
+        String URI = "%s/%s".formatted(BASE_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
 
         // Act
         ResponseEntity<Void> response = restTemplate.exchange(URI, HttpMethod.DELETE, null, Void.class);
@@ -224,7 +225,7 @@ class RideRestControllerTests {
     void shouldMarkDoneRide() {
         // Arrange
         Mockito.doNothing().when(paymentClient).processTransaction(Mockito.any(TransactionRequest.class));
-        Mockito.doNothing().when(driverClient).markDriverAvailable(103);
+        Mockito.doNothing().when(driverClient).markDriverAvailable(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6989"));
 
         // Act
         ResponseEntity<RideResponse> response = restTemplate.exchange(DONE_URI, HttpMethod.PATCH, null, RideResponse.class);

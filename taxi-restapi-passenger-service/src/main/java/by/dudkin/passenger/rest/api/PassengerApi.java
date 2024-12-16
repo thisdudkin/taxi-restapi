@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -42,7 +43,7 @@ public interface PassengerApi {
         }
     )
     @GetMapping(value = "/{passengerId}", produces = "application/json")
-    ResponseEntity<PassengerResponse> get(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") long passengerId);
+    ResponseEntity<PassengerResponse> get(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") UUID passengerId);
 
     @Operation(
         operationId = "listPassengers",
@@ -88,7 +89,7 @@ public interface PassengerApi {
         }
     )
     @PutMapping(value = "/{passengerId}", produces = "application/json", consumes = "application/json")
-    ResponseEntity<PassengerResponse> update(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") long passengerId, @Parameter(name = "PassengerRequest", description = "Passenger data", required = true) @RequestBody @Valid PassengerRequest passengerRequest);
+    ResponseEntity<PassengerResponse> update(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") UUID passengerId, @Parameter(name = "PassengerRequest", description = "Passenger data", required = true) @RequestBody @Valid PassengerRequest passengerRequest);
 
     @Operation(
         operationId = "deletePassenger",
@@ -101,7 +102,7 @@ public interface PassengerApi {
         }
     )
     @DeleteMapping(value = "/{passengerId}")
-    ResponseEntity<Void> delete(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") long passengerId);
+    ResponseEntity<Void> delete(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") UUID passengerId);
 
     @Operation(
         operationId = "checkPassengerBalance",
@@ -124,9 +125,9 @@ public interface PassengerApi {
         }
     )
     @GetMapping(value = "/{passengerId}/balance", produces = "application/json")
-    ResponseEntity<BalanceResponse<Long>> checkBalance(
+    ResponseEntity<BalanceResponse<UUID>> checkBalance(
         @Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH)
-        @PathVariable("passengerId") Long passengerId
+        @PathVariable("passengerId") UUID passengerId
     );
 
     @Operation(
@@ -143,7 +144,7 @@ public interface PassengerApi {
     @PutMapping(value = "/{passengerId}/balance", produces = "application/json")
     ResponseEntity<Void> updateBalance(
         @Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH)
-        @PathVariable("passengerId") long passengerId,
+        @PathVariable("passengerId") UUID passengerId,
         @Parameter(name = "amount", description = "The amount to adjust the balance by.", required = true)
         @RequestParam BigDecimal amount
     );

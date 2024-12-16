@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -25,7 +26,7 @@ public class DriverRestController implements DriverApi {
     private final DriverService driverService;
 
     @Override
-    public ResponseEntity<DriverResponse> get(long driverId) {
+    public ResponseEntity<DriverResponse> get(UUID driverId) {
         return new ResponseEntity<>(driverService.findById(driverId), HttpStatus.OK);
     }
 
@@ -40,33 +41,33 @@ public class DriverRestController implements DriverApi {
     }
 
     @Override
-    public ResponseEntity<DriverResponse> update(long driverId, DriverRequest driverRequest) {
+    public ResponseEntity<DriverResponse> update(UUID driverId, DriverRequest driverRequest) {
         return new ResponseEntity<>(driverService.update(driverId, driverRequest), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> delete(long driverId) {
+    public ResponseEntity<Void> delete(UUID driverId) {
         driverService.delete(driverId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
-    public ResponseEntity<DriverResponse> markAvailable(long driverId) {
+    public ResponseEntity<DriverResponse> markAvailable(UUID driverId) {
         return new ResponseEntity<>(driverService.markAvailable(driverId), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<DriverResponse> markOnTrip(long driverId) {
+    public ResponseEntity<DriverResponse> markOnTrip(UUID driverId) {
         return new ResponseEntity<>(driverService.markBusy(driverId), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<DriverResponse> markOffline(long driverId) {
+    public ResponseEntity<DriverResponse> markOffline(UUID driverId) {
         return new ResponseEntity<>(driverService.markOffline(driverId), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> updateBalance(long driverId, BigDecimal amount) {
+    public ResponseEntity<Void> updateBalance(UUID driverId, BigDecimal amount) {
         driverService.updateBalance(driverId, amount);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

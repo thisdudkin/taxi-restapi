@@ -6,6 +6,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
@@ -16,9 +18,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface PassengerClient {
 
     @GetMapping("/{id}")
-    PassengerResponse getPassengerById(@PathVariable Long id);
+    PassengerResponse getPassengerById(@PathVariable UUID id);
 
     @GetMapping("/{passengerId}/balance")
-    BalanceResponse<Long> checkBalance(@PathVariable Long passengerId);
+    BalanceResponse<UUID> checkBalance(@PathVariable UUID passengerId);
 
 }

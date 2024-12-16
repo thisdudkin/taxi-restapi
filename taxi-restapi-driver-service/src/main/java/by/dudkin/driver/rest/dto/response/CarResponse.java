@@ -4,13 +4,14 @@ import by.dudkin.common.enums.CarType;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
  */
 public record CarResponse(
 
-        long id,
+        UUID id,
 
         String licensePlate,
 

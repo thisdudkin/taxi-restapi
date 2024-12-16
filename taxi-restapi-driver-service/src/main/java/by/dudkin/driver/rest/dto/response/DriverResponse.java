@@ -6,13 +6,14 @@ import by.dudkin.common.enums.DriverStatus;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
  */
 public record DriverResponse(
 
-    Long id,
+    UUID id,
 
     PersonalInfo info,
 

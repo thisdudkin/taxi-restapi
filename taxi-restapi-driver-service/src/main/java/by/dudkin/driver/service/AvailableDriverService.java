@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -50,14 +51,14 @@ public class AvailableDriverService {
         jdbcTemplate.execute("select dca.driver_id, dca.car_id " +
             "from driver_car_assignments dca " +
             "join public.drivers d on dca.driver_id = d.id " +
-            "where d.status = 'READY' and dca.status = 'ACTIVE' and d.id = any(?::int[]) " +
+            "where d.status = 'READY' and dca.status = 'ACTIVE' and d.id = any(?::uuid[]) " +
             "order by d.balance limit 1", (PreparedStatementCallback<?>) selectDrivers -> {
             selectDrivers.setArray(1, selectDrivers.getConnection()
-                .createArrayOf("int", drivers.stream().map(DriverLocationDocument::driverId).toArray()));
+                .createArrayOf("uuid", drivers.stream().map(DriverLocationDocument::driverId).toArray()));
             try (ResultSet driverSet = selectDrivers.executeQuery()) {
                 while (driverSet.next()) {
-                    long driverId = driverSet.getLong("driver_id");
-                    long carId = driverSet.getLong("car_id");
+                    UUID driverId = driverSet.getObject("driver_id", UUID.class);
+                    UUID carId = driverSet.getObject("car_id", UUID.class);
                     DriverLocationDocument driverLocation = drivers.stream()
                         .filter(doc -> doc.driverId().equals(driverId))
                         .findFirst().orElseThrow();

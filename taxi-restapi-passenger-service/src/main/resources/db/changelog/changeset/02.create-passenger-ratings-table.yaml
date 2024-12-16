@@ -8,14 +8,13 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGINT
-                  autoIncrement: true
+                  type: UUID
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: passenger_id
-                  type: BIGINT
+                  type: UUID
                   constraints:
                     nullable: false
               - column:

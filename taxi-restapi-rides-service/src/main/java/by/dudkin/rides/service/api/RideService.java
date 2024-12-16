@@ -11,22 +11,24 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
 public interface RideService {
 
     RideResponse create(RideRequest rideRequest);
-    RideResponse read(long rideId);
+    RideResponse read(UUID rideId);
     PaginatedResponse<RideResponse> readAll(Specification<Ride> spec, Pageable pageable);
-    RideResponse update(long rideId, RideRequest rideRequest);
-    void delete(long rideId);
+    RideResponse update(UUID rideId, RideRequest rideRequest);
+    void delete(UUID rideId);
 
-    RideResponse cancel(long rideId);
-    RideResponse complete(long rideId);
-    RideResponse activate(long rideId);
-    RideResponse rate(long rideId, RideCompletionRequest request);
-    RideResponse assign(long rideId, AvailableDriver availableDriver);
+    RideResponse cancel(UUID rideId);
+    RideResponse complete(UUID rideId);
+    RideResponse activate(UUID rideId);
+    RideResponse rate(UUID rideId, RideCompletionRequest request);
+    RideResponse assign(UUID rideId, AvailableDriver availableDriver);
     Page<PendingRide> findAllPendingRides(Pageable pageable);
 
 }

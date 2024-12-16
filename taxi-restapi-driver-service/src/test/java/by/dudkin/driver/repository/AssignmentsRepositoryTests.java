@@ -11,6 +11,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -32,7 +34,7 @@ class AssignmentsRepositoryTests {
     @Test
     void testFindWithDriverAndCarById() {
         // Arrange
-        long assignmentId = 100L;
+        UUID assignmentId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
 
         // Act
         var assignment = assignmentRepository.findWithDriverAndCarById(assignmentId);
@@ -46,7 +48,7 @@ class AssignmentsRepositoryTests {
     @Test
     void testFindWithDriverAndCarByIdShouldFailed() {
         // Arrange
-        long undefinedId = 999L;
+        UUID undefinedId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
 
         // Act
         var unknown = assignmentRepository.findWithDriverAndCarById(undefinedId);
@@ -58,7 +60,7 @@ class AssignmentsRepositoryTests {
     @Test
     void testFindActiveAssignmentByCarId() {
         // Arrange
-        long carId = 100L;
+        UUID carId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
 
         // Act
         var assignment = assignmentRepository.findActiveAssignmentByCarId(carId);
@@ -73,7 +75,7 @@ class AssignmentsRepositoryTests {
     @Test
     void testFindActiveAssignmentByCarIdShouldFailed() {
         // Arrange
-        long undefinedId = 999L;
+        UUID undefinedId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
 
         // Act
         var unknown = assignmentRepository.findActiveAssignmentByCarId(undefinedId);

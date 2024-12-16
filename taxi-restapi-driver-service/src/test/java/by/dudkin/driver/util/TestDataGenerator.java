@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -27,8 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class TestDataGenerator {
 
-    private TestDataGenerator() {
-    }
+    private TestDataGenerator() {}
 
     private static String randomUsername() {
         return RandomStringUtils.randomAlphabetic(10);
@@ -67,8 +67,8 @@ public class TestDataGenerator {
         return ThreadLocalRandom.current().nextInt(1, 12);
     }
 
-    private static Long randomId() {
-        return ThreadLocalRandom.current().nextLong(1, 10);
+    private static UUID randomId() {
+        return UUID.randomUUID();
     }
 
     private static Double randomRating() {
@@ -206,7 +206,7 @@ public class TestDataGenerator {
         );
     }
 
-    public static AssignmentRequest randomAssignmentRequestWithIds(long driverId, long carId) {
+    public static AssignmentRequest randomAssignmentRequestWithIds(UUID driverId, UUID carId) {
         return new AssignmentRequest(
             driverId,
             carId,

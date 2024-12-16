@@ -4,12 +4,13 @@ import by.dudkin.common.enums.AssignmentStatus;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
  */
 public record AssignmentResponse(
-        Long id,
+        UUID id,
         DriverResponse driver,
         CarResponse car,
         Instant assignmentDate,

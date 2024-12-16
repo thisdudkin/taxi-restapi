@@ -1,7 +1,9 @@
 package by.dudkin.rides.rest.dto.response;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
-public record AvailableDriver(Long driverId, Long carId) {
+public record AvailableDriver(UUID driverId, UUID carId) {
 }

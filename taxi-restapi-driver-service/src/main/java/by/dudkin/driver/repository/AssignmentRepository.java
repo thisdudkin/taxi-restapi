@@ -9,21 +9,22 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
  */
-public interface AssignmentRepository extends JpaRepository<DriverCarAssignment, Long> {
+public interface AssignmentRepository extends JpaRepository<DriverCarAssignment, UUID> {
 
     @EntityGraph(value = "assignment-car-driver")
-    Optional<DriverCarAssignment> findWithDriverAndCarById(long assignmentId);
+    Optional<DriverCarAssignment> findWithDriverAndCarById(UUID assignmentId);
 
     @Query("""
             SELECT a FROM DriverCarAssignment a
             JOIN FETCH a.car c
             WHERE c.id = :carId AND a.status = 'ACTIVE'
             """)
-    Optional<DriverCarAssignment> findActiveAssignmentByCarId(long carId);
+    Optional<DriverCarAssignment> findActiveAssignmentByCarId(UUID carId);
 
     Page<DriverCarAssignment> findAll(Specification<DriverCarAssignment> spec, Pageable pageable);
 

@@ -12,6 +12,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,7 +29,7 @@ public class NotificationService {
     private final RideDao rideDao;
     private final DriverDao driverDao;
 
-    public CompletableFuture<Set<RideRequest>> getNearbyRequestsForDriverAsync(long driverId, long timeout) {
+    public CompletableFuture<Set<RideRequest>> getNearbyRequestsForDriverAsync(UUID driverId, long timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 Set<RideRequest> lastRequests = rideDao.findNearbyRequestsForDriver(driverId);

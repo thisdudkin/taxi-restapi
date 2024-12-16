@@ -9,6 +9,7 @@ import by.dudkin.rides.utils.PriceCalculator;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -33,8 +34,8 @@ public class RideCreationService {
         return ride;
     }
 
-    private void validatePassenger(long passengerId, BigDecimal amount) {
-        BalanceResponse<Long> response = passengerClient.checkBalance(passengerId);
+    private void validatePassenger(UUID passengerId, BigDecimal amount) {
+        BalanceResponse<UUID> response = passengerClient.checkBalance(passengerId);
         if (response.amount().compareTo(amount) < 0) {
             throw new IllegalStateException(ErrorMessages.INSUFFICIENT_FUNDS);
         }

@@ -32,6 +32,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -50,11 +51,11 @@ import java.util.Set;
 @Table(name = "cars")
 @ToString(exclude = "assignments")
 @EntityListeners(AuditingEntityListener.class)
-public class Car implements BaseEntity<Long> {
+public class Car implements BaseEntity<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "license_plate", unique = true, nullable = false)
     private String licensePlate;

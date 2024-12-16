@@ -10,6 +10,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -17,8 +18,8 @@ import java.util.concurrent.ThreadLocalRandom;
   */
 public abstract class TestDataGenerator {
 
-    private static Long randomId() {
-        return ThreadLocalRandom.current().nextLong(99);
+    private static UUID randomId() {
+        return UUID.randomUUID();
     }
 
     private static String randomString() {

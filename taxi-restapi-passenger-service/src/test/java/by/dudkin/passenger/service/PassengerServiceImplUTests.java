@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -75,7 +76,7 @@ class PassengerServiceImplUTests {
     @Test
     void whenFindById_thenReturnPassengerResponse() {
         // Arrange
-        long passengerId = 1L;
+        UUID passengerId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         when(passengerRepository.findById(passengerId)).thenReturn(Optional.ofNullable(passenger));
         when(passengerMapper.toResponse(passenger)).thenReturn(passengerResponse);
 
@@ -90,7 +91,7 @@ class PassengerServiceImplUTests {
     @Test
     void whenFindByInvalidId_thenThrowPassengerNotFoundException() {
         // Arrange
-        long invalidId = 999L;
+        UUID invalidId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         when(passengerRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -117,7 +118,7 @@ class PassengerServiceImplUTests {
     @Test
     void whenUpdatePassenger_thenReturnUpdatedResponse() {
         // Arrange
-        long passengerId = 1L;
+        UUID passengerId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         var updatedRequest = TestDataGenerator.randomRequest();
         when(passengerRepository.findById(passengerId)).thenReturn(Optional.ofNullable(passenger));
         when(passengerMapper.toResponse(passenger)).thenReturn(passengerResponse);
@@ -133,7 +134,7 @@ class PassengerServiceImplUTests {
     @Test
     void whenDeletePassenger_thenNoException() {
         // Arrange
-        long passengerId = 1L;
+        UUID passengerId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         when(passengerRepository.findById(passengerId)).thenReturn(Optional.ofNullable(passenger));
 
         // Act & Assert
@@ -144,7 +145,7 @@ class PassengerServiceImplUTests {
     @Test
     void whenGetOrUpdate_thenReturnPassenger() {
         // Arrange
-        long passengerId = 1L;
+        UUID passengerId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         when(passengerRepository.findById(passengerId)).thenReturn(Optional.ofNullable(passenger));
 
         // Act
@@ -158,7 +159,7 @@ class PassengerServiceImplUTests {
     @Test
     void whenGetOrUpdateWithInvalidId_thenThrowException() {
         // Arrange
-        long invalidId = 999L;
+        UUID invalidId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         when(passengerRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         // Act & Assert

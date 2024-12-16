@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
@@ -26,14 +28,14 @@ public class AssignmentRestController implements AssignmentApi {
     private final AssignmentSpecification assignmentSpecification;
 
     @Override
-    public ResponseEntity<AssignmentResponse> get(long assignmentId) {
+    public ResponseEntity<AssignmentResponse> get(UUID assignmentId) {
         return new ResponseEntity<>(assignmentService.findById(assignmentId), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<PaginatedResponse<AssignmentResponse>> getAll(
-            @RequestParam(required = false) Long driverId,
-            @RequestParam(required = false) Long carId,
+            @RequestParam(required = false) UUID driverId,
+            @RequestParam(required = false) UUID carId,
             Pageable pageable) {
         var specification = assignmentSpecification.getSpecification(driverId, carId);
         return new ResponseEntity<>(assignmentService.findAll(specification, pageable), HttpStatus.OK);
@@ -45,12 +47,12 @@ public class AssignmentRestController implements AssignmentApi {
     }
 
     @Override
-    public ResponseEntity<AssignmentResponse> cancel(long assignmentId) {
+    public ResponseEntity<AssignmentResponse> cancel(UUID assignmentId) {
         return new ResponseEntity<>(assignmentService.cancelAssignment(assignmentId), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> delete(long assignmentId) {
+    public ResponseEntity<Void> delete(UUID assignmentId) {
         assignmentService.delete(assignmentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

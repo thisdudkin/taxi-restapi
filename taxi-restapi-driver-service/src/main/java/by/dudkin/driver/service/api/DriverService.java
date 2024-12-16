@@ -8,6 +8,7 @@ import by.dudkin.driver.rest.dto.response.PendingRide;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -15,19 +16,19 @@ import java.math.BigDecimal;
 public interface DriverService {
 
     PaginatedResponse<DriverResponse> findAll(Pageable pageable);
-    DriverResponse findById(long driverId);
+    DriverResponse findById(UUID driverId);
     DriverResponse create(DriverRequest driverRequest);
-    DriverResponse update(long driverId, DriverRequest driverRequest);
-    void delete(long driverId);
+    DriverResponse update(UUID driverId, DriverRequest driverRequest);
+    void delete(UUID driverId);
 
-    Driver getOrThrow(long driverId);
+    Driver getOrThrow(UUID driverId);
 
     void handleDriver(PendingRide ride);
 
-    DriverResponse markAvailable(long driverId);
-    DriverResponse markBusy(long driverId);
-    DriverResponse markOffline(long driverId);
+    DriverResponse markAvailable(UUID driverId);
+    DriverResponse markBusy(UUID driverId);
+    DriverResponse markOffline(UUID driverId);
 
-    void updateBalance(long driverId, BigDecimal amount);
+    void updateBalance(UUID driverId, BigDecimal amount);
 
 }

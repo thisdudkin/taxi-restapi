@@ -8,13 +8,13 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGSERIAL
+                  type: UUID
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: ride_id
-                  type: BIGINT
+                  type: UUID
                   constraints:
                     nullable: false
               - column:

@@ -25,6 +25,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -93,7 +94,7 @@ class AssignmentServiceImplTests {
     @Test
     void whenFindById_thenReturnAssignmentResponse() {
         // Arrange
-        long assignmentId = 1L;
+        UUID assignmentId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         when(assignmentRepository.findWithDriverAndCarById(assignmentId)).thenReturn(Optional.ofNullable(assignment));
         when(assignmentMapper.toResponse(assignment)).thenReturn(assignmentResponse);
 
@@ -107,7 +108,7 @@ class AssignmentServiceImplTests {
     @Test
     void whenFindByIdAndAssignmentNotFound_thenThrowAssignmentNotFoundException() {
         // Arrange
-        long undefinedId = 999L;
+        UUID undefinedId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         when(assignmentRepository.findWithDriverAndCarById(undefinedId)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -137,7 +138,7 @@ class AssignmentServiceImplTests {
     @Test
     void whenDeleteAssignment_thenNoException() {
         // Arrange
-        long assignmentId = 1L;
+        UUID assignmentId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         when(assignmentRepository.findWithDriverAndCarById(assignmentId)).thenReturn(Optional.ofNullable(assignment));
 
         // Act & Assert
@@ -148,7 +149,7 @@ class AssignmentServiceImplTests {
     @Test
     void whenGetOrThrow_thenReturnAssignment() {
         // Arrange
-        long assignmentId = 1L;
+        UUID assignmentId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         when(assignmentRepository.findWithDriverAndCarById(assignmentId)).thenReturn(Optional.ofNullable(assignment));
 
         // Act
@@ -162,7 +163,7 @@ class AssignmentServiceImplTests {
     @Test
     void whenGetOrThrowAndAssignmentNotFound_thenThrowAssignmentNotFoundException() {
         // Arrange
-        long undefinedId = 999L;
+        UUID undefinedId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         when(assignmentRepository.findWithDriverAndCarById(undefinedId)).thenReturn(Optional.empty());
 
         // Act & Assert

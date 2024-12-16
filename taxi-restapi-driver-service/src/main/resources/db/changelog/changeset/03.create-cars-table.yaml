@@ -8,10 +8,10 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGSERIAL
-                  autoIncrement: true
+                  type: UUID
                   constraints:
                     primaryKey: true
+                    nullable: false
               - column:
                   name: license_plate
                   type: VARCHAR(128)

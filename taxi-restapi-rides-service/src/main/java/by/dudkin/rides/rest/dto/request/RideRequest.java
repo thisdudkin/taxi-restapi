@@ -6,11 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * DTO for {@link by.dudkin.rides.domain.Ride}
  */
-public record RideRequest(@NotNull @Positive Long passengerId,
+public record RideRequest(@NotNull UUID passengerId,
                           @NotNull Location from,
                           @NotNull Location to,
                           @NotNull PaymentMethod paymentMethod

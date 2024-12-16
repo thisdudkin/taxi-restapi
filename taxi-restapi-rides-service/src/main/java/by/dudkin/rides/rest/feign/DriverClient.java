@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
@@ -17,15 +19,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 public interface DriverClient {
 
     @GetMapping("/drivers/{driverId}")
-    DriverResponse getDriverById(@PathVariable long driverId);
+    DriverResponse getDriverById(@PathVariable UUID driverId);
 
     @PutMapping("/drivers/{driverId}/status/busy")
-    void markDriverBusy(@PathVariable long driverId);
+    void markDriverBusy(@PathVariable UUID driverId);
 
     @PutMapping("/drivers/{driverId}/status/available")
-    void markDriverAvailable(@PathVariable long driverId);
+    void markDriverAvailable(@PathVariable UUID driverId);
 
     @GetMapping("/cars/{carId}")
-    CarResponse getCarById(@PathVariable long carId);
+    CarResponse getCarById(@PathVariable UUID carId);
 
 }

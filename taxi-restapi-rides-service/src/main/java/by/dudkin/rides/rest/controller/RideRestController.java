@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
@@ -29,12 +31,12 @@ public class RideRestController implements RidesApi {
     private final RideSpecification rideSpecification;
 
     @Override
-    public ResponseEntity<RideResponse> get(Long rideId) {
+    public ResponseEntity<RideResponse> get(UUID rideId) {
         return new ResponseEntity<>(this.rideService.read(rideId), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<PaginatedResponse<RideResponse>> getAll(Long passengerId, Long driverId, Long carId, Pageable pageable) {
+    public ResponseEntity<PaginatedResponse<RideResponse>> getAll(UUID passengerId, UUID driverId, UUID carId, Pageable pageable) {
         var specification = rideSpecification.getSpecification(passengerId, driverId, carId);
         return new ResponseEntity<>(this.rideService.readAll(specification, pageable), HttpStatus.OK);
     }
@@ -50,38 +52,38 @@ public class RideRestController implements RidesApi {
     }
 
     @Override
-    public ResponseEntity<RideResponse> update(Long rideId, RideRequest rideRequest) {
+    public ResponseEntity<RideResponse> update(UUID rideId, RideRequest rideRequest) {
         return new ResponseEntity<>(this.rideService.update(rideId, rideRequest), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> delete(Long rideId) {
+    public ResponseEntity<Void> delete(UUID rideId) {
         this.rideService.delete(rideId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
-    public ResponseEntity<RideResponse> activate(Long rideId) {
+    public ResponseEntity<RideResponse> activate(UUID rideId) {
         return new ResponseEntity<>(this.rideService.activate(rideId), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<RideResponse> assignDriver(Long rideId, AvailableDriver availableDriver) {
+    public ResponseEntity<RideResponse> assignDriver(UUID rideId, AvailableDriver availableDriver) {
         return new ResponseEntity<>(this.rideService.assign(rideId, availableDriver), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<RideResponse> markDone(Long rideId) {
+    public ResponseEntity<RideResponse> markDone(UUID rideId) {
         return new ResponseEntity<>(this.rideService.complete(rideId), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<RideResponse> cancel(Long rideId) {
+    public ResponseEntity<RideResponse> cancel(UUID rideId) {
         return new ResponseEntity<>(this.rideService.cancel(rideId), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<RideResponse> rate(Long rideId, RideCompletionRequest request) {
+    public ResponseEntity<RideResponse> rate(UUID rideId, RideCompletionRequest request) {
         return new ResponseEntity<>(this.rideService.rate(rideId, request), HttpStatus.OK);
     }
 

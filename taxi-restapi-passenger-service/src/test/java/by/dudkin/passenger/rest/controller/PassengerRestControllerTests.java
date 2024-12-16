@@ -60,7 +60,7 @@ class PassengerRestControllerTests {
     @Test
     void shouldFindPassengerWithValidId() {
         // Arrange
-        var URI = "%s/%d".formatted(PASSENGERS_URI, 3L);
+        var URI = "%s/%s".formatted(PASSENGERS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
 
         // Act
         ResponseEntity<PassengerResponse> response = restTemplate.exchange(URI, HttpMethod.GET, null, PassengerResponse.class);
@@ -74,7 +74,7 @@ class PassengerRestControllerTests {
     @Test
     void shouldNotFindPassengerWithInvalidId() {
         // Arrange
-        var URI = "%s/%d".formatted(PASSENGERS_URI, 999L);
+        var URI = "%s/%s".formatted(PASSENGERS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -123,7 +123,7 @@ class PassengerRestControllerTests {
     void shouldUpdatePassenger() {
         // Arrange
         PassengerRequest request = TestDataGenerator.randomRequest();
-        String URI = "%s/%d".formatted(PASSENGERS_URI, 6L);
+        String URI = "%s/%s".formatted(PASSENGERS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6986");
 
         // Act
         ResponseEntity<PassengerResponse> response = restTemplate.exchange(URI, HttpMethod.PUT, new HttpEntity<>(request), PassengerResponse.class);
@@ -137,7 +137,7 @@ class PassengerRestControllerTests {
     @Test
     void shouldDeletePassenger() {
         // Arrange
-        var URI = "%s/%d".formatted(PASSENGERS_URI, 6L);
+        var URI = "%s/%s".formatted(PASSENGERS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6986");
 
         // Act
         ResponseEntity<Void> response = restTemplate.exchange(URI, HttpMethod.DELETE, null, Void.class);

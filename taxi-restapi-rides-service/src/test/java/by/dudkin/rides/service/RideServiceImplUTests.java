@@ -23,6 +23,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -92,7 +93,7 @@ class RideServiceImplUTests {
     @Test
     void whenRead_thenReturnRideResponse() {
         // Arrange
-        long rideId = 1L;
+        var rideId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         when(rideRepository.findById(rideId)).thenReturn(Optional.ofNullable(ride));
         when(rideMapper.toResponse(ride)).thenReturn(rideResponse);
 
@@ -107,7 +108,7 @@ class RideServiceImplUTests {
     @Test
     void whenReadWithInvalidId_thenThrowRNFException() {
         // Arrange
-        long invalidId = 999L;
+        var invalidId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         when(rideRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         // Act && Assert
@@ -135,7 +136,7 @@ class RideServiceImplUTests {
     @Test
     void whenUpdateRide_thenReturnUpdatedRideResponse() {
         // Arrange
-        long rideId = 1L;
+        var rideId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         when(rideRepository.findById(rideId)).thenReturn(Optional.ofNullable(ride));
         when(rideMapper.toResponse(ride)).thenReturn(rideResponse);
 
@@ -153,7 +154,7 @@ class RideServiceImplUTests {
     @Test
     void whenDeleteRide_thenNoException() {
         // Arrange
-        long rideId = 1L;
+        var rideId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         when(rideRepository.findById(rideId)).thenReturn(Optional.ofNullable(ride));
 
         // Act && Assert
@@ -164,8 +165,8 @@ class RideServiceImplUTests {
     @Test
     void whenGetOrThrow_thenReturnRide() {
         // Arrange
-        long rideId = 1L;
-        when(rideRepository.findById(1L)).thenReturn(Optional.ofNullable(ride));
+        var rideId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
+        when(rideRepository.findById(rideId)).thenReturn(Optional.ofNullable(ride));
 
         // Act
         Ride result = rideService.getOrThrow(rideId);
@@ -178,7 +179,7 @@ class RideServiceImplUTests {
     @Test
     void whenGetOrThrowWithInvalidId_thenThrowRNFException() {
         // Arrange
-        long invalidId = 999L;
+        var invalidId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         when(rideRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         // Act && Assert

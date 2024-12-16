@@ -19,6 +19,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -47,7 +49,7 @@ class PassengerServiceCTests {
     @Test
     void shouldFindById() {
         // Act
-        var response = passengerService.findById(1L);
+        var response = passengerService.findById(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981"));
 
         // Assert
         assertNotNull(response);
@@ -73,7 +75,7 @@ class PassengerServiceCTests {
         PassengerRequest request = TestDataGenerator.randomRequest();
 
         // Act
-        PassengerResponse response = passengerService.update(2L, request);
+        PassengerResponse response = passengerService.update(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6982"), request);
 
         // Assert
         assertNotNull(response);
@@ -83,10 +85,10 @@ class PassengerServiceCTests {
     @Test
     void shouldDeletePassenger() {
         // Act
-        passengerService.delete(3L);
+        passengerService.delete(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6983"));
 
         // Assert
-        Passenger response = passengerRepository.findById(3L).orElse(null);
+        Passenger response = passengerRepository.findById(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6983")).orElse(null);
         assertNull(response);
     }
 
