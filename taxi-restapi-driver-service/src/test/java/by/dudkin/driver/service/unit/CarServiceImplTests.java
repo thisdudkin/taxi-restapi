@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -79,7 +80,7 @@ class CarServiceImplTests {
     @Test
     void whenFindById_thenReturnCarResponse() {
         // Arrange
-        long carId = 1L;
+        UUID carId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         when(carRepository.findWithAssignmentsAndDriversById(carId)).thenReturn(Optional.ofNullable(car));
         when(carMapper.toResponse(car)).thenReturn(carResponse);
 
@@ -93,7 +94,7 @@ class CarServiceImplTests {
     @Test
     void whenFindByIdAndCarNotFound_thenThrowCarNotFoundException() {
         // Arrange
-        long undefinedId = 999L;
+        UUID undefinedId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         when(carRepository.findWithAssignmentsAndDriversById(undefinedId)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -120,7 +121,7 @@ class CarServiceImplTests {
     @Test
     void whenUpdateCar_thenReturnUpdatedCarResponse() {
         // Arrange
-        long carId = 1L;
+        UUID carId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         var updatedCarRequest = TestDataGenerator.randomCarRequest();
         when(carRepository.findWithAssignmentsAndDriversById(carId)).thenReturn(Optional.ofNullable(car));
         when(carMapper.toResponse(car)).thenReturn(carResponse);
@@ -136,7 +137,7 @@ class CarServiceImplTests {
     @Test
     void whenDeleteCar_thenNoException() {
         // Arrange
-        long carId = 1L;
+        UUID carId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         when(carRepository.findWithAssignmentsAndDriversById(carId)).thenReturn(Optional.ofNullable(car));
 
         // Act & Assert
@@ -147,7 +148,7 @@ class CarServiceImplTests {
     @Test
     void whenGetOrUpdate_thenReturnCar() {
         // Arrange
-        long carId = 1L;
+        UUID carId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         when(carRepository.findWithAssignmentsAndDriversById(carId)).thenReturn(Optional.ofNullable(car));
 
         // Act
@@ -161,7 +162,7 @@ class CarServiceImplTests {
     @Test
     void whenGetOrThrowAndCarNotFound_thenThrowCarNotFoundException() {
         // Arrange
-        long undefinedId = 999L;
+        UUID undefinedId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         when(carRepository.findWithAssignmentsAndDriversById(undefinedId)).thenReturn(Optional.empty());
 
         // Act & Assert

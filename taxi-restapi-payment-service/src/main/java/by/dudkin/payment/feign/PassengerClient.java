@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -17,6 +18,6 @@ import java.math.BigDecimal;
 public interface PassengerClient {
 
     @PutMapping("/{passengerId}/balance")
-    void updateBalance(@PathVariable long passengerId, @RequestParam BigDecimal amount);
+    void updateBalance(@PathVariable UUID passengerId, @RequestParam BigDecimal amount);
 
 }

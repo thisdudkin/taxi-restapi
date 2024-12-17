@@ -9,6 +9,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -20,9 +21,9 @@ class RideMapperTests {
 
     private final RideMapper rideMapper = Mappers.getMapper(RideMapper.class);
 
-    private static final Long DEFAULT_PASSENGER_ID = 10L;
-    private static final Long DEFAULT_DRIVER_ID = 20L;
-    private static final Long DEFAULT_CAR_ID = 30L;
+    private static final UUID DEFAULT_PASSENGER_ID = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
+    private static final UUID DEFAULT_DRIVER_ID = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6982");
+    private static final UUID DEFAULT_CAR_ID = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6983");
     private static final BigDecimal DEFAULT_PRICE = BigDecimal.TEN;
     private static final PaymentMethod DEFAULT_PAYMENT_METHOD = PaymentMethod.CASH;
     private static final String COUNTRY_BELARUS = "Belarus";
@@ -42,7 +43,7 @@ class RideMapperTests {
 
     private Ride createRide() {
         return Ride.builder()
-            .id(1L)
+            .id(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981"))
             .passengerId(DEFAULT_PASSENGER_ID)
             .driverId(DEFAULT_DRIVER_ID)
             .carId(DEFAULT_CAR_ID)

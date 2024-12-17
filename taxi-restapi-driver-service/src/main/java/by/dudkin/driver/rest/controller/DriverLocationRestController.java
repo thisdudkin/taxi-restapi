@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
@@ -24,7 +26,7 @@ public class DriverLocationRestController {
     private final DriverLocationService driverLocationService;
 
     @PutMapping(value = "/{driverId}/location")
-    public ResponseEntity<Void> updateCoordinates(@PathVariable long driverId,
+    public ResponseEntity<Void> updateCoordinates(@PathVariable UUID driverId,
                                                   @RequestBody DriverLocation location) {
         this.driverLocationService.update(driverId, location);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

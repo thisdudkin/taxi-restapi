@@ -5,6 +5,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
@@ -15,6 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface PaymentClient {
 
     @PutMapping
-    void processTransaction(@RequestBody TransactionRequest<Long> transactionRequest);
+    void processTransaction(@RequestBody TransactionRequest<UUID> transactionRequest);
 
 }

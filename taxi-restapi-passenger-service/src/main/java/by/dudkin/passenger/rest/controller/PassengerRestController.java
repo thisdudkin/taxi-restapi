@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -33,7 +34,7 @@ public class PassengerRestController implements PassengerApi {
     }
 
     @Override
-    public ResponseEntity<PassengerResponse> get(long passengerId) {
+    public ResponseEntity<PassengerResponse> get(UUID passengerId) {
         return new ResponseEntity<>(passengerService.findById(passengerId), OK);
     }
 
@@ -43,23 +44,23 @@ public class PassengerRestController implements PassengerApi {
     }
 
     @Override
-    public ResponseEntity<PassengerResponse> update(long passengerId, PassengerRequest passengerRequest) {
+    public ResponseEntity<PassengerResponse> update(UUID passengerId, PassengerRequest passengerRequest) {
         return new ResponseEntity<>(passengerService.update(passengerId, passengerRequest), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> delete(long passengerId) {
+    public ResponseEntity<Void> delete(UUID passengerId) {
         passengerService.delete(passengerId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
-    public ResponseEntity<BalanceResponse<Long>> checkBalance(Long passengerId) {
+    public ResponseEntity<BalanceResponse<UUID>> checkBalance(UUID passengerId) {
         return new ResponseEntity<>(passengerService.checkBalance(passengerId), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> updateBalance(long passengerId, BigDecimal amount) {
+    public ResponseEntity<Void> updateBalance(UUID passengerId, BigDecimal amount) {
         passengerService.updateBalance(passengerId, amount);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

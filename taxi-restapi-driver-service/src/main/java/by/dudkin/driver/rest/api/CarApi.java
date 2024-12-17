@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
@@ -38,7 +40,7 @@ public interface CarApi {
         }
     )
     @GetMapping(value = "/cars/{carId}", produces = "application/json")
-    ResponseEntity<CarResponse> get(@Parameter(name = "carId", description = "The ID of the car.", required = true, in = ParameterIn.PATH) @PathVariable("carId") long carId);
+    ResponseEntity<CarResponse> get(@Parameter(name = "carId", description = "The ID of the car.", required = true, in = ParameterIn.PATH) @PathVariable("carId") UUID carId);
 
     @Operation(
         operationId = "listCars",
@@ -86,7 +88,7 @@ public interface CarApi {
     @PutMapping(value = "/cars/{carId}", produces = "application/json", consumes = "application/json")
     ResponseEntity<CarResponse> update(
         @Parameter(name = "carId", description = "The ID of the car.", required = true, in = ParameterIn.PATH)
-        @PathVariable("carId") long carId,
+        @PathVariable("carId") UUID carId,
         @Parameter(name = "CarRequest", description = "Car data", required = true)
         @RequestBody @Valid CarRequest carRequest);
 
@@ -101,6 +103,6 @@ public interface CarApi {
         }
     )
     @DeleteMapping(value = "/cars/{carId}")
-    ResponseEntity<Void> delete(@Parameter(name = "carId", description = "The ID of the car.", required = true, in = ParameterIn.PATH) @PathVariable("carId") long carId);
+    ResponseEntity<Void> delete(@Parameter(name = "carId", description = "The ID of the car.", required = true, in = ParameterIn.PATH) @PathVariable("carId") UUID carId);
 
 }

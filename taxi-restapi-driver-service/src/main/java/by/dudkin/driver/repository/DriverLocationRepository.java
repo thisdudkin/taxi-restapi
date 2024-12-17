@@ -5,11 +5,12 @@ import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
  */
-public interface DriverLocationRepository extends ElasticsearchRepository<DriverLocationDocument, Long> {
+public interface DriverLocationRepository extends ElasticsearchRepository<DriverLocationDocument, UUID> {
 
     @Query("""
         {

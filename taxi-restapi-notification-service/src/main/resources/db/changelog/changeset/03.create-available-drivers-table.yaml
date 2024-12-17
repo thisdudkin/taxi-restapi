@@ -8,18 +8,18 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGSERIAL
+                  type: UUID
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: driver_id
-                  type: BIGINT
+                  type: UUID
                   constraints:
                     nullable: false
               - column:
                   name: car_id
-                  type: BIGINT
+                  type: UUID
                   constraints:
                     nullable: false
               - column:

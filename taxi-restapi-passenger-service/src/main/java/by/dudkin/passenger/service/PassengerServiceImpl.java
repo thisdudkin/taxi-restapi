@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -36,7 +37,7 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     @Transactional(readOnly = true)
-    public PassengerResponse findById(long id) {
+    public PassengerResponse findById(UUID id) {
         return passengerMapper.toResponse(getOrThrow(id));
     }
 
@@ -59,7 +60,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public PassengerResponse update(long passengerId, PassengerRequest passengerRequest) {
+    public PassengerResponse update(UUID passengerId, PassengerRequest passengerRequest) {
         Passenger passenger = getOrThrow(passengerId);
         passengerMapper.updatePassenger(passengerRequest, passenger);
         passengerRepository.save(passenger);
@@ -67,17 +68,17 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public void delete(long passengerId) {
+    public void delete(UUID passengerId) {
         Passenger passenger = getOrThrow(passengerId);
         passengerRepository.delete(passenger);
     }
 
     @Override
-    public BalanceResponse<Long> checkBalance(Long passengerId) {
+    public BalanceResponse<UUID> checkBalance(UUID passengerId) {
         final AtomicReference<BigDecimal> balance = new AtomicReference<>();
         jdbcTemplate.execute("select balance from passengers " +
             "where id = ?", (PreparedStatementCallback<?>) ps -> {
-            ps.setLong(1, passengerId);
+            ps.setObject(1, passengerId);
             try (ResultSet resultSet = ps.executeQuery()) {
                 if (resultSet.next()) {
                     balance.set(resultSet.getBigDecimal("balance"));
@@ -94,17 +95,17 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public void updateBalance(long passengerId, BigDecimal amount) {
+    public void updateBalance(UUID passengerId, BigDecimal amount) {
         jdbcTemplate.execute("update passengers set balance = balance - ? " +
             "where id = ?", (PreparedStatementCallback<?>) updatePassenger -> {
             updatePassenger.setBigDecimal(1, amount);
-            updatePassenger.setLong(2, passengerId);
+            updatePassenger.setObject(2, passengerId);
             updatePassenger.execute();
             return null;
         });
     }
 
-    Passenger getOrThrow(long id) {
+    Passenger getOrThrow(UUID id) {
         return passengerRepository.findById(id)
             .orElseThrow(() -> new PassengerNotFoundException(ErrorMessages.PASSENGER_NOT_FOUND));
     }

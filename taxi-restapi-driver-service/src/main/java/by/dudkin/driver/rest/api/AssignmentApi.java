@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
@@ -41,7 +43,7 @@ public interface AssignmentApi {
     @GetMapping(value = "/assignments/{assignmentId}", produces = "application/json")
     ResponseEntity<AssignmentResponse> get(
         @Parameter(name = "assignmentId", description = "The ID of the assignment.", required = true, in = ParameterIn.PATH)
-        @PathVariable("assignmentId") long assignmentId);
+        @PathVariable("assignmentId") UUID assignmentId);
 
     @Operation(
         operationId = "listAssignments",
@@ -63,9 +65,9 @@ public interface AssignmentApi {
     @GetMapping(value = "/assignments", produces = "application/json")
     ResponseEntity<PaginatedResponse<AssignmentResponse>> getAll(
         @Parameter(name = "driverId", description = "Filter assignments by driver ID", required = false)
-        @RequestParam(required = false) Long driverId,
+        @RequestParam(required = false) UUID driverId,
         @Parameter(name = "carId", description = "Filter assignments by car ID", required = false)
-        @RequestParam(required = false) Long carId,
+        @RequestParam(required = false) UUID carId,
         @Parameter(hidden = true) Pageable pageable);
 
     @Operation(
@@ -96,7 +98,7 @@ public interface AssignmentApi {
     @PutMapping(value = "/assignments/{assignmentId}", produces = "application/json")
     ResponseEntity<AssignmentResponse> cancel(
         @Parameter(name = "assignmentId", description = "The ID of the assignment.", required = true, in = ParameterIn.PATH)
-        @PathVariable("assignmentId") long assignmentId);
+        @PathVariable("assignmentId") UUID assignmentId);
 
     @Operation(
         operationId = "deleteAssignment",
@@ -111,6 +113,6 @@ public interface AssignmentApi {
     @DeleteMapping(value = "/assignments/{assignmentId}")
     ResponseEntity<Void> delete(
         @Parameter(name = "assignmentId", description = "The ID of the assignment.", required = true, in = ParameterIn.PATH)
-        @PathVariable("assignmentId") long assignmentId);
+        @PathVariable("assignmentId") UUID assignmentId);
 
 }

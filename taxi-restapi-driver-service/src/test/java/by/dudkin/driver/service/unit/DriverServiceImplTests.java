@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -76,7 +77,7 @@ class DriverServiceImplTests {
     @Test
     void whenFindById_thenReturnDriverResponse() {
         // Arrange
-        long driverId = 1L;
+        var driverId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         when(driverRepository.findWithAssignmentsAndCarsById(driverId)).thenReturn(Optional.ofNullable(driver));
         when(driverMapper.toResponse(driver)).thenReturn(driverResponse);
 
@@ -90,7 +91,7 @@ class DriverServiceImplTests {
     @Test
     void whenFindByIdAndDriverNotFound_thenThrowDriverNotFoundException() {
         // Arrange
-        long undefinedId = 999L;
+        var undefinedId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         when(driverRepository.findWithAssignmentsAndCarsById(undefinedId)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -117,7 +118,7 @@ class DriverServiceImplTests {
     @Test
     void whenDeleteDriver_thenNoException() {
         // Arrange
-        long driverId = 1L;
+        var driverId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         when(driverRepository.findWithAssignmentsAndCarsById(driverId)).thenReturn(Optional.ofNullable(driver));
 
         // Act & Assert
@@ -128,7 +129,7 @@ class DriverServiceImplTests {
     @Test
     void whenGetOrThrow_thenReturnDriver() {
         // Arrange
-        long driverId = 1L;
+        var driverId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
         when(driverRepository.findWithAssignmentsAndCarsById(driverId)).thenReturn(Optional.ofNullable(driver));
 
         // Act
@@ -142,7 +143,7 @@ class DriverServiceImplTests {
     @Test
     void whenGetOrThrowAndDriverNotFound_thenThrowDriverNotFoundException() {
         // Arrange
-        long undefinedId = 999L;
+        var undefinedId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         when(driverRepository.findWithAssignmentsAndCarsById(undefinedId)).thenReturn(Optional.empty());
 
         // Act & Assert

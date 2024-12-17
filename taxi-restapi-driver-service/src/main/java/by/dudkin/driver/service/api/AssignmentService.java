@@ -7,17 +7,19 @@ import by.dudkin.driver.rest.dto.response.AssignmentResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
 public interface AssignmentService {
     AssignmentResponse create(AssignmentRequest assignmentRequest);
 
-    AssignmentResponse findById(long assignmentId);
+    AssignmentResponse findById(UUID assignmentId);
 
     PaginatedResponse<AssignmentResponse> findAll(Specification<DriverCarAssignment> spec, Pageable pageable);
 
-    AssignmentResponse cancelAssignment(long assignmentId);
+    AssignmentResponse cancelAssignment(UUID assignmentId);
 
-    void delete(long assignmentId);
+    void delete(UUID assignmentId);
 }

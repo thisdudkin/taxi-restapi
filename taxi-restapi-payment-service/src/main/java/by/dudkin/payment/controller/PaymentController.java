@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -23,7 +24,7 @@ public class PaymentController {
     private final TransactionService transactionService;
 
     @PutMapping
-    public ResponseEntity<Void> handleTransaction(@RequestBody TransactionRequest<Long> transactionRequest) throws SQLException {
+    public ResponseEntity<Void> handleTransaction(@RequestBody TransactionRequest<UUID> transactionRequest) throws SQLException {
         transactionService.handleTransaction(transactionRequest);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

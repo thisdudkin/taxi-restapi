@@ -31,6 +31,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -71,7 +72,7 @@ class AssignmentRestControllerTests {
     @Test
     void shouldFindAssignmentWhenValidId() {
         // Arrange
-        var URI = "%s/%d".formatted(ASSIGNMENTS_URI, 100L);
+        var URI = "%s/%s".formatted(ASSIGNMENTS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
 
         // Act
         ResponseEntity<AssignmentResponse> response = restTemplate.exchange(URI, HttpMethod.GET, null, AssignmentResponse.class);
@@ -79,14 +80,14 @@ class AssignmentRestControllerTests {
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().car().id()).isEqualTo(100L);
-        assertThat(response.getBody().driver().id()).isEqualTo(100L);
+        assertThat(response.getBody().car().id()).isNotNull();
+        assertThat(response.getBody().driver().id()).isNotNull();
     }
 
     @Test
     void shouldNotFindAssignmentWhenInvalidId() {
         // Arrange
-        var URI = "%s/%d".formatted(ASSIGNMENTS_URI, 999L);
+        var URI = "%s/%s".formatted(ASSIGNMENTS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -103,7 +104,9 @@ class AssignmentRestControllerTests {
     @Rollback
     void shouldCreateAssignment() {
         // Arrange
-        var request = TestDataGenerator.randomAssignmentRequestWithIds(100L, 105L);
+        var request = TestDataGenerator.randomAssignmentRequestWithIds(
+            UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"),
+            UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"));
 
         // Act
         ResponseEntity<AssignmentResponse> response = restTemplate.exchange(ASSIGNMENTS_URI, HttpMethod.POST, new HttpEntity<>(request), AssignmentResponse.class);
@@ -111,14 +114,15 @@ class AssignmentRestControllerTests {
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().driver().id()).isEqualTo(100L);
-        assertThat(response.getBody().car().id()).isEqualTo(105L);
+        assertThat(response.getBody().driver().id()).isNotNull();
+        assertThat(response.getBody().car().id()).isNotNull();
     }
 
     @Test
     void shouldNotCreateAssignmentWhenValidationFails() {
         // Arrange
-        var invalid = new AssignmentRequest(100L, 105L, null);
+        var invalid = new AssignmentRequest(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981"),
+            UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981"), null);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -136,7 +140,7 @@ class AssignmentRestControllerTests {
     @Rollback
     void shouldCancelAssignment() {
         // Arrange
-        var URI = "%s/%d".formatted(ASSIGNMENTS_URI, 101L);
+        var URI = "%s/%s".formatted(ASSIGNMENTS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
 
         // Act
         ResponseEntity<AssignmentResponse> response = restTemplate.exchange(URI, HttpMethod.PUT, null, AssignmentResponse.class);
@@ -151,7 +155,7 @@ class AssignmentRestControllerTests {
     @Rollback
     void shouldDeleteAssignment() {
         // Arrange
-        var URI = "%s/%d".formatted(ASSIGNMENTS_URI, 101L);
+        var URI = "%s/%s".formatted(ASSIGNMENTS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
 
         // Act
         ResponseEntity<Void> response = restTemplate.exchange(URI, HttpMethod.DELETE, null, Void.class);

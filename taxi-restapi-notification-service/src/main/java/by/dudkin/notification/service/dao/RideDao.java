@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -23,25 +24,26 @@ public class RideDao {
     private final JdbcTemplate jdbcTemplate;
 
     public void insertRideRequest(RideRequest request) {
-        jdbcTemplate.execute("insert into ride_requests (ride_id, location, price) " +
-                "values (?, st_setsrid(st_makepoint(?, ?), 4326), ?)",
+        jdbcTemplate.execute("insert into ride_requests (id, ride_id, location, price) " +
+                "values (?, ?, st_setsrid(st_makepoint(?, ?), 4326), ?)",
             (PreparedStatementCallback<?>) ps -> {
-                ps.setLong(1, request.rideId());
-                ps.setBigDecimal(2, request.lng());
-                ps.setBigDecimal(3, request.lat());
-                ps.setBigDecimal(4, request.price());
+                ps.setObject(1, UUID.randomUUID());
+                ps.setObject(2, request.rideId());
+                ps.setBigDecimal(3, request.lng());
+                ps.setBigDecimal(4, request.lat());
+                ps.setBigDecimal(5, request.price());
                 ps.execute();
                 return null;
             });
     }
 
     @Transactional(readOnly = true)
-    public Set<RideRequest> findNearbyRequestsForDriver(Long driverId) {
+    public Set<RideRequest> findNearbyRequestsForDriver(UUID driverId) {
         Set<RideRequest> requests = new HashSet<>();
         jdbcTemplate.execute("select driver_id, st_y(location::geometry) as lat, st_x(location::geometry) as lng " +
             "from available_drivers " +
             "where driver_id = ?", (PreparedStatementCallback<?>) selectDriver -> {
-            selectDriver.setLong(1, driverId);
+            selectDriver.setObject(1, driverId);
             try (ResultSet driverSet = selectDriver.executeQuery()) {
                 if (driverSet.next()) {
                     jdbcTemplate.execute("select rr.id, rr.ride_id, st_y(location::geometry) as lat, st_x(location::geometry) as lng, rr.price " +
@@ -56,8 +58,8 @@ public class RideDao {
                         try (ResultSet requestSet = selectRequests.executeQuery()) {
                             while (requestSet.next()) {
                                 requests.add(new RideRequest(
-                                    requestSet.getLong("id"),
-                                    requestSet.getLong("ride_id"),
+                                    requestSet.getObject("id", UUID.class),
+                                    requestSet.getObject("ride_id", UUID.class),
                                     requestSet.getBigDecimal("lat"),
                                     requestSet.getBigDecimal("lng"),
                                     requestSet.getBigDecimal("price")
@@ -74,10 +76,10 @@ public class RideDao {
         return Collections.unmodifiableSet(requests);
     }
 
-    public void removeAcceptedRide(long rideId) {
+    public void removeAcceptedRide(UUID rideId) {
         jdbcTemplate.execute("delete from ride_requests " +
             "where ride_id = ?", (PreparedStatementCallback<?>) ps -> {
-            ps.setLong(1, rideId);
+            ps.setObject(1, rideId);
             ps.execute();
             return null;
         });

@@ -8,24 +8,25 @@ import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
  */
 public interface PassengerService {
 
-    PassengerResponse findById(long id);
+    PassengerResponse findById(UUID id);
 
     PaginatedResponse<PassengerResponse> findAll(Pageable pageable);
 
     PassengerResponse create(PassengerRequest passengerRequest);
 
-    PassengerResponse update(long passengerId, PassengerRequest passengerRequest);
+    PassengerResponse update(UUID passengerId, PassengerRequest passengerRequest);
 
-    void delete(long passengerId);
+    void delete(UUID passengerId);
 
-    BalanceResponse<Long> checkBalance(Long passengerId);
+    BalanceResponse<UUID> checkBalance(UUID passengerId);
 
-    void updateBalance(long passengerId, BigDecimal amount);
+    void updateBalance(UUID passengerId, BigDecimal amount);
 
 }

@@ -8,18 +8,17 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGSERIAL
-                  autoIncrement: true
+                  type: UUID
                   constraints:
                     primaryKey: true
               - column:
                   name: driver_id
-                  type: BIGINT
+                  type: UUID
                   constraints:
                     nullable: false
               - column:
                   name: passenger_id
-                  type: BIGINT
+                  type: UUID
                   constraints:
                     nullable: false
               - column:
@@ -35,6 +34,6 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: ride_id
-                  type: BIGINT
+                  type: UUID
                   constraints:
                     nullable: false

@@ -20,6 +20,8 @@ import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -54,7 +56,7 @@ class CarServiceComponentTests {
     @Sql("classpath:data.sql")
     void shouldFindCarById() {
         // Act
-        var response = carService.findById(100L);
+        var response = carService.findById(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981"));
 
         // Assert
         assertThat(response).isNotNull();
@@ -82,7 +84,7 @@ class CarServiceComponentTests {
         var updatedRequest = TestDataGenerator.randomCarRequestWithColor(COLOR_WHITE);
 
         // Act
-        var response = carService.update(104L, updatedRequest);
+        var response = carService.update(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6984"), updatedRequest);
 
         // Assert
         assertThat(response).isNotNull();
@@ -93,10 +95,10 @@ class CarServiceComponentTests {
     @Sql("classpath:data.sql")
     void shouldDeleteCar() {
         // Act
-        carService.delete(104L);
+        carService.delete(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6984"));
 
         // Assert
-        var deletedCar = carRepository.findById(104L).orElse(null);
+        var deletedCar = carRepository.findById(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6984")).orElse(null);
         assertThat(deletedCar).isNull();
     }
 

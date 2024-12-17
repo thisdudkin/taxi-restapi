@@ -30,6 +30,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -43,20 +44,20 @@ import java.util.Objects;
 @AllArgsConstructor
 @Table(name = "rides")
 @EntityListeners(AuditingEntityListener.class)
-public class Ride implements BaseEntity<Long> {
+public class Ride implements BaseEntity<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "passenger", nullable = false, updatable = false)
-    private Long passengerId;
+    private UUID passengerId;
 
     @Column(name = "driver")
-    private Long driverId;
+    private UUID driverId;
 
     @Column(name = "car")
-    private Long carId;
+    private UUID carId;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)

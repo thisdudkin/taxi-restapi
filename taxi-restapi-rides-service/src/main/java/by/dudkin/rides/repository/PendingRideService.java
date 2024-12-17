@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -33,7 +34,7 @@ public class PendingRideService {
                 ps.setInt(2, (int) pageable.getOffset());
             },
             (rs, rowNum) -> new PendingRide(
-                rs.getLong("id"),
+                rs.getObject("id", UUID.class),
                 new Location(
                     rs.getString("from_country"),
                     rs.getString("from_city"),

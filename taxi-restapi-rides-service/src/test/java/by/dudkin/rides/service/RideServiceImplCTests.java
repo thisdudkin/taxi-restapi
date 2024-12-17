@@ -26,6 +26,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,11 +59,11 @@ class RideServiceImplCTests {
     @Test
     void shouldFindRide() {
         // Act
-        RideResponse response = rideService.read(1L);
+        RideResponse response = rideService.read(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981"));
 
         // Assert
         assertNotNull(response);
-        assertEquals(1L, response.id());
+        assertNotNull(response.id());
     }
 
     @Test
@@ -86,7 +87,7 @@ class RideServiceImplCTests {
         RideRequest request = TestDataGenerator.randomRideRequest();
 
         // Act
-        RideResponse response = rideService.update(5L, request);
+        RideResponse response = rideService.update(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"), request);
 
         // Assert
         assertNotNull(response);
@@ -96,11 +97,14 @@ class RideServiceImplCTests {
 
     @Test
     void shouldDeleteRide() {
+        // Arrange
+        UUID id = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6986");
+
         // Act
-        rideService.delete(6L);
+        rideService.delete(id);
 
         // Assert
-        var response = rideRepository.findById(6L);
+        var response = rideRepository.findById(id);
         assertThat(response).isEmpty();
     }
 

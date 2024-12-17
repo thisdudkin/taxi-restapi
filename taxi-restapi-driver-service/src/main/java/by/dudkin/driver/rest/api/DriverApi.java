@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -41,7 +42,7 @@ public interface DriverApi {
         }
     )
     @GetMapping(value = "/{driverId}", produces = "application/json")
-    ResponseEntity<DriverResponse> get(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable("driverId") long driverId);
+    ResponseEntity<DriverResponse> get(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable("driverId") UUID driverId);
 
     @Operation(
         operationId = "listDrivers",
@@ -88,7 +89,7 @@ public interface DriverApi {
         }
     )
     @PutMapping(value = "/{driverId}", produces = "application/json", consumes = "application/json")
-    ResponseEntity<DriverResponse> update(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable("driverId") long driverId, @Parameter(name = "DriverRequest", description = "Driver data", required = true) @RequestBody @Valid DriverRequest driverRequest);
+    ResponseEntity<DriverResponse> update(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable("driverId") UUID driverId, @Parameter(name = "DriverRequest", description = "Driver data", required = true) @RequestBody @Valid DriverRequest driverRequest);
 
     @Operation(
         operationId = "deleteDriver",
@@ -101,7 +102,7 @@ public interface DriverApi {
         }
     )
     @DeleteMapping(value = "/{driverId}")
-    ResponseEntity<Void> delete(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable("driverId") long driverId);
+    ResponseEntity<Void> delete(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable("driverId") UUID driverId);
 
     @PutMapping(value = "/{driverId}/status/available")
     @Operation(
@@ -119,7 +120,7 @@ public interface DriverApi {
             @ApiResponse(responseCode = "400", description = "Invalid state transition.")
         }
     )
-    ResponseEntity<DriverResponse> markAvailable(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable long driverId);
+    ResponseEntity<DriverResponse> markAvailable(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable UUID driverId);
 
     @PutMapping(value = "/{driverId}/status/busy")
     @Operation(
@@ -137,7 +138,7 @@ public interface DriverApi {
             @ApiResponse(responseCode = "400", description = "Invalid state transition.")
         }
     )
-    ResponseEntity<DriverResponse> markOnTrip(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable long driverId);
+    ResponseEntity<DriverResponse> markOnTrip(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable UUID driverId);
 
     @PutMapping(value = "/{driverId}/status/offline")
     @Operation(
@@ -155,7 +156,7 @@ public interface DriverApi {
             @ApiResponse(responseCode = "400", description = "Invalid state transition.")
         }
     )
-    ResponseEntity<DriverResponse> markOffline(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable long driverId);
+    ResponseEntity<DriverResponse> markOffline(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable UUID driverId);
 
     @Operation(
         operationId = "updateDriverBalance",
@@ -171,7 +172,7 @@ public interface DriverApi {
     @PutMapping(value = "/{driverId}/balance", produces = "application/json")
     ResponseEntity<Void> updateBalance(
         @Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH)
-        @PathVariable("driverId") long driverId,
+        @PathVariable("driverId") UUID driverId,
         @Parameter(name = "amount", description = "The amount to adjust the balance by.", required = true)
         @RequestParam BigDecimal amount
     );

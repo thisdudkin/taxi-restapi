@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
@@ -17,14 +19,14 @@ public class AssignmentValidator {
 
     private final AssignmentRepository assignmentRepository;
 
-    public void validateCarAvailability(long carId) {
+    public void validateCarAvailability(UUID carId) {
         assignmentRepository.findActiveAssignmentByCarId(carId)
             .ifPresent(assignment -> {
                 throw new IllegalStateException(ErrorMessages.CAR_ALREADY_BOOKED);
             });
     }
 
-    public void validateStatus(long assignmentId) {
+    public void validateStatus(UUID assignmentId) {
         assignmentRepository.findById(assignmentId)
             .filter(assignment -> assignment.getStatus() == AssignmentStatus.COMPLETED)
             .ifPresent(assignment -> {

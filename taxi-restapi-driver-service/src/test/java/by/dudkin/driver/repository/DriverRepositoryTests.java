@@ -10,6 +10,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -31,7 +33,7 @@ class DriverRepositoryTests {
     @Test
     void testFindWithAssignmentsAndCars() {
         // Arrange
-        long driverId = 100L;
+        UUID driverId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
 
         // Act
         var driver = driverRepository.findWithAssignmentsAndCarsById(driverId);
@@ -44,7 +46,7 @@ class DriverRepositoryTests {
     @Test
     void testFindWithAssignmentsAndCarsShouldFailed() {
         // Arrange
-        long undefinedId = 999L;
+        UUID undefinedId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
 
         // Act
         var driver = driverRepository.findWithAssignmentsAndCarsById(undefinedId);

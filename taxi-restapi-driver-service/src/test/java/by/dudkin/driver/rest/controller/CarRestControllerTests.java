@@ -28,6 +28,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -69,7 +70,7 @@ class CarRestControllerTests {
     @Test
     void shouldFindCarWhenValidId() {
         // Arrange
-        var URI = "%s/%d".formatted(CARS_URI, 100L);
+        var URI = "%s/%s".formatted(CARS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
 
         // Act
         ResponseEntity<CarResponse> response = restTemplate.exchange(URI, HttpMethod.GET, null, CarResponse.class);
@@ -83,7 +84,7 @@ class CarRestControllerTests {
     @Test
     void shouldNotFindCarWhenInvalidId() {
         // Arrange
-        var URI = "%s/%d".formatted(CARS_URI, 999L);
+        var URI = "%s/%s".formatted(CARS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -132,7 +133,7 @@ class CarRestControllerTests {
     void shouldUpdateCar() {
         // Arrange
         var request = TestDataGenerator.randomCarRequestWithColor(COLOR_BLUE);
-        var URI = "%s/%d".formatted(CARS_URI, 104L);
+        var URI = "%s/%s".formatted(CARS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6984");
 
         // Act
         ResponseEntity<CarResponse> response = restTemplate.exchange(URI, HttpMethod.PUT, new HttpEntity<>(request), CarResponse.class);
@@ -147,7 +148,7 @@ class CarRestControllerTests {
     @Rollback
     void shouldDeleteCar() {
         // Arrange
-        var URI = "%s/%d".formatted(CARS_URI, 104L);
+        var URI = "%s/%s".formatted(CARS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6984");
 
         // Act
         ResponseEntity<Void> response = restTemplate.exchange(URI, HttpMethod.DELETE, null, Void.class);

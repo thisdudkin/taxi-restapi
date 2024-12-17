@@ -27,6 +27,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -57,7 +58,7 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     @Transactional(readOnly = true)
-    public DriverResponse findById(long carId) {
+    public DriverResponse findById(UUID carId) {
         return driverMapper.toResponse(getOrThrow(carId));
     }
 
@@ -67,7 +68,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverResponse update(long driverId, DriverRequest driverRequest) {
+    public DriverResponse update(UUID driverId, DriverRequest driverRequest) {
         Driver targetDriver = getOrThrow(driverId);
         driverMapper.updateDriver(driverRequest, targetDriver);
         driverRepository.save(targetDriver);
@@ -75,13 +76,13 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void delete(long driverId) {
+    public void delete(UUID driverId) {
         Driver driver = getOrThrow(driverId);
         driverRepository.delete(driver);
     }
 
     @Override
-    public Driver getOrThrow(long driverId) {
+    public Driver getOrThrow(UUID driverId) {
         return driverRepository.findWithAssignmentsAndCarsById(driverId)
             .orElseThrow(() -> new DriverNotFoundException(ErrorMessages.DRIVER_NOT_FOUND));
     }
@@ -97,7 +98,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverResponse markAvailable(long driverId) {
+    public DriverResponse markAvailable(UUID driverId) {
         Driver driver = getOrThrow(driverId);
         DriverStatusTransition transition = new DriverStatusTransition(driver.getStatus(), DriverStatus.READY);
         transitionValidator.validate(transition, new BeanPropertyBindingResult(transition, transition.getClass().getSimpleName()));
@@ -106,7 +107,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverResponse markBusy(long driverId) {
+    public DriverResponse markBusy(UUID driverId) {
         Driver driver = getOrThrow(driverId);
         DriverStatusTransition transition = new DriverStatusTransition(driver.getStatus(), DriverStatus.ON_TRIP);
         transitionValidator.validate(transition, new BeanPropertyBindingResult(transition, transition.getClass().getSimpleName()));
@@ -115,7 +116,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverResponse markOffline(long driverId) {
+    public DriverResponse markOffline(UUID driverId) {
         Driver driver = getOrThrow(driverId);
         DriverStatusTransition transition = new DriverStatusTransition(driver.getStatus(), DriverStatus.OFFLINE);
         transitionValidator.validate(transition, new BeanPropertyBindingResult(transition, transition.getClass().getSimpleName()));
@@ -124,11 +125,11 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void updateBalance(long driverId, BigDecimal amount) {
+    public void updateBalance(UUID driverId, BigDecimal amount) {
         jdbcTemplate.execute("update drivers set balance = balance + ? " +
             "where id = ?", (PreparedStatementCallback<?>) updateDriver -> {
             updateDriver.setBigDecimal(1, amount);
-            updateDriver.setLong(2, driverId);
+            updateDriver.setObject(2, driverId);
             updateDriver.execute();
             return null;
         });

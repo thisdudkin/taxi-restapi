@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
@@ -46,7 +48,7 @@ public interface RidesApi {
     @GetMapping(value = "/rides/{rideId}", produces = "application/json")
     ResponseEntity<RideResponse> get(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
-        @PathVariable("rideId") Long rideId
+        @PathVariable("rideId") UUID rideId
     );
 
     @Operation(
@@ -69,11 +71,11 @@ public interface RidesApi {
     @GetMapping(value = "/rides", produces = "application/json")
     ResponseEntity<PaginatedResponse<RideResponse>> getAll(
         @Parameter(name = "passengerId", description = "Filter rides by passenger ID", required = false)
-        @RequestParam(required = false) Long passengerId,
+        @RequestParam(required = false) UUID passengerId,
         @Parameter(name = "driverId", description = "Filter rides by driver ID", required = false)
-        @RequestParam(required = false) Long driverId,
+        @RequestParam(required = false) UUID driverId,
         @Parameter(name = "carId", description = "Filter rides by car ID", required = false)
-        @RequestParam(required = false) Long carId,
+        @RequestParam(required = false) UUID carId,
         @Parameter(hidden = true) Pageable pageable
     );
 
@@ -126,7 +128,7 @@ public interface RidesApi {
     @PutMapping(value = "/rides/{rideId}", produces = "application/json", consumes = "application/json")
     ResponseEntity<RideResponse> update(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
-        @PathVariable("rideId") Long rideId,
+        @PathVariable("rideId") UUID rideId,
         @Parameter(name = "RideRequest", description = "Ride data", required = true)
         @RequestBody @Valid RideRequest rideRequest
     );
@@ -144,7 +146,7 @@ public interface RidesApi {
     @DeleteMapping(value = "/rides/{rideId}")
     ResponseEntity<Void> delete(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
-        @PathVariable("rideId") Long rideId
+        @PathVariable("rideId") UUID rideId
     );
 
     @Operation(
@@ -160,7 +162,7 @@ public interface RidesApi {
     @PatchMapping(value = "/rides/{rideId}/activate", produces = "application/json")
     ResponseEntity<RideResponse> activate(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
-        @PathVariable("rideId") Long rideId
+        @PathVariable("rideId") UUID rideId
     );
 
     @Operation(
@@ -175,7 +177,7 @@ public interface RidesApi {
     @PostMapping(value = "/rides/{rideId}/assign", produces = "application/json", consumes = "application/json")
     ResponseEntity<RideResponse> assignDriver(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
-        @PathVariable("rideId") Long rideId,
+        @PathVariable("rideId") UUID rideId,
         @RequestBody AvailableDriver availableDriver
     );
 
@@ -193,7 +195,7 @@ public interface RidesApi {
     @PatchMapping(value = "/rides/{rideId}/done", produces = "application/json")
     ResponseEntity<RideResponse> markDone(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
-        @PathVariable("rideId") Long rideId
+        @PathVariable("rideId") UUID rideId
     );
 
     @Operation(
@@ -209,7 +211,7 @@ public interface RidesApi {
     @PatchMapping(value = "/rides/{rideId}/cancel", produces = "application/json")
     ResponseEntity<RideResponse> cancel(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
-        @PathVariable("rideId") Long rideId
+        @PathVariable("rideId") UUID rideId
     );
 
     @Operation(
@@ -225,7 +227,7 @@ public interface RidesApi {
     @PatchMapping(value = "/rides/{rideId}/rate", produces = "application/json", consumes = "application/json")
     ResponseEntity<RideResponse> rate(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
-        @PathVariable("rideId") Long rideId,
+        @PathVariable("rideId") UUID rideId,
         @Parameter(name = "RideCompletionRequest", description = "Rating details", required = true)
         @RequestBody @Valid RideCompletionRequest request
     );

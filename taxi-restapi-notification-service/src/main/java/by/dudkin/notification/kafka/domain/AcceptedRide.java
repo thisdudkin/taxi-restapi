@@ -1,6 +1,8 @@
 package by.dudkin.notification.kafka.domain;
 
+import java.util.UUID;
+
 /**
  * @author Alexander Dudkin
  */
-public record AcceptedRide(long rideId, long driverId, long carId) {}
+public record AcceptedRide(UUID rideId, UUID driverId, UUID carId) {}

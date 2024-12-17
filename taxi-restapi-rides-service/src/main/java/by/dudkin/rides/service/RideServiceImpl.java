@@ -32,6 +32,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -61,12 +62,12 @@ public class RideServiceImpl implements RideService {
 
     @Override
     @Transactional(readOnly = true)
-    public RideResponse read(long rideId) {
+    public RideResponse read(UUID rideId) {
         return rideMapper.toResponse(getOrThrow(rideId));
     }
 
     @Override
-    public RideResponse update(long rideId, RideRequest rideRequest) {
+    public RideResponse update(UUID rideId, RideRequest rideRequest) {
         Ride rideForUpdate = getOrThrow(rideId);
         rideMapper.updateRide(rideRequest, rideForUpdate);
         rideRepository.save(rideForUpdate);
@@ -74,7 +75,7 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public void delete(long rideId) {
+    public void delete(UUID rideId) {
         rideRepository.delete(getOrThrow(rideId));
     }
 
@@ -90,32 +91,32 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public RideResponse cancel(long rideId) {
+    public RideResponse cancel(UUID rideId) {
         return rideMapper.toResponse(updateRideStatus(rideId, RideStatus.CANCEL));
     }
 
     @Override
-    public RideResponse complete(long rideId) {
+    public RideResponse complete(UUID rideId) {
         Ride ride = updateRideStatus(rideId, RideStatus.DONE);
         return rideMapper.toResponse(rideRepository.save(rideCompletionService.completeRide(ride)));
     }
 
     @Override
-    public RideResponse activate(long rideId) {
+    public RideResponse activate(UUID rideId) {
         Ride ride = updateRideStatus(rideId, RideStatus.ACTIVE);
         ride.setStartTime(LocalDateTime.now());
         return rideMapper.toResponse(rideRepository.save(ride));
     }
 
     @Override
-    public RideResponse rate(long rideId, RideCompletionRequest request) {
+    public RideResponse rate(UUID rideId, RideCompletionRequest request) {
         Ride ride = getOrThrow(rideId);
         ride.setRating(request.rating());
         return rideMapper.toResponse(rideRepository.save(ride));
     }
 
     @Override
-    public RideResponse assign(long rideId, AvailableDriver availableDriver) {
+    public RideResponse assign(UUID rideId, AvailableDriver availableDriver) {
         Ride ride = getOrThrow(rideId);
         RideStatusTransition transition = new RideStatusTransition(ride.getStatus(), RideStatus.ASSIGNED);
         transitionValidator.validate(transition, new BeanPropertyBindingResult(transition, transition.getClass().getSimpleName()));
@@ -131,12 +132,12 @@ public class RideServiceImpl implements RideService {
         return pendingRideService.findAllPendingRides(pageable);
     }
 
-    Ride getOrThrow(long rideId) {
+    Ride getOrThrow(UUID rideId) {
         return rideRepository.findById(rideId)
                 .orElseThrow(() -> new RideNotFoundException(ErrorMessages.RIDE_NOT_FOUND));
     }
 
-    private Ride updateRideStatus(long rideId, RideStatus newStatus) {
+    private Ride updateRideStatus(UUID rideId, RideStatus newStatus) {
         Ride ride = getOrThrow(rideId);
         RideStatusTransition transition = new RideStatusTransition(ride.getStatus(), newStatus);
         transitionValidator.validate(transition, new BeanPropertyBindingResult(transition, transition.getClass().getSimpleName()));

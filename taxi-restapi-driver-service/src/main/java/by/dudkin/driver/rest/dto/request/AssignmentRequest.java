@@ -4,13 +4,14 @@ import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
  */
 public record AssignmentRequest(
-        Long driverId,
-        Long carId,
+        UUID driverId,
+        UUID carId,
         @NotNull
         Instant assignmentDate
 ) implements Serializable {

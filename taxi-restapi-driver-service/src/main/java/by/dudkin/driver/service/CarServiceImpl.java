@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -43,7 +44,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Transactional(readOnly = true)
-    public CarResponse findById(long carId) {
+    public CarResponse findById(UUID carId) {
         return carMapper.toResponse(getOrThrow(carId));
     }
 
@@ -54,7 +55,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public CarResponse update(long carId, CarRequest carRequest) {
+    public CarResponse update(UUID carId, CarRequest carRequest) {
         Car targetCar = getOrThrow(carId);
         carMapper.updateCar(carRequest, targetCar);
         carRepository.save(targetCar);
@@ -62,13 +63,13 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public void delete(long carId) {
+    public void delete(UUID carId) {
         Car car = getOrThrow(carId);
         carRepository.delete(car);
     }
 
     @Override
-    public Car getOrThrow(long carId) {
+    public Car getOrThrow(UUID carId) {
         return carRepository.findWithAssignmentsAndDriversById(carId)
                 .orElseThrow(() -> new CarNotFoundException(ErrorMessages.CAR_NOT_FOUND));
     }

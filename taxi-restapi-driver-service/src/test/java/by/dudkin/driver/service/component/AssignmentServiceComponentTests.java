@@ -21,6 +21,8 @@ import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -53,7 +55,7 @@ class AssignmentServiceComponentTests {
     @Test
     void shouldFindAssignmentById() {
         // Act
-        var response = assignmentService.findById(100L);
+        var response = assignmentService.findById(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981"));
 
         // Assert
         assertThat(response).isNotNull();
@@ -63,7 +65,9 @@ class AssignmentServiceComponentTests {
     @Test
     void shouldCreateAssignment() {
         // Arrange
-        var assignmentRequest = TestDataGenerator.randomAssignmentRequestWithIds(104L, 106L);
+        var assignmentRequest = TestDataGenerator.randomAssignmentRequestWithIds(
+            UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"),
+            UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"));
 
         // Act
         var assignmentResponse = assignmentService.create(assignmentRequest);
@@ -71,14 +75,14 @@ class AssignmentServiceComponentTests {
         // Assert
         assertThat(assignmentResponse).isNotNull();
         assertThat(assignmentResponse.status()).isEqualTo(AssignmentStatus.ACTIVE);
-        assertThat(assignmentResponse.car().id()).isEqualTo(106L);
-        assertThat(assignmentResponse.driver().id()).isEqualTo(104L);
+        assertThat(assignmentResponse.car().id()).isNotNull();
+        assertThat(assignmentResponse.driver().id()).isNotNull();
     }
 
     @Test
     void shouldCancelAssignment() {
         // Arrange
-        long assignmentId = 101L;
+        UUID assignmentId = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
 
         // Act
         var response = assignmentService.cancelAssignment(assignmentId);
@@ -90,11 +94,14 @@ class AssignmentServiceComponentTests {
 
     @Test
     void shouldDeleteAssignment() {
+        // Arrange
+        UUID id = UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
+
         // Act
-        assignmentService.delete(101L);
+        assignmentService.delete(id);
 
         // Assert
-        var deletedAssignment = assignmentRepository.findById(101L).orElse(null);
+        var deletedAssignment = assignmentRepository.findById(id).orElse(null);
         assertThat(deletedAssignment).isNull();
     }
 

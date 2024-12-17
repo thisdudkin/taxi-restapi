@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
@@ -53,7 +54,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public AssignmentResponse findById(long assignmentId) {
+    public AssignmentResponse findById(UUID assignmentId) {
         return assignmentMapper.toResponse(getOrThrow(assignmentId));
     }
 
@@ -69,7 +70,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public AssignmentResponse cancelAssignment(long assignmentId) {
+    public AssignmentResponse cancelAssignment(UUID assignmentId) {
         assignmentValidator.validateStatus(assignmentId);
 
         DriverCarAssignment assignment = getOrThrow(assignmentId);
@@ -78,12 +79,12 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public void delete(long assignmentId) {
+    public void delete(UUID assignmentId) {
         DriverCarAssignment assignment = getOrThrow(assignmentId);
         assignmentRepository.delete(assignment);
     }
 
-    public DriverCarAssignment getOrThrow(long assignmentId) {
+    public DriverCarAssignment getOrThrow(UUID assignmentId) {
         return assignmentRepository.findWithDriverAndCarById(assignmentId)
                 .orElseThrow(() -> new AssignmentNotFoundException(ErrorMessages.ASSIGNMENT_NOT_FOUND));
     }

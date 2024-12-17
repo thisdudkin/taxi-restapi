@@ -29,6 +29,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -54,6 +55,7 @@ class DriverRestControllerTests {
 
     private static final String DRIVERS_URI = "/api/drivers";
     private static final String BOB_FIRSTNAME = "Bob";
+    private static final String ALICE_FIRSTNAME = "Alice";
 
     @Test
     @SuppressWarnings("unchecked")
@@ -70,7 +72,7 @@ class DriverRestControllerTests {
     @Test
     void shouldFindDriverWhenValidID() {
         // Arrange
-        var URI = "%s/%d".formatted(DRIVERS_URI, 103L);
+        var URI = "%s/%s".formatted(DRIVERS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6983");
 
         // Act
         ResponseEntity<DriverResponse> response = restTemplate.exchange(URI, HttpMethod.GET, null, DriverResponse.class);
@@ -78,13 +80,13 @@ class DriverRestControllerTests {
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().info().getFirstName()).isEqualTo(BOB_FIRSTNAME);
+        assertThat(response.getBody().info().getFirstName()).isEqualTo(ALICE_FIRSTNAME);
     }
 
     @Test
     void shouldNotFindDriverWhenInvalidId() {
         // Arrange
-        var URI = "%s/%d".formatted(DRIVERS_URI, 999L);
+        var URI = "%s/%s".formatted(DRIVERS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -133,7 +135,7 @@ class DriverRestControllerTests {
     void shouldUpdateDriver() {
         // Arrange
         var request = TestDataGenerator.randomDriverRequestWithFirstname(BOB_FIRSTNAME);
-        var URI = "%s/%d".formatted(DRIVERS_URI, 102L);
+        var URI = "%s/%s".formatted(DRIVERS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6982");
 
         // Act
         ResponseEntity<DriverResponse> response = restTemplate.exchange(URI, HttpMethod.PUT, new HttpEntity<>(request), DriverResponse.class);
@@ -148,7 +150,7 @@ class DriverRestControllerTests {
     @Rollback
     void shouldDeleteDriver() {
         // Arrange
-        var URI = "%s/%d".formatted(DRIVERS_URI, 102L);
+        var URI = "%s/%s".formatted(DRIVERS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6982");
 
         // Act
         ResponseEntity<Void> response = restTemplate.exchange(URI, HttpMethod.DELETE, null, Void.class);
