@@ -3,7 +3,9 @@ package by.dudkin.common.util;
 /**
  * @author Alexander Dudkin
  */
-public class ErrorMessages {
+public final class ErrorMessages {
+
+    private ErrorMessages() {};
 
     /**
      * Common Errors
@@ -33,6 +35,12 @@ public class ErrorMessages {
      */
     public static final String RIDE_NOT_FOUND = "error.ride.notfound";
     public static final String AVAILABLE_DRIVER_NOT_FOUND = "error.available.driver.notfound";
+
+    /**
+     * Authentication Server Errors
+     */
+    public static final String NOT_ALLOWED_ROLE = "error.auth.not.allowed.role";
+    public static final String KEYCLOAK_RESPONSE_ERROR = "error.auth.keycloak.response.error";
 
     /**
      * Validation Errors
