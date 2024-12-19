@@ -44,3 +44,48 @@ services:
       - discovery.type=single-node
     ports:
       - "9200:9200"
+
+  keycloak-db:
+    container_name: keycloak-db
+    image: postgres:17.0
+    environment:
+      POSTGRES_USER: keycloak_user
+      POSTGRES_PASSWORD: keycloak_pass
+      POSTGRES_DB: keycloak
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+    networks:
+      - keycloak-network
+    restart: unless-stopped
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:26.0
+    ports:
+      - "9090:8080"
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: keycloak_user
+      KC_DB_PASSWORD: keycloak_pass
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    networks:
+      - keycloak-network
+    depends_on:
+      - keycloak-db
+    command: [ "start-dev", "--import-realm" ]
+    volumes:
+      - ./keycloak/:/opt/keycloak/data/import/
+
+networks:
+  keycloak-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  keycloak:
+    driver: local

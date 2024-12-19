@@ -1,0 +1,19 @@
+server.port: 8087
+
+spring:
+  application:
+    name: authentication-server
+
+keycloak:
+  client:
+    id: taxi-client
+    secret: ${KEYCLOAK_CLIENT_SECRET:BLBIMdndJU2aiKBjlTYrgtTNzVEXDVuM}
+  realm: taxi-realm
+  server-url: http://localhost:9090
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
