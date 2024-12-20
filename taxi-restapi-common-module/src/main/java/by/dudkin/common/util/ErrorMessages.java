@@ -37,12 +37,6 @@ public final class ErrorMessages {
     public static final String AVAILABLE_DRIVER_NOT_FOUND = "error.available.driver.notfound";
 
     /**
-     * Authentication Server Errors
-     */
-    public static final String NOT_ALLOWED_ROLE = "error.auth.not.allowed.role";
-    public static final String KEYCLOAK_RESPONSE_ERROR = "error.auth.keycloak.response.error";
-
-    /**
      * Validation Errors
      */
     public static final String INVALID_TRANSITION = "error.validation.invalid.transition";

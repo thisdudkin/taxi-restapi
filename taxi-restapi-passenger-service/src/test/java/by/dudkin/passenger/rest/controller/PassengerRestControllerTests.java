@@ -1,12 +1,14 @@
 package by.dudkin.passenger.rest.controller;
 
 import by.dudkin.common.util.PaginatedResponse;
+import by.dudkin.passenger.configuration.SecurityConfig;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import by.dudkin.passenger.util.TestDataGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpEntity;
@@ -16,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -44,10 +48,14 @@ class PassengerRestControllerTests {
     @Autowired
     TestRestTemplate restTemplate;
 
+    @MockBean
+    SecurityFilterChain jwtFilterChain;
+
     private static final String PASSENGERS_URI = "/api/passengers";
 
     @Test
     @SuppressWarnings("unchecked")
+    @WithMockUser(roles = "PASSENGER")
     void shouldFindAllPassengers() {
         // Act
         PaginatedResponse<PassengerResponse> response = restTemplate.getForObject(PASSENGERS_URI, PaginatedResponse.class);
@@ -58,6 +66,7 @@ class PassengerRestControllerTests {
     }
 
     @Test
+    @WithMockUser(roles = "PASSENGER")
     void shouldFindPassengerWithValidId() {
         // Arrange
         var URI = "%s/%s".formatted(PASSENGERS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
@@ -72,6 +81,7 @@ class PassengerRestControllerTests {
     }
 
     @Test
+    @WithMockUser(roles = "PASSENGER")
     void shouldNotFindPassengerWithInvalidId() {
         // Arrange
         var URI = "%s/%s".formatted(PASSENGERS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
@@ -89,6 +99,7 @@ class PassengerRestControllerTests {
     }
 
     @Test
+    @WithMockUser(roles = "PASSENGER")
     void shouldCreatePassenger() {
         // Arrange
         PassengerRequest request = TestDataGenerator.randomRequest();
@@ -103,6 +114,7 @@ class PassengerRestControllerTests {
     }
 
     @Test
+    @WithMockUser(roles = "PASSENGER")
     void shouldNotCreatePassengerWhenValidationFails() {
         // Arrange
         PassengerRequest request = TestDataGenerator.randomRequestWithInfo(null);
@@ -120,6 +132,7 @@ class PassengerRestControllerTests {
     }
 
     @Test
+    @WithMockUser(roles = "PASSENGER")
     void shouldUpdatePassenger() {
         // Arrange
         PassengerRequest request = TestDataGenerator.randomRequest();
@@ -135,6 +148,7 @@ class PassengerRestControllerTests {
     }
 
     @Test
+    @WithMockUser(roles = "PASSENGER")
     void shouldDeletePassenger() {
         // Arrange
         var URI = "%s/%s".formatted(PASSENGERS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6986");

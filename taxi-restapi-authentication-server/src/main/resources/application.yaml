@@ -4,6 +4,9 @@ spring:
   application:
     name: authentication-server
 
+  messages:
+    basename: messages
+
 keycloak:
   client:
     id: taxi-client
