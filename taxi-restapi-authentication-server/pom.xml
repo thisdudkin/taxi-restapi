@@ -41,13 +41,6 @@
             <artifactId>keycloak-admin-client</artifactId>
             <version>${keycloak.version}</version>
         </dependency>
-
-        <!-- Common -->
-        <dependency>
-            <groupId>by.dudkin</groupId>
-            <artifactId>taxi-restapi-common-module</artifactId>
-            <version>${common-module.version}</version>
-        </dependency>
     </dependencies>
 
     <build>

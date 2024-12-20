@@ -1,6 +1,5 @@
 package by.dudkin.auth;
 
-import by.dudkin.common.util.ErrorMessages;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ProblemDetail;

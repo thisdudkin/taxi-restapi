@@ -1,6 +1,5 @@
 package by.dudkin.auth;
 
-import by.dudkin.common.util.ErrorMessages;
 import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.stereotype.Service;
 
