@@ -2,7 +2,7 @@ server.port: 8082
 
 spring:
   profiles:
-    active: postgres, kafka
+    active: postgres, kafka, security
   application:
     name: drivers-service
 

@@ -37,6 +37,12 @@ public final class ErrorMessages {
     public static final String AVAILABLE_DRIVER_NOT_FOUND = "error.available.driver.notfound";
 
     /**
+     * Authentication Errors
+     */
+    public static final String UNAUTHORIZED = "error.auth.unauthorized";
+    public static final String FORBIDDEN = "error.auth.forbidden";
+
+    /**
      * Validation Errors
      */
     public static final String INVALID_TRANSITION = "error.validation.invalid.transition";

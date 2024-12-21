@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +44,9 @@ class AssignmentServiceComponentTests {
 
     @MockBean
     DriverLocationRepository driverLocationRepository;
+
+    @MockBean
+    SecurityFilterChain jwtFilterChain;
 
     @Autowired
     AssignmentService assignmentService;
