@@ -80,26 +80,6 @@ public interface RidesApi {
     );
 
     @Operation(
-        operationId = "pendingRides",
-        summary = "Lists of pending rides",
-        description = "Returns a paginated list of pending rides.",
-        tags = {"ride"},
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Rides found and returned.",
-                content = @Content(
-                    mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = PendingRide.class))
-                )
-            ),
-            @ApiResponse(responseCode = "500", description = "Server error.")
-        }
-    )
-    @GetMapping(value = "/rides/pending", produces = "application/json")
-    ResponseEntity<Page<PendingRide>> getPendingRides(@Parameter(hidden = true) Pageable pageable);
-
-    @Operation(
         operationId = "addRide",
         summary = "Create a ride",
         description = "Creates a new ride.",

@@ -1,12 +1,10 @@
 package by.dudkin.rides.service;
 
 import by.dudkin.common.util.BalanceResponse;
-import by.dudkin.common.util.PaginatedResponse;
-import by.dudkin.rides.domain.Ride;
+import by.dudkin.rides.rest.feign.PassengerClient;
 import by.dudkin.rides.repository.RideRepository;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.RideResponse;
-import by.dudkin.rides.rest.feign.PassengerClient;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.util.TestDataGenerator;
 import org.junit.jupiter.api.Test;
@@ -18,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -25,7 +24,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,6 +53,9 @@ class RideServiceImplCTests {
 
     @MockBean
     PassengerClient passengerClient;
+
+    @MockBean
+    JwtDecoder jwtDecoder;
 
     @Test
     void shouldFindRide() {

@@ -28,6 +28,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -67,6 +68,9 @@ class RideRestControllerTests {
 
     @MockBean
     private PaymentClient paymentClient;
+
+    @MockBean
+    SecurityFilterChain jwtFilterChain;
 
     @MockBean
     private DriverClient driverClient;

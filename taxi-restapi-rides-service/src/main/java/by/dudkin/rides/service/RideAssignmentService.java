@@ -4,7 +4,6 @@ import by.dudkin.common.enums.DriverStatus;
 import by.dudkin.common.enums.RideStatus;
 import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.rides.domain.Ride;
-import by.dudkin.rides.repository.RideRepository;
 import by.dudkin.rides.rest.dto.response.AvailableDriver;
 import by.dudkin.rides.rest.dto.response.DriverResponse;
 import by.dudkin.rides.rest.feign.DriverClient;
