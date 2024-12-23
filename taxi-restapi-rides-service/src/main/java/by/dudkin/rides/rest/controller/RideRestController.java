@@ -42,11 +42,6 @@ public class RideRestController implements RidesApi {
     }
 
     @Override
-    public ResponseEntity<Page<PendingRide>> getPendingRides(Pageable pageable) {
-        return new ResponseEntity<>(this.rideService.findAllPendingRides(pageable), HttpStatus.OK);
-    }
-
-    @Override
     public ResponseEntity<RideResponse> save(RideRequest rideRequest) {
         return new ResponseEntity<>(this.rideService.create(rideRequest), HttpStatus.CREATED);
     }

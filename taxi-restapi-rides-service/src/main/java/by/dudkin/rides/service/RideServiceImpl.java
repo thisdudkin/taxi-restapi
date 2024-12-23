@@ -5,9 +5,7 @@ import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.domain.Ride;
 import by.dudkin.rides.kafka.domain.AcceptedRideEvent;
-import by.dudkin.rides.kafka.producer.RideRequestProducer;
 import by.dudkin.rides.mapper.RideMapper;
-import by.dudkin.rides.repository.PendingRideService;
 import by.dudkin.rides.repository.RideRepository;
 import by.dudkin.rides.rest.advice.custom.RideNotFoundException;
 import by.dudkin.rides.rest.dto.request.PendingRide;
@@ -18,7 +16,6 @@ import by.dudkin.rides.rest.dto.response.DriverResponse;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.rest.feign.DriverClient;
 import by.dudkin.rides.service.api.RideService;
-import by.dudkin.rides.utils.GeospatialUtils;
 import by.dudkin.rides.utils.RideStatusTransition;
 import by.dudkin.rides.utils.RideStatusTransitionValidator;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +42,6 @@ public class RideServiceImpl implements RideService {
     private final RideMapper rideMapper;
     private final DriverClient driverClient;
     private final RideRepository rideRepository;
-    private final PendingRideService pendingRideService;
     private final RideCreationService rideCreationService;
     private final ApplicationEventPublisher eventPublisher;
     private final RideAssignmentService rideAssignmentService;
@@ -125,11 +121,6 @@ public class RideServiceImpl implements RideService {
         Ride saved = rideRepository.save(ride);
         eventPublisher.publishEvent(new AcceptedRideEvent(saved.getId(), saved.getDriverId(), saved.getCarId()));
         return rideMapper.toResponse(saved);
-    }
-
-    @Override
-    public Page<PendingRide> findAllPendingRides(Pageable pageable) {
-        return pendingRideService.findAllPendingRides(pageable);
     }
 
     Ride getOrThrow(UUID rideId) {

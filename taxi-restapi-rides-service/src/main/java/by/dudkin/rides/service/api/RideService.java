@@ -29,6 +29,5 @@ public interface RideService {
     RideResponse activate(UUID rideId);
     RideResponse rate(UUID rideId, RideCompletionRequest request);
     RideResponse assign(UUID rideId, AvailableDriver availableDriver);
-    Page<PendingRide> findAllPendingRides(Pageable pageable);
 
 }
