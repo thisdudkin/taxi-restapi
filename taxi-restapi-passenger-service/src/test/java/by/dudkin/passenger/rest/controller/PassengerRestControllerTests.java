@@ -1,7 +1,6 @@
 package by.dudkin.passenger.rest.controller;
 
 import by.dudkin.common.util.PaginatedResponse;
-import by.dudkin.passenger.configuration.SecurityConfig;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import by.dudkin.passenger.util.TestDataGenerator;

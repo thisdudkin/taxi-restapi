@@ -1,28 +1,26 @@
-package by.dudkin.passenger.configuration;
+package by.dudkin.passenger.security;
 
 import by.dudkin.passenger.util.PassengerEndpoints;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
-
-import static by.dudkin.passenger.util.PassengerEndpoints.CHECK_BALANCE;
-import static by.dudkin.passenger.util.PassengerEndpoints.DELETE_PASSENGER;
-import static by.dudkin.passenger.util.PassengerEndpoints.SAVE_PASSENGER;
-import static by.dudkin.passenger.util.PassengerEndpoints.UPDATE_BALANCE;
 
 /**
  * @author Alexander Dudkin
@@ -30,18 +28,26 @@ import static by.dudkin.passenger.util.PassengerEndpoints.UPDATE_BALANCE;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfig {
+public class WebSecurityConfig {
+
+    private final ObjectMapper objectMapper;
+
+    public WebSecurityConfig(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Bean
     public SecurityFilterChain jwtFilterChain(HttpSecurity http) throws Exception {
 
-        http.oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
+        http.oauth2ResourceServer((oauth2) -> oauth2
+            .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+            .accessDeniedHandler(accessDeniedHandler())
+            .authenticationEntryPoint(authenticationEntryPoint())
+        );
 
         http.authorizeHttpRequests(auth -> auth
-            .requestMatchers(CHECK_BALANCE.getURI(), UPDATE_BALANCE.getURI()).hasAnyRole("PASSENGER", "ADMIN")
-            .requestMatchers(HttpMethod.DELETE, DELETE_PASSENGER.getURI()).hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, SAVE_PASSENGER.getURI()).hasRole("PASSENGER")
-            .anyRequest().hasAnyRole("PASSENGER", "DRIVER", "ADMIN")
+            .requestMatchers(PassengerEndpoints.BASE_URI.getAllURIs()).hasAnyRole("PASSENGER", "ADMIN")
+            .anyRequest().authenticated()
         );
 
         return http.build();
@@ -66,6 +72,32 @@ public class SecurityConfig {
         });
 
         return authenticationConverter;
+    }
+
+    @Bean
+    AccessDeniedHandler accessDeniedHandler() {
+        return ((request, response, accessDeniedException) -> {
+            ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, accessDeniedException.getMessage());
+
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
+
+            String json = objectMapper.writeValueAsString(detail);
+            response.getWriter().write(json);
+        });
+    }
+
+    @Bean
+    AuthenticationEntryPoint authenticationEntryPoint() {
+        return ((request, response, authException) -> {
+            ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, authException.getMessage());
+
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
+
+            String json = objectMapper.writeValueAsString(detail);
+            response.getWriter().write(json);
+        });
     }
 
 }

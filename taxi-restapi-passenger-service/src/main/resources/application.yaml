@@ -2,7 +2,7 @@ server.port: 8081
 
 spring:
   profiles:
-    active: postgres
+    active: postgres, security
   application:
     name: passengers-service
 

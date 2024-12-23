@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -51,6 +52,9 @@ class AssignmentRestControllerTests {
 
     @MockBean
     DriverLocationRepository driverLocationRepository;
+
+    @MockBean
+    SecurityFilterChain jwtFilterChain;
 
     @Autowired
     TestRestTemplate restTemplate;
