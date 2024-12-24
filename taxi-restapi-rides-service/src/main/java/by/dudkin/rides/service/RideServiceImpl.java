@@ -14,7 +14,7 @@ import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.AvailableDriver;
 import by.dudkin.rides.rest.dto.response.DriverResponse;
 import by.dudkin.rides.rest.dto.response.RideResponse;
-import by.dudkin.rides.rest.feign.DriverClient;
+import by.dudkin.rides.feign.DriverClient;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.utils.RideStatusTransition;
 import by.dudkin.rides.utils.RideStatusTransitionValidator;

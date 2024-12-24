@@ -1,7 +1,7 @@
 package by.dudkin.rides.service;
 
 import by.dudkin.common.util.BalanceResponse;
-import by.dudkin.rides.rest.feign.PassengerClient;
+import by.dudkin.rides.feign.PassengerClient;
 import by.dudkin.rides.repository.RideRepository;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.RideResponse;

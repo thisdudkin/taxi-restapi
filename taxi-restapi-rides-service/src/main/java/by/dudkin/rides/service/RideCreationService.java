@@ -3,7 +3,7 @@ package by.dudkin.rides.service;
 import by.dudkin.common.util.BalanceResponse;
 import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.rides.domain.Ride;
-import by.dudkin.rides.rest.feign.PassengerClient;
+import by.dudkin.rides.feign.PassengerClient;
 import by.dudkin.rides.utils.GeospatialUtils;
 import by.dudkin.rides.utils.PriceCalculator;
 import org.springframework.stereotype.Service;
