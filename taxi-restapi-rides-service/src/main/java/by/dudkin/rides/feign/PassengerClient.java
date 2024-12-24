@@ -1,6 +1,7 @@
-package by.dudkin.rides.rest.feign;
+package by.dudkin.rides.feign;
 
 import by.dudkin.common.util.BalanceResponse;
+import by.dudkin.rides.configuration.OpenFeignBearerTokenInterceptorConfiguration;
 import by.dudkin.rides.rest.dto.response.PassengerResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,8 @@ import java.util.UUID;
  */
 @FeignClient(
     value = "passengers-service",
-    path = "/api/passengers"
+    path = "/api/passengers",
+    configuration = OpenFeignBearerTokenInterceptorConfiguration.class
 )
 public interface PassengerClient {
 
