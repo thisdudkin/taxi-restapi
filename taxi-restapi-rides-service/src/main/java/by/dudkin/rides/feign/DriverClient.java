@@ -1,6 +1,6 @@
-package by.dudkin.rides.rest.feign;
+package by.dudkin.rides.feign;
 
-import by.dudkin.rides.rest.dto.response.CarResponse;
+import by.dudkin.rides.configuration.OpenFeignBearerTokenInterceptorConfiguration;
 import by.dudkin.rides.rest.dto.response.DriverResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +14,8 @@ import java.util.UUID;
  */
 @FeignClient(
     value = "drivers-service",
-    path = "/api/"
+    path = "/api/",
+    configuration = OpenFeignBearerTokenInterceptorConfiguration.class
 )
 public interface DriverClient {
 
@@ -26,8 +27,5 @@ public interface DriverClient {
 
     @PutMapping("/drivers/{driverId}/status/available")
     void markDriverAvailable(@PathVariable UUID driverId);
-
-    @GetMapping("/cars/{carId}")
-    CarResponse getCarById(@PathVariable UUID carId);
 
 }

@@ -6,7 +6,7 @@ import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.rides.domain.Ride;
 import by.dudkin.rides.rest.dto.response.AvailableDriver;
 import by.dudkin.rides.rest.dto.response.DriverResponse;
-import by.dudkin.rides.rest.feign.DriverClient;
+import by.dudkin.rides.feign.DriverClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

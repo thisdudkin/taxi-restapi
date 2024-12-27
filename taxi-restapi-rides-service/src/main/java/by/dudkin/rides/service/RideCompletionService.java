@@ -2,8 +2,8 @@ package by.dudkin.rides.service;
 
 import by.dudkin.common.util.TransactionRequest;
 import by.dudkin.rides.domain.Ride;
-import by.dudkin.rides.rest.feign.DriverClient;
-import by.dudkin.rides.rest.feign.PaymentClient;
+import by.dudkin.rides.feign.DriverClient;
+import by.dudkin.rides.feign.PaymentClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
