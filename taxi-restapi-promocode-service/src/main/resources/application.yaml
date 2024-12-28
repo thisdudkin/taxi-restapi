@@ -1,10 +1,10 @@
-server.port: 8081
+server.port: 8088
 
 spring:
   profiles:
-    active: postgres, security
+    active: postgres
   application:
-    name: passengers-service
+    name: promocode-service
 
   liquibase:
     enabled: true
