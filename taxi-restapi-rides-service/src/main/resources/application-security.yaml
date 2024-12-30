@@ -4,3 +4,9 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:9090/realms/taxi-realm/protocol/openid-connect/certs
+
+logging:
+  level:
+    org:
+      springframework:
+        security: debug

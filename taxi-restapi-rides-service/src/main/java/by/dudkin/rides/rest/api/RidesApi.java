@@ -2,9 +2,11 @@ package by.dudkin.rides.rest.api;
 
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
+import by.dudkin.rides.rest.dto.request.RideCostRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.AvailableDriver;
 import by.dudkin.rides.rest.dto.request.PendingRide;
+import by.dudkin.rides.rest.dto.response.RideCostResponse;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -210,6 +212,20 @@ public interface RidesApi {
         @PathVariable("rideId") UUID rideId,
         @Parameter(name = "RideCompletionRequest", description = "Rating details", required = true)
         @RequestBody @Valid RideCompletionRequest request
+    );
+
+    @Operation(
+        operationId = "checkRideCost",
+        summary = "Check the cost of a ride",
+        tags = {"ride"},
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Ride cost info.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RideCostResponse.class))),
+        }
+    )
+    @PostMapping(value = "/rides/cost", produces = "application/json", consumes = "application/json")
+    ResponseEntity<RideCostResponse> checkRideCost(
+        @Parameter(name = "RideCostRequest", required = true)
+        @RequestBody @Valid RideCostRequest request
     );
 
 }

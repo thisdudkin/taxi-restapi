@@ -14,17 +14,17 @@ public class RideSpecification {
 
     public Specification<Ride> hasPassengerId(UUID passengerId) {
         return (root, query, criteriaBuilder) ->
-            passengerId == null ? null : criteriaBuilder.equal(root.get("passenger").get("id"), passengerId);
+            passengerId == null ? null : criteriaBuilder.equal(root.get("passengerId"), passengerId);
     }
 
     public Specification<Ride> hasDriverId(UUID driverId) {
         return ((root, query, criteriaBuilder) ->
-            driverId == null ? null : criteriaBuilder.equal(root.get("driver").get("id"), driverId));
+            driverId == null ? null : criteriaBuilder.equal(root.get("driver"), driverId));
     }
 
     public Specification<Ride> hasCarId(UUID carId) {
         return (root, query, criteriaBuilder) ->
-            carId == null ? null : criteriaBuilder.equal(root.get("car").get("id"), carId);
+            carId == null ? null : criteriaBuilder.equal(root.get("car"), carId);
     }
 
     public Specification<Ride> getSpecification(UUID passengerId, UUID driverId, UUID carId) {
