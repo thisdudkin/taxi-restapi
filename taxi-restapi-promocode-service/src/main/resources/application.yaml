@@ -1,0 +1,31 @@
+server.port: 8088
+
+spring:
+  profiles:
+    active: postgres, security
+  application:
+    name: promocode-service
+
+  liquibase:
+    enabled: true
+  messages:
+    basename: messages
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    liquibase: INFO
+    org:
+      springframework: INFO
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
