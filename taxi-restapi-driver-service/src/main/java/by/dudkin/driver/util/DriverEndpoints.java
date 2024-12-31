@@ -15,15 +15,13 @@ public enum DriverEndpoints implements Endpoints {
 
     SAVE_DRIVER("/api/drivers"),
 
-    GET_DRIVER_BY_ID("/api/drivers/{driverId}"),
+    GET_DRIVER("/api/drivers/{driverId}"),
 
     DELETE_DRIVER("/api/drivers/{driverId}"),
 
     UPDATE_DRIVER("/api/drivers/{driverId}"),
 
     UPDATE_DRIVER_LOCATION("/api/drivers/{driverId}/location"),
-
-    UPDATE_DRIVER_BALANCE("/api/drivers/balance"),
 
     MARK_DRIVER_AVAILABLE("/api/drivers/{driverId}/status/available"),
 

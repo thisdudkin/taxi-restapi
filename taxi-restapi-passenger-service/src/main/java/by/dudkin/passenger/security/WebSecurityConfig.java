@@ -1,9 +1,9 @@
 package by.dudkin.passenger.security;
 
-import by.dudkin.passenger.util.PassengerEndpoints;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -21,6 +21,12 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
+
+import static by.dudkin.passenger.util.PassengerEndpoints.DELETE_PASSENGER;
+import static by.dudkin.passenger.util.PassengerEndpoints.GET_PASSENGER;
+import static by.dudkin.passenger.util.PassengerEndpoints.LIST_PASSENGERS;
+import static by.dudkin.passenger.util.PassengerEndpoints.SAVE_PASSENGER;
+import static by.dudkin.passenger.util.PassengerEndpoints.UPDATE_PASSENGER;
 
 /**
  * @author Alexander Dudkin
@@ -46,7 +52,11 @@ public class WebSecurityConfig {
         );
 
         http.authorizeHttpRequests(auth -> auth
-            .requestMatchers(PassengerEndpoints.BASE_URI.getAllURIs()).hasAnyRole("PASSENGER", "ADMIN")
+            .requestMatchers(HttpMethod.GET, LIST_PASSENGERS.getURI()).hasAnyRole("PASSENGER", "ADMIN")
+            .requestMatchers(HttpMethod.POST, SAVE_PASSENGER.getURI()).hasAnyRole("PASSENGER", "ADMIN")
+            .requestMatchers(HttpMethod.GET, GET_PASSENGER.getURI()).hasAnyRole("PASSENGER", "DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.PUT, UPDATE_PASSENGER.getURI()).hasAnyRole("PASSENGER", "ADMIN")
+            .requestMatchers(HttpMethod.DELETE, DELETE_PASSENGER.getURI()).hasRole("ADMIN")
             .anyRequest().authenticated()
         );
 

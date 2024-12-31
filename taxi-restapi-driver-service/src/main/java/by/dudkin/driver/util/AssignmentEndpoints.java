@@ -11,7 +11,7 @@ public enum AssignmentEndpoints implements Endpoints {
 
     SAVE_ASSIGNMENT("/api/assignments"),
 
-    GET_ASSIGNMENT_BY_ID("/api/assignments/{assignmentId}"),
+    GET_ASSIGNMENT("/api/assignments/{assignmentId}"),
 
     UPDATE_ASSIGNMENT("/api/assignments/{assignmentId}"),
 

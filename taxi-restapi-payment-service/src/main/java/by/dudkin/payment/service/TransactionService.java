@@ -5,19 +5,18 @@ import by.dudkin.payment.feign.DriverClient;
 import by.dudkin.payment.feign.PassengerClient;
 import by.dudkin.payment.service.dao.TransactionDao;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Alexander Dudkin
  */
+@Slf4j
 @Service
 @EnableAsync
 @RequiredArgsConstructor
@@ -30,23 +29,14 @@ public class TransactionService {
 
     @Transactional
     public void handleTransaction(TransactionRequest<UUID> req) throws SQLException {
-        CompletableFuture<Void> updateDriverBalance = updateDriverBalance(req.driverId(), req.amount());
-        CompletableFuture<Void> updatePassengerBalance = updatePassengerBalance(req.passengerId(), req.amount());
-
-        CompletableFuture.allOf(updateDriverBalance, updatePassengerBalance).join();
-        transactionDao.insertTransaction(req);
-    }
-
-    @Async
-    CompletableFuture<Void> updateDriverBalance(UUID driverId, BigDecimal amount) {
-        driverClient.updateBalance(driverId, amount);
-        return CompletableFuture.completedFuture(null);
-    }
-
-    @Async
-    CompletableFuture<Void> updatePassengerBalance(UUID passengerId, BigDecimal amount) {
-        passengerClient.updateBalance(passengerId, amount);
-        return CompletableFuture.completedFuture(null);
+        try {
+            driverClient.updateBalance(req.driverId(), req.amount());
+            passengerClient.updateBalance(req.passengerId(), req.amount());
+            transactionDao.insertTransaction(req);
+        } catch (Exception e) {
+            log.error("Transaction failed -> {}", req, e);
+            throw e;
+        }
     }
 
 }

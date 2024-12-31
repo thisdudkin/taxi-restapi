@@ -1,6 +1,5 @@
-package by.dudkin.rides.security;
+package by.dudkin.payment.security;
 
-import by.dudkin.rides.utils.RideEndpoints;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,29 +21,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static by.dudkin.rides.utils.RideEndpoints.ACTIVATE_RIDE;
-import static by.dudkin.rides.utils.RideEndpoints.ASSIGN_RIDE;
-import static by.dudkin.rides.utils.RideEndpoints.COMPLETE_RIDE;
-import static by.dudkin.rides.utils.RideEndpoints.GET_RIDE;
-import static by.dudkin.rides.utils.RideEndpoints.RATE_RIDE;
-import static by.dudkin.rides.utils.RideEndpoints.SAVE_RIDE;
-
 /**
  * @author Alexander Dudkin
  */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class WebSecurityConfig {
+public class WebSecurityConfiguration {
 
     private final ObjectMapper objectMapper;
 
-    public WebSecurityConfig(ObjectMapper objectMapper) {
+    public WebSecurityConfiguration(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
     @Bean
-    public SecurityFilterChain jwtFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain jwtFilterChain(HttpSecurity http) throws Exception {
 
         http.oauth2ResourceServer(oauth2 -> oauth2
             .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter()))
@@ -53,13 +45,11 @@ public class WebSecurityConfig {
         );
 
         http.authorizeHttpRequests(auth -> auth
-            .requestMatchers(GET_RIDE.getURI(), ACTIVATE_RIDE.getURI(), ASSIGN_RIDE.getURI(), COMPLETE_RIDE.getURI()).hasRole("DRIVER")
-            .requestMatchers(SAVE_RIDE.getURI(), GET_RIDE.getURI(), RATE_RIDE.getURI()).hasRole("PASSENGER")
-            .requestMatchers(RideEndpoints.BASE_URI.getAllURIs()).hasRole("ADMIN")
-            .anyRequest().authenticated()
+            .anyRequest().hasAnyRole("DRIVER", "ADMIN")
         );
 
         return http.build();
+
     }
 
     @Bean
