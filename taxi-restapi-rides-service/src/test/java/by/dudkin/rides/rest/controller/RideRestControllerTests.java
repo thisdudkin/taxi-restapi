@@ -157,7 +157,7 @@ class RideRestControllerTests {
     @Test
     void shouldNotCreateRideWhenValidationFails() {
         // Arrange
-        RideRequest request = new RideRequest(null, null, null, null);
+        RideRequest request = new RideRequest(null, null, null, null,  null);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
