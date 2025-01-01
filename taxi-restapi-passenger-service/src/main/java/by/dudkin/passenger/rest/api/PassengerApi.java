@@ -46,6 +46,22 @@ public interface PassengerApi {
     ResponseEntity<PassengerResponse> get(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") UUID passengerId);
 
     @Operation(
+        operationId = "getPassengerByUsername",
+        summary = "Get a passenger by username",
+        description = "Returns the passenger or a 404 error.",
+        tags = {"passenger"},
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Passenger found and returned.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PassengerResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Passenger not found.")
+        }
+    )
+    @GetMapping(value = "/search", produces = "application/json")
+    ResponseEntity<PassengerResponse> search(
+        @Parameter(name = "username", description = "The username of the passenger.", required = true, in = ParameterIn.PATH)
+        @RequestParam String username
+    );
+
+    @Operation(
         operationId = "listPassengers",
         summary = "Lists passengers with pagination",
         description = "Returns a paginated list of passengers.",

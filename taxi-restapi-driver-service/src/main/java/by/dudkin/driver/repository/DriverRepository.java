@@ -16,6 +16,9 @@ import java.util.UUID;
 public interface DriverRepository extends JpaRepository<Driver, UUID> {
 
     @EntityGraph(value = "driver-assignments-cars")
+    Optional<Driver> findByUsername(String username);
+
+    @EntityGraph(value = "driver-assignments-cars")
     Optional<Driver> findWithAssignmentsAndCarsById(UUID id);
 
 }

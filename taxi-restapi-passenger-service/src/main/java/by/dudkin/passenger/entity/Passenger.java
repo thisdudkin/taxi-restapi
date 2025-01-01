@@ -50,6 +50,9 @@ public class Passenger implements BaseEntity<UUID> {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(name = "username", nullable = false)
+    private String username;
+
     @Embedded
     private PersonalInfo info;
 

@@ -9,6 +9,7 @@ import by.dudkin.passenger.repository.PassengerRepository;
 import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
+import by.dudkin.passenger.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +43,13 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
+    public PassengerResponse findByUsername(String username) {
+        return passengerRepository.findByUsername(username)
+            .map(passengerMapper::toResponse)
+            .orElseThrow(() -> new PassengerNotFoundException(ErrorMessages.PASSENGER_NOT_FOUND));
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public PaginatedResponse<PassengerResponse> findAll(Pageable pageable) {
         Page<Passenger> passengerPage = passengerRepository.findAll(pageable);
@@ -55,6 +63,7 @@ public class PassengerServiceImpl implements PassengerService {
     @Override
     public PassengerResponse create(PassengerRequest passengerRequest) {
         Passenger passenger = passengerMapper.toPassenger(passengerRequest);
+        passenger.setUsername(JwtTokenUtils.getPreferredUsername());
         passengerRepository.save(passenger);
         return passengerMapper.toResponse(passenger);
     }

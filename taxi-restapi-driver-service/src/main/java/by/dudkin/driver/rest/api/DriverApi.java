@@ -45,6 +45,19 @@ public interface DriverApi {
     ResponseEntity<DriverResponse> get(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable("driverId") UUID driverId);
 
     @Operation(
+        operationId = "getDriverByUsername",
+        summary = "Get a driver by username",
+        description = "Returns the driver or a 404 error.",
+        tags = {"driver"},
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Driver found and returned.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DriverResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Driver not found.")
+        }
+    )
+    @GetMapping(value = "/search", produces = "application/json")
+    ResponseEntity<DriverResponse> search(@Parameter(name = "driverId", description = "The username of the driver.", required = true, in = ParameterIn.PATH) @RequestParam String username);
+
+    @Operation(
         operationId = "listDrivers",
         summary = "Lists drivers with pagination",
         description = "Returns a paginated list of drivers.",

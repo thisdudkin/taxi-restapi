@@ -17,6 +17,7 @@ public interface DriverService {
 
     PaginatedResponse<DriverResponse> findAll(Pageable pageable);
     DriverResponse findById(UUID driverId);
+    DriverResponse search(String username);
     DriverResponse create(DriverRequest driverRequest);
     DriverResponse update(UUID driverId, DriverRequest driverRequest);
     void delete(UUID driverId);

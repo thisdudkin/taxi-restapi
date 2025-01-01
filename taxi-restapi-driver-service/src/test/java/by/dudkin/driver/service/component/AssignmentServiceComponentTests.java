@@ -5,12 +5,14 @@ import by.dudkin.driver.repository.AssignmentRepository;
 import by.dudkin.driver.repository.DriverLocationRepository;
 import by.dudkin.driver.service.api.AssignmentService;
 import by.dudkin.driver.util.TestDataGenerator;
+import by.dudkin.driver.util.TestSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.security.web.SecurityFilterChain;
@@ -33,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 @Transactional
 @Sql("classpath:data.sql")
+@Import(TestSecurityConfig.class)
 @ActiveProfiles({"test", "kafka"})
 @EmbeddedKafka(partitions = 1, topics = {"available-drivers", "ride-requests"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -45,8 +48,8 @@ class AssignmentServiceComponentTests {
     @MockBean
     DriverLocationRepository driverLocationRepository;
 
-    @MockBean
-    SecurityFilterChain jwtFilterChain;
+    @MockBean(name = "testFilterChain")
+    SecurityFilterChain testFilterChain;
 
     @Autowired
     AssignmentService assignmentService;

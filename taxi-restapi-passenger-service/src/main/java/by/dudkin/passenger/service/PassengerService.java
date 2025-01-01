@@ -17,6 +17,8 @@ public interface PassengerService {
 
     PassengerResponse findById(UUID id);
 
+    PassengerResponse findByUsername(String username);
+
     PaginatedResponse<PassengerResponse> findAll(Pageable pageable);
 
     PassengerResponse create(PassengerRequest passengerRequest);

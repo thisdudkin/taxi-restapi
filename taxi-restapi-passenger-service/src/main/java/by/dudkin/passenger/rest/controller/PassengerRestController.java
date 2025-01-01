@@ -6,6 +6,7 @@ import by.dudkin.passenger.rest.api.PassengerApi;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import by.dudkin.passenger.service.PassengerService;
+import by.dudkin.passenger.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,11 @@ public class PassengerRestController implements PassengerApi {
     @Override
     public ResponseEntity<PassengerResponse> get(UUID passengerId) {
         return new ResponseEntity<>(passengerService.findById(passengerId), OK);
+    }
+
+    @Override
+    public ResponseEntity<PassengerResponse> search(String username) {
+        return new ResponseEntity<>(passengerService.findByUsername(username), OK);
     }
 
     @Override

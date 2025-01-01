@@ -17,18 +17,6 @@ databaseChangeLog:
                   type: VARCHAR(128)
                   constraints:
                     nullable: false
-                    unique: true
-              - column:
-                  name: email
-                  type: VARCHAR(128)
-                  constraints:
-                    nullable: false
-                    unique: true
-              - column:
-                  name: password
-                  type: VARCHAR(128)
-                  constraints:
-                    nullable: false
               - column:
                   name: firstname
                   type: VARCHAR(128)

@@ -11,6 +11,8 @@ public enum PassengerEndpoints implements Endpoints {
 
     GET_PASSENGER_BY_ID("/api/passengers/{passengerId}"),
 
+    SEARCH_PASSENGER("/api/passengers/username"),
+
     LIST_PASSENGERS("/api/passengers"),
 
     SAVE_PASSENGER("/api/passengers"),

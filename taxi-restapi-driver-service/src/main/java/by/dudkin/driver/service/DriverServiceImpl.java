@@ -16,6 +16,7 @@ import by.dudkin.driver.rest.dto.response.PendingRide;
 import by.dudkin.driver.service.api.DriverService;
 import by.dudkin.driver.util.DriverStatusTransition;
 import by.dudkin.driver.util.DriverStatusTransitionValidator;
+import by.dudkin.driver.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -64,8 +65,17 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    public DriverResponse search(String username) {
+        return driverRepository.findByUsername(username)
+            .map(driverMapper::toResponse)
+            .orElseThrow(() -> new DriverNotFoundException(ErrorMessages.DRIVER_NOT_FOUND));
+    }
+
+    @Override
     public DriverResponse create(DriverRequest driverRequest) {
-        return driverMapper.toResponse(driverRepository.save(driverMapper.toDriver(driverRequest)));
+        Driver driver = driverMapper.toDriver(driverRequest);
+        driver.setUsername(JwtTokenUtils.getPreferredUsername());
+        return driverMapper.toResponse(driverRepository.save(driver));
     }
 
     @Override

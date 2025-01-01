@@ -1,4 +1,4 @@
-package by.dudkin.passenger.security;
+package by.dudkin.passenger.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
@@ -7,20 +7,20 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-import java.util.Collection;
+import java.time.Instant;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Map;
 
 import static by.dudkin.passenger.util.PassengerEndpoints.DELETE_PASSENGER;
 import static by.dudkin.passenger.util.PassengerEndpoints.GET_PASSENGER_BY_ID;
@@ -35,22 +35,17 @@ import static by.dudkin.passenger.util.PassengerEndpoints.UPDATE_PASSENGER;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class WebSecurityConfig {
+public class TestSecurityConfig {
 
     private final ObjectMapper objectMapper;
 
-    public WebSecurityConfig(ObjectMapper objectMapper) {
+    public TestSecurityConfig(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
     @Bean
-    public SecurityFilterChain jwtFilterChain(HttpSecurity http) throws Exception {
-
-        http.oauth2ResourceServer((oauth2) -> oauth2
-            .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter()))
-            .accessDeniedHandler(accessDeniedHandler())
-            .authenticationEntryPoint(authenticationEntryPoint())
-        );
+    SecurityFilterChain testFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.GET, LIST_PASSENGERS.getURI()).hasAnyRole("PASSENGER", "ADMIN")
@@ -62,32 +57,22 @@ public class WebSecurityConfig {
             .anyRequest().authenticated()
         );
 
+        http.oauth2ResourceServer(oauth2 -> oauth2
+            .jwt(Customizer.withDefaults())
+            .accessDeniedHandler(testAccessDeniedHandler())
+            .authenticationEntryPoint(testAuthenticationEntryPoint())
+        );
+
         return http.build();
-
     }
 
     @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
-        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        authenticationConverter.setPrincipalClaimName("preferred_username");
-        authenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
-            Collection<GrantedAuthority> authorities = grantedAuthoritiesConverter.convert(jwt);
-            List<String> roles = jwt.getClaimAsStringList("spring_sec_roles");
-
-            return Stream.concat(authorities.stream(),
-                roles.stream()
-                    .filter(role -> role.startsWith("ROLE_"))
-                    .map(SimpleGrantedAuthority::new)
-                    .map(GrantedAuthority.class::cast))
-                .toList();
-        });
-
-        return authenticationConverter;
+    public JwtDecoder jwtDecoder() {
+        return TestJwtUtils::parseToken;
     }
 
     @Bean
-    AccessDeniedHandler accessDeniedHandler() {
+    AccessDeniedHandler testAccessDeniedHandler() {
         return ((request, response, accessDeniedException) -> {
             ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, accessDeniedException.getMessage());
 
@@ -100,7 +85,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    AuthenticationEntryPoint authenticationEntryPoint() {
+    AuthenticationEntryPoint testAuthenticationEntryPoint() {
         return ((request, response, authException) -> {
             ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, authException.getMessage());
 

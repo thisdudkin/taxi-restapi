@@ -6,6 +6,7 @@ import by.dudkin.rides.rest.dto.response.PassengerResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
@@ -21,6 +22,9 @@ public interface PassengerClient {
 
     @GetMapping("/{id}")
     PassengerResponse getPassengerById(@PathVariable UUID id);
+
+    @GetMapping("/search")
+    PassengerResponse getPassengerByUsername(@RequestParam String username);
 
     @GetMapping("/{passengerId}/balance")
     BalanceResponse<UUID> checkBalance(@PathVariable UUID passengerId);

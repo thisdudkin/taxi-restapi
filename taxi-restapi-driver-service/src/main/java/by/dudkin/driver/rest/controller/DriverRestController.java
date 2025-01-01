@@ -5,6 +5,7 @@ import by.dudkin.driver.rest.api.DriverApi;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
 import by.dudkin.driver.service.api.DriverService;
+import by.dudkin.driver.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,11 @@ public class DriverRestController implements DriverApi {
     @Override
     public ResponseEntity<DriverResponse> get(UUID driverId) {
         return new ResponseEntity<>(driverService.findById(driverId), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<DriverResponse> search(String username) {
+        return new ResponseEntity<>(driverService.search(username), HttpStatus.OK);
     }
 
     @Override

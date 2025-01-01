@@ -15,6 +15,8 @@ public record PassengerResponse(
 
         UUID id,
 
+        String username,
+
         PersonalInfo info,
 
         PaymentMethod paymentMethod,
