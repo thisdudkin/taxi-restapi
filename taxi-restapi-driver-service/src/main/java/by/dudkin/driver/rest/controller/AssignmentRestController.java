@@ -4,6 +4,7 @@ import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.rest.api.AssignmentApi;
 import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
+import by.dudkin.driver.rest.dto.response.AvailableDriverResponse;
 import by.dudkin.driver.util.AssignmentSpecification;
 import by.dudkin.driver.service.api.AssignmentService;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,11 @@ public class AssignmentRestController implements AssignmentApi {
     @Override
     public ResponseEntity<AssignmentResponse> save(AssignmentRequest assignmentRequest) {
         return new ResponseEntity<>(assignmentService.create(assignmentRequest), HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<AvailableDriverResponse> search(String username) {
+        return new ResponseEntity<>(assignmentService.search(username), HttpStatus.OK);
     }
 
     @Override

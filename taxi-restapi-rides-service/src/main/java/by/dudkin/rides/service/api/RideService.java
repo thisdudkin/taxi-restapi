@@ -28,6 +28,6 @@ public interface RideService {
     RideResponse complete(UUID rideId);
     RideResponse activate(UUID rideId);
     RideResponse rate(UUID rideId, RideCompletionRequest request);
-    RideResponse assign(UUID rideId, AvailableDriver availableDriver);
+    RideResponse assign(UUID rideId);
 
 }
