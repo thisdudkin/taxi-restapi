@@ -1,6 +1,6 @@
 package by.dudkin.driver.repository;
 
-import by.dudkin.driver.domain.DriverCarAssignment;
+import by.dudkin.driver.domain.Assignment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -14,18 +14,25 @@ import java.util.UUID;
 /**
  * @author Alexander Dudkin
  */
-public interface AssignmentRepository extends JpaRepository<DriverCarAssignment, UUID> {
+public interface AssignmentRepository extends JpaRepository<Assignment, UUID> {
 
     @EntityGraph(value = "assignment-car-driver")
-    Optional<DriverCarAssignment> findWithDriverAndCarById(UUID assignmentId);
+    Optional<Assignment> findWithDriverAndCarById(UUID assignmentId);
 
     @Query("""
-            SELECT a FROM DriverCarAssignment a
+            SELECT a FROM Assignment a
             JOIN FETCH a.car c
             WHERE c.id = :carId AND a.status = 'ACTIVE'
             """)
-    Optional<DriverCarAssignment> findActiveAssignmentByCarId(UUID carId);
+    Optional<Assignment> findActiveAssignmentByCarId(UUID carId);
 
-    Page<DriverCarAssignment> findAll(Specification<DriverCarAssignment> spec, Pageable pageable);
+    @Query("""
+            select a from Assignment a
+            join fetch a.car c
+            where c.licensePlate = :licensePlate and a.status = 'ACTIVE'
+            """)
+    Optional<Assignment> findActiveAssignmentByLicencePlate(String licensePlate);
+
+    Page<Assignment> findAll(Specification<Assignment> spec, Pageable pageable);
 
 }

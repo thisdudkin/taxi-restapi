@@ -89,6 +89,12 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    public Driver getOrThrow(String username) {
+        return driverRepository.findByUsername(username)
+            .orElseThrow(() -> new DriverNotFoundException(ErrorMessages.DRIVER_NOT_FOUND));
+    }
+
+    @Override
     public void handleDriver(PendingRide ride) {
         try {
             AvailableDriver availableDriver = availableDriverService.findAvailableDriver(ride);

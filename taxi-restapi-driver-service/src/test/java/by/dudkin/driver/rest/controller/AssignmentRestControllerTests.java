@@ -108,9 +108,8 @@ class AssignmentRestControllerTests {
     @Rollback
     void shouldCreateAssignment() {
         // Arrange
-        var request = TestDataGenerator.randomAssignmentRequestWithIds(
-            UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"),
-            UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"));
+        String licencePlate = "LICENSE";
+        var request = TestDataGenerator.randomAssignmentRequestWithLicensePlate(licencePlate);
 
         // Act
         ResponseEntity<AssignmentResponse> response = restTemplate.exchange(ASSIGNMENTS_URI, HttpMethod.POST, new HttpEntity<>(request), AssignmentResponse.class);
@@ -125,8 +124,8 @@ class AssignmentRestControllerTests {
     @Test
     void shouldNotCreateAssignmentWhenValidationFails() {
         // Arrange
-        var invalid = new AssignmentRequest(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981"),
-            UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981"), null);
+        String licencePlate = "LICENSE";
+        var invalid = new AssignmentRequest(licencePlate, null);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

@@ -26,6 +26,13 @@ public class AssignmentValidator {
             });
     }
 
+    public void validateCarAvailability(String licensePlate) {
+        assignmentRepository.findActiveAssignmentByLicencePlate(licensePlate)
+            .ifPresent(assignment -> {
+                throw new IllegalStateException(ErrorMessages.CAR_ALREADY_BOOKED);
+            });
+    }
+
     public void validateStatus(UUID assignmentId) {
         assignmentRepository.findById(assignmentId)
             .filter(assignment -> assignment.getStatus() == AssignmentStatus.COMPLETED)

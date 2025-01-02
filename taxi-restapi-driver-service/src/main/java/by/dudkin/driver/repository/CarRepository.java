@@ -19,4 +19,6 @@ public interface CarRepository extends JpaRepository<Car, UUID> {
 
     boolean existsByLicensePlate(String licensePlate);
 
+    Optional<Car> findByLicensePlate(String licensePlate);
+
 }

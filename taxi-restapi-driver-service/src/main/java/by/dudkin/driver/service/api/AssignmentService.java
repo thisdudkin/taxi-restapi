@@ -1,7 +1,7 @@
 package by.dudkin.driver.service.api;
 
 import by.dudkin.common.util.PaginatedResponse;
-import by.dudkin.driver.domain.DriverCarAssignment;
+import by.dudkin.driver.domain.Assignment;
 import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +17,7 @@ public interface AssignmentService {
 
     AssignmentResponse findById(UUID assignmentId);
 
-    PaginatedResponse<AssignmentResponse> findAll(Specification<DriverCarAssignment> spec, Pageable pageable);
+    PaginatedResponse<AssignmentResponse> findAll(Specification<Assignment> spec, Pageable pageable);
 
     AssignmentResponse cancelAssignment(UUID assignmentId);
 

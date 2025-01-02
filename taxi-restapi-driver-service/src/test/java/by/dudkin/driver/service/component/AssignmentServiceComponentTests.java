@@ -69,9 +69,8 @@ class AssignmentServiceComponentTests {
     @Test
     void shouldCreateAssignment() {
         // Arrange
-        var assignmentRequest = TestDataGenerator.randomAssignmentRequestWithIds(
-            UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"),
-            UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"));
+        String licensePlate = "LICENSE";
+        var assignmentRequest = TestDataGenerator.randomAssignmentRequestWithLicensePlate(licensePlate);
 
         // Act
         var assignmentResponse = assignmentService.create(assignmentRequest);
@@ -81,6 +80,7 @@ class AssignmentServiceComponentTests {
         assertThat(assignmentResponse.status()).isEqualTo(AssignmentStatus.ACTIVE);
         assertThat(assignmentResponse.car().id()).isNotNull();
         assertThat(assignmentResponse.driver().id()).isNotNull();
+        assertThat(assignmentResponse.car().licensePlate()).isEqualTo(licensePlate);
     }
 
     @Test
