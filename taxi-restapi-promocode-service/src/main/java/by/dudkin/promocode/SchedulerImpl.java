@@ -1,5 +1,6 @@
 package by.dudkin.promocode;
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,7 +15,7 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class SchedulerImpl implements Scheduler {
+class SchedulerImpl implements Scheduler {
     static final int PROMOCODES_COUNT = 100;
 
     final PromocodeRepository promocodeRepository;
@@ -29,6 +30,10 @@ public class SchedulerImpl implements Scheduler {
 
     @Override
     @Scheduled(cron = "0 0 0 * * *")
+    @SchedulerLock(
+        name = "promocodeGenerationTask",
+        lockAtLeastFor = "PT5M", lockAtMostFor = "PT30M"
+    )
     public void executeTask() {
         List<Promocode> newPromocodes = promocodeGenerator.generate(PROMOCODES_COUNT);
 

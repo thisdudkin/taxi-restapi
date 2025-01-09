@@ -41,6 +41,7 @@
         <mockito.version>5.11.0</mockito.version>
         <testcontainers.version>1.20.3</testcontainers.version>
         <liquibase.version>4.30.0</liquibase.version>
+        <shedlock.version>6.2.0</shedlock.version>
 
         <!-- Maven plugins -->
         <java.version>21</java.version>

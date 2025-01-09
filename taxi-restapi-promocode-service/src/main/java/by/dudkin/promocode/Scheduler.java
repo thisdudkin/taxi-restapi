@@ -3,6 +3,6 @@ package by.dudkin.promocode;
 /**
  * @author Alexander Dudkin
  */
-public interface Scheduler {
+interface Scheduler {
     void executeTask();
 }

@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * @author Alexander Dudkin
  */
-@EnableScheduling
 @SpringBootApplication
 public class PromocodeApplication {
 

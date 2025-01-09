@@ -55,25 +55,22 @@ class JdbcPromocodeRepository implements PromocodeRepository {
 
     @Override
     public Optional<Promocode> getByCode(String code) {
-        final AtomicReference<Promocode> result = new AtomicReference<>();
-        jdbcTemplate.execute("select p.id, p.code, p.discount, p.created_at " +
-                             "from promocodes p " +
-                             "where code = ?", (PreparedStatementCallback<?>) selectPromocodes -> {
-            selectPromocodes.setString(1, code);
-            try (ResultSet promocodeSet = selectPromocodes.executeQuery()) {
-                if (promocodeSet.next()) {
-                    result.set(createPromocode(promocodeSet));
+        return jdbcTemplate.execute("select p.id, p.code, p.discount, p.created_at " +
+                                    "from promocodes p " +
+                                    "where code = ?", (PreparedStatementCallback<Optional<Promocode>>) selectPromocodes -> {
+                selectPromocodes.setString(1, code);
+                try (ResultSet promocodeSet = selectPromocodes.executeQuery()) {
+                    if (promocodeSet.next()) {
+                        return Optional.of(createPromocode(promocodeSet));
+                    }
+                    return Optional.empty();
                 }
             }
-            return null;
-        });
-        return Optional.ofNullable(result.get());
+        );
     }
 
     @Override
     public Set<Promocode> getActivePromocodes(int page, int size) {
-        AtomicReference<Set<Promocode>> result = new AtomicReference<>(new HashSet<>());
-
         class SeekParams {
             LocalDateTime lastSeenDateTime;
             UUID lastSeenId;
@@ -84,7 +81,10 @@ class JdbcPromocodeRepository implements PromocodeRepository {
             }
         }
 
-        final SeekParams seekParams = new SeekParams(LocalDateTime.of(1970, 1, 1, 0, 0), new UUID(0L, 0L));
+        final SeekParams seekParams = new SeekParams(
+            LocalDateTime.of(1970, 1, 1, 0, 0),
+            new UUID(0L, 0L)
+        );
 
         if (page > 0) {
             jdbcTemplate.query("select id, created_at " +
@@ -99,26 +99,24 @@ class JdbcPromocodeRepository implements PromocodeRepository {
             );
         }
 
-        jdbcTemplate.execute("select id, code, discount, created_at " +
+        return jdbcTemplate.execute("select id, code, discount, created_at " +
                              "from promocodes " +
                              "where (created_at, id::uuid) > (?, ?::uuid) " +
                              "order by created_at, id " +
-                             "limit ?", (PreparedStatementCallback<?>) selectPromocodes -> {
-            selectPromocodes.setTimestamp(1, Timestamp.valueOf(seekParams.lastSeenDateTime));
-            selectPromocodes.setObject(2, seekParams.lastSeenId);
-            selectPromocodes.setInt(3, size);
+                             "limit ?", (PreparedStatementCallback<Set<Promocode>>) selectPromocodes -> {
+                selectPromocodes.setTimestamp(1, Timestamp.valueOf(seekParams.lastSeenDateTime));
+                selectPromocodes.setObject(2, seekParams.lastSeenId);
+                selectPromocodes.setInt(3, size);
 
-            try (ResultSet promocodeSet = selectPromocodes.executeQuery()) {
-                Set<Promocode> promocodes = new HashSet<>();
-                while (promocodeSet.next()) {
-                    promocodes.add(createPromocode(promocodeSet));
+                try (ResultSet promocodeSet = selectPromocodes.executeQuery()) {
+                    Set<Promocode> promocodes = new HashSet<>();
+                    while (promocodeSet.next()) {
+                        promocodes.add(createPromocode(promocodeSet));
+                    }
+                    return promocodes;
                 }
-                result.set(promocodes);
             }
-            return null;
-        });
-
-        return result.get();
+        );
     }
 
     @Override
