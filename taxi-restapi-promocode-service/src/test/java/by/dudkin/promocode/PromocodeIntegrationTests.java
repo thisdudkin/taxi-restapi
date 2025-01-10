@@ -116,7 +116,7 @@ class PromocodeIntegrationTests {
         String URI = PromocodeApi.URI.concat("/active?page=0&size=5");
 
         // Act
-        ResponseEntity<Set<Promocode>> response = restTemplate.exchange(URI, HttpMethod.GET, new HttpEntity<>(authHeaders), new ParameterizedTypeReference<Set<Promocode>>() {
+        ResponseEntity<Set<Promocode>> response = restTemplate.exchange(URI, HttpMethod.GET, new HttpEntity<>(authHeaders), new ParameterizedTypeReference<Set<Promocode>>() {});
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
