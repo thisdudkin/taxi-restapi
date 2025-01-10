@@ -23,6 +23,7 @@
         <module>taxi-restapi-discovery-server</module>
         <module>taxi-restapi-notification-service</module>
         <module>taxi-restapi-payment-service</module>
+        <module>taxi-restapi-api-gateway</module>
         <module>taxi-restapi-promocode-service</module>
     </modules>
     <packaging>pom</packaging>

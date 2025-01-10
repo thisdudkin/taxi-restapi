@@ -1,0 +1,57 @@
+server.port: 3030
+
+spring:
+  application:
+    name: api-gateway
+  profiles:
+    active: security
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          lower-case-service-id: true
+      routes:
+        - id: passengers-service-route
+          uri: lb://passengers-service
+          predicates:
+            - Path=/api/passengers/**
+        - id: drivers-service-route
+          uri: lb://drivers-service
+          predicates:
+            - Path=/api/drivers/**
+        - id: drivers-service-car-route
+          uri: lb://drivers-service
+          predicates:
+            - Path=/api/cars/**
+        - id: driver-service-assignments-route
+          uri: lb://drivers-service
+          predicates:
+            - Path=/api/assignments/**
+        - id: rides-service-route
+          uri: lb://rides-service
+          predicates:
+            - Path=/api/rides/**
+        - id: authentication-server-route
+          uri: lb://authentication-server
+          predicates:
+            - Path=/api/auth/**
+        - id: notification-service-route
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notifications/**
+        - id: payment-service-route
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/payments/**
+        - id: promocode-service-route
+          uri: lb://promocode-service
+          predicates:
+            - Path=/api/promocodes/**
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
