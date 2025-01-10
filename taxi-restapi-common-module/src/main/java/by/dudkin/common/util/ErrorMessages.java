@@ -37,10 +37,9 @@ public final class ErrorMessages {
     public static final String AVAILABLE_DRIVER_NOT_FOUND = "error.available.driver.notfound";
 
     /**
-     * Authentication Errors
+     * Promocode Service Errors
      */
-    public static final String UNAUTHORIZED = "error.auth.unauthorized";
-    public static final String FORBIDDEN = "error.auth.forbidden";
+    public static final String PROMOCODE_NOT_FOUND = "error.promocode.notfound";
 
     /**
      * Validation Errors

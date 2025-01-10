@@ -13,6 +13,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -23,6 +31,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import static by.dudkin.promocode.TestJwtUtils.*;
 
 /**
@@ -108,7 +117,6 @@ class PromocodeIntegrationTests {
 
         // Act
         ResponseEntity<Set<Promocode>> response = restTemplate.exchange(URI, HttpMethod.GET, new HttpEntity<>(authHeaders), new ParameterizedTypeReference<Set<Promocode>>() {
-        });
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());

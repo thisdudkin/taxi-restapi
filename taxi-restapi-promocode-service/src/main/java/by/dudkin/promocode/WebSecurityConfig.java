@@ -46,7 +46,7 @@ class WebSecurityConfig {
         );
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.DELETE, "/api/promocodes/expired").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/api/promocodes/expired").hasRole("ADMIN")
             .anyRequest().authenticated()
         );
 
