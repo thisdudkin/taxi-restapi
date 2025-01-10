@@ -3,6 +3,7 @@ package by.dudkin.promocode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -45,6 +46,7 @@ class WebSecurityConfig {
         );
 
         http.authorizeHttpRequests(auth -> auth
+            .requestMatchers(HttpMethod.DELETE, "/api/promocodes/expired").hasRole("ADMIN")
             .anyRequest().authenticated()
         );
 
