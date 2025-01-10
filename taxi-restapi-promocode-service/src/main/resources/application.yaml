@@ -2,7 +2,7 @@ server.port: 8088
 
 spring:
   profiles:
-    active: postgres
+    active: postgres, security
   application:
     name: promocode-service
 
