@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: promocode-table
+      author: Alexander Dudkin
+      changes:
+        - createTable:
+            tableName: promocodes
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: code
+                  type: VARCHAR(256)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: discount
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
