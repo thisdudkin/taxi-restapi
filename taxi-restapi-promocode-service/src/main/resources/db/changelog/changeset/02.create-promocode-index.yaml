@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: promocode-idx
+      author: Alexander Dudkin
+      changes:
+          - createIndex:
+              tableName: promocodes
+              indexName: idx_promocodes_code
+              columns:
+                - column:
+                    name: code

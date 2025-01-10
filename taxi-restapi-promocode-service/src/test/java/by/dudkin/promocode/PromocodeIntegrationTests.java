@@ -40,7 +40,7 @@ class PromocodeIntegrationTests {
 
     @MockBean
     SecurityFilterChain jwtFilterChain;
-
+  
     @Test
     void validatePromocode_ShouldReturnPromocode_WhenExists() {
         // Arrange
