@@ -14,6 +14,11 @@
         <version>1.0</version>
     </parent>
 
+    <properties>
+        <docker.image.exposed.port>8761</docker.image.exposed.port>
+        <docker.image.dockerfile.dir>${basedir}/../docker</docker.image.dockerfile.dir>
+    </properties>
+
     <dependencies>
         <!-- Spring Boot -->
         <dependency>
@@ -35,4 +40,17 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>buildDocker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

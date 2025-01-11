@@ -10,9 +10,9 @@ spring:
     basename: messages
 
   datasource:
-    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/passengers_db}
-    username: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASS:root}
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASS}
 
   jpa:
     hibernate:
@@ -24,7 +24,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:9090/realms/taxi-realm/protocol/openid-connect/certs
+          jwk-set-uri: http://keycloak:8080/realms/taxi-realm/protocol/openid-connect/certs
 
 logging:
   level:
@@ -35,4 +35,4 @@ logging:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://discovery-server:8761/eureka/
