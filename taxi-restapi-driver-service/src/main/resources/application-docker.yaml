@@ -5,7 +5,7 @@ spring:
     name: drivers-service
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:29092
     consumer:
       group-id: driver-service-consumer
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -22,15 +22,18 @@ spring:
       concurrency: 3
 
   datasource:
-    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/drivers_db}
-    username: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASS:root}
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASS}
 
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:9090/realms/taxi-realm/protocol/openid-connect/certs
+          jwk-set-uri: http://keycloak:8080/realms/taxi-realm/protocol/openid-connect/certs
+
+  elasticsearch:
+    uris: http://elasticsearch:9200
 
   liquibase:
     enabled: true
@@ -52,4 +55,4 @@ logging:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://discovery-server:8761/eureka/

@@ -1,5 +1,0 @@
-spring:
-  datasource:
-    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/promocodes_db}
-    username: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASS:root}
