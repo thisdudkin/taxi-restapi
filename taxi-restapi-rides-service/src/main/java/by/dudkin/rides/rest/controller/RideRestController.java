@@ -3,9 +3,11 @@ package by.dudkin.rides.rest.controller;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.rest.api.RidesApi;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
+import by.dudkin.rides.rest.dto.request.RideCostRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.AvailableDriver;
 import by.dudkin.rides.rest.dto.request.PendingRide;
+import by.dudkin.rides.rest.dto.response.RideCostResponse;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.utils.RideSpecification;
@@ -80,6 +82,11 @@ public class RideRestController implements RidesApi {
     @Override
     public ResponseEntity<RideResponse> rate(UUID rideId, RideCompletionRequest request) {
         return new ResponseEntity<>(this.rideService.rate(rideId, request), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<RideCostResponse> checkRideCost(RideCostRequest request) {
+        return new ResponseEntity<>(this.rideService.checkCost(request), HttpStatus.OK);
     }
 
 }

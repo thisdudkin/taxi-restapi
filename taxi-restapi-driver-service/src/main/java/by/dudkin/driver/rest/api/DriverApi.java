@@ -2,6 +2,7 @@ package by.dudkin.driver.rest.api;
 
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
+import by.dudkin.driver.rest.dto.request.FeedbackRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -188,6 +190,22 @@ public interface DriverApi {
         @PathVariable("driverId") UUID driverId,
         @Parameter(name = "amount", description = "The amount to adjust the balance by.", required = true)
         @RequestParam BigDecimal amount
+    );
+
+    @Operation(
+        operationId = "rateDriver",
+        summary = "Rate driver",
+        tags = {"driver"},
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Driver rated successfully."),
+            @ApiResponse(responseCode = "404", description = "Driver not found."),
+            @ApiResponse(responseCode = "400", description = "Invalid input.")
+        }
+    )
+    @PostMapping(value = "/{driverId}/rate", produces = "application/json")
+    ResponseEntity<DriverResponse> rateDriver(
+        @PathVariable UUID driverId,
+        @Valid @RequestBody FeedbackRequest feedbackRequest
     );
 
 }

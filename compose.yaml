@@ -1,0 +1,259 @@
+services:
+  discovery-server:
+    image: rainaddan/taxi-restapi-discovery-server
+    container_name: discovery-server
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://discovery-server:8761"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    image: rainaddan/taxi-restapi-api-gateway
+    container_name: api-gateway
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    ports:
+      - "3030:3030"
+
+  authentication-server:
+    image: rainaddan/taxi-restapi-authentication-server
+    container_name: authentication-server
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    env_file:
+      - docker/env/authentication-server.env
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    ports:
+      - "8087:8087"
+
+  driver-service:
+    image: rainaddan/taxi-restapi-driver-service
+    container_name: driver-service
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    env_file:
+      - docker/env/driver-service.env
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "8082:8082"
+
+  notification-service:
+    image: rainaddan/taxi-restapi-notification-service
+    container_name: notification-service
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    env_file:
+      - docker/env/notification-service.env
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "8084:8084"
+
+  passenger-service:
+    image: rainaddan/taxi-restapi-passenger-service
+    container_name: passenger-service
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    env_file:
+      - docker/env/passenger-service.env
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+
+  payment-service:
+    image: rainaddan/taxi-restapi-payment-service
+    container_name: payment-service
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    env_file:
+      - docker/env/payment-service.env
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8085:8085"
+
+  promocode-service:
+    image: rainaddan/taxi-restapi-promocode-service
+    container_name: promocode-service
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    env_file:
+      - docker/env/promocode-service.env
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8088:8088"
+
+  rides-service:
+    image: rainaddan/taxi-restapi-rides-service
+    container_name: rides-service
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    env_file:
+      - docker/env/rides-service.env
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "8083:8083"
+
+  # Extra Services
+
+  postgres:
+    image: postgis/postgis:17-master
+    container_name: postgres
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/script/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d rides_db -U postgres"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.8.0
+    hostname: zookeeper
+    container_name: zookeeper
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    ports:
+      - "2181:2181"
+    env_file:
+      - docker/env/zookeeper.env
+
+  kafka:
+    image: confluentinc/cp-kafka:7.8.0
+    hostname: kafka
+    container_name: kafka
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+      - "9999:9999"
+    env_file:
+      - docker/env/kafka.env
+    depends_on:
+      - zookeeper
+
+  elasticsearch:
+    image: elasticsearch:7.17.22
+    hostname: elasticsearch
+    container_name: elasticsearch
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://elasticsearch:9200"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    env_file:
+      - docker/env/elasticsearch.env
+    ports:
+      - "9200:9200"
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:26.0
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    env_file:
+      - docker/env/keycloak.env
+    ports:
+      - "9090:8080"
+    command: [ "start-dev", "--import-realm" ]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./keycloak/:/opt/keycloak/data/import/
+
+# Networks
+
+networks:
+  default:
+    driver: bridge
+
+# Volumes
+
+volumes:
+  postgres_data:
+    driver: local
+  keycloak:
+    driver: local

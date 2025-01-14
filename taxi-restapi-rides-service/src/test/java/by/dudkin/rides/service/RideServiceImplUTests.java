@@ -121,7 +121,7 @@ class RideServiceImplUTests {
     void whenCreateRide_thenReturnRideResponse() {
         // Arrange
         when(rideMapper.toRide(rideRequest)).thenReturn(ride);
-        when(rideCreationService.createRide(ride)).thenReturn(ride);
+        when(rideCreationService.createRide(ride, null)).thenReturn(ride);
         when(rideRepository.save(ride)).thenReturn(ride);
         when(rideMapper.toResponse(ride)).thenReturn(rideResponse);
 

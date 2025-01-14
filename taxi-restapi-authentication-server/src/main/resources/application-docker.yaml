@@ -1,0 +1,20 @@
+server.port: 8087
+
+spring:
+  application:
+    name: authentication-server
+
+  messages:
+    basename: messages
+
+keycloak:
+  client:
+    id: taxi-client
+    secret: ${KEYCLOAK_CLIENT_SECRET}
+  realm: taxi-realm
+  server-url: http://keycloak:8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka/

@@ -1,0 +1,32 @@
+server.port: 8085
+
+spring:
+  application:
+    name: payment-service
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASS}
+
+  liquibase:
+    enabled: true
+  messages:
+    basename: messages
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    liquibase: INFO
+    org:
+      springframework: INFO
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka/

@@ -1,8 +1,6 @@
 server.port: 8081
 
 spring:
-  profiles:
-    active: postgres, security
   application:
     name: passengers-service
 
@@ -11,17 +9,22 @@ spring:
   messages:
     basename: messages
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://localhost:9090/realms/taxi-realm/protocol/openid-connect/certs
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/passengers_db}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASS:root}
 
   jpa:
     hibernate:
       ddl-auto: none
     open-in-view: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9090/realms/taxi-realm/protocol/openid-connect/certs
 
 logging:
   level:
@@ -33,5 +36,3 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-  instance:
-    prefer-ip-address: true

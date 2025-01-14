@@ -3,6 +3,7 @@ package by.dudkin.driver.service.api;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
+import by.dudkin.driver.rest.dto.request.FeedbackRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
 import by.dudkin.driver.rest.dto.response.PendingRide;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ public interface DriverService {
     DriverResponse markBusy(UUID driverId);
     DriverResponse markOffline(UUID driverId);
 
+    DriverResponse rateDriver(UUID driverId, FeedbackRequest feedbackRequest);
     void updateBalance(UUID driverId, BigDecimal amount);
 
 }

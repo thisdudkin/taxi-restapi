@@ -1,10 +1,13 @@
 server.port: 8085
 
 spring:
-  profiles:
-    active: postgres
   application:
     name: payment-service
+
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/transactions_db}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASS:root}
 
   liquibase:
     enabled: true
@@ -27,5 +30,3 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-  instance:
-    prefer-ip-address: true

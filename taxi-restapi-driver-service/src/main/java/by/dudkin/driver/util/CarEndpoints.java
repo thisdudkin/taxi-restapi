@@ -11,7 +11,7 @@ public enum CarEndpoints implements Endpoints {
 
     SAVE_CAR("/api/cars"),
 
-    GET_CAR_BY_ID("/api/cars/{carId}"),
+    GET_CAR("/api/cars/{carId}"),
 
     UPDATE_CAR("/api/cars/{carId}"),
 

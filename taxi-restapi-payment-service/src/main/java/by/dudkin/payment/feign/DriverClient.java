@@ -1,5 +1,6 @@
 package by.dudkin.payment.feign;
 
+import by.dudkin.payment.config.OpenFeignBearerTokenInterceptorConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,7 +14,8 @@ import java.util.UUID;
  */
 @FeignClient(
     value = "drivers-service",
-    path = "/api/drivers"
+    path = "/api/drivers",
+    configuration = OpenFeignBearerTokenInterceptorConfiguration.class
 )
 public interface DriverClient {
 

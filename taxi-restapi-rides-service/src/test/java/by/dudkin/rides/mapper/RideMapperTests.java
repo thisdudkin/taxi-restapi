@@ -61,8 +61,7 @@ class RideMapperTests {
             DEFAULT_LOCATION_FROM,
             DEFAULT_LOCATION_TO,
             DEFAULT_PAYMENT_METHOD,
-            null
-        );
+            null);
     }
 
     @Test

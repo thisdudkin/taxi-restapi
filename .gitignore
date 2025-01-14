@@ -14,6 +14,9 @@ target/
 .idea
 *.iml
 
+# Secrets
+docker/env/
+
 # Visual Studio Code
 .factorypath
 

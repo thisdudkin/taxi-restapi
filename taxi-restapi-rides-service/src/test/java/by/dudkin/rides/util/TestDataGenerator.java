@@ -78,7 +78,8 @@ public abstract class TestDataGenerator {
                 randomId(),
                 randomLocation(),
                 randomLocation(),
-                randomPaymentMethod()
+                randomPaymentMethod(),
+                null
         );
     }
 
