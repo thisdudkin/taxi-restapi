@@ -10,12 +10,16 @@ import by.dudkin.rides.repository.RideRepository;
 import by.dudkin.rides.rest.advice.custom.RideNotFoundException;
 import by.dudkin.rides.rest.dto.request.PendingRide;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
+import by.dudkin.rides.rest.dto.request.RideCostRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.AvailableDriver;
 import by.dudkin.rides.rest.dto.response.DriverResponse;
+import by.dudkin.rides.rest.dto.response.RideCostResponse;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.feign.DriverClient;
 import by.dudkin.rides.service.api.RideService;
+import by.dudkin.rides.utils.GeospatialUtils;
+import by.dudkin.rides.utils.PriceCalculator;
 import by.dudkin.rides.utils.RideStatusTransition;
 import by.dudkin.rides.utils.RideStatusTransitionValidator;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -47,6 +52,7 @@ public class RideServiceImpl implements RideService {
     private final RideAssignmentService rideAssignmentService;
     private final RideCompletionService rideCompletionService;
     private final RideStatusTransitionValidator transitionValidator;
+    private final PriceCalculator priceCalculator;
 
     @Override
     public RideResponse create(RideRequest req) {
@@ -121,6 +127,18 @@ public class RideServiceImpl implements RideService {
         Ride saved = rideRepository.save(ride);
         eventPublisher.publishEvent(new AcceptedRideEvent(saved.getId(), saved.getDriverId(), saved.getCarId()));
         return rideMapper.toResponse(saved);
+    }
+
+    @Override
+    public RideCostResponse checkCost(RideCostRequest request) {
+        double distance = GeospatialUtils.calculateDistance(
+            request.from().getLat(), request.from().getLng(),
+            request.to().getLat(), request.to().getLng()
+        );
+        double estimatedTime = GeospatialUtils.calculateEstimatedTime(distance);
+        BigDecimal price = priceCalculator.calculatePrice(distance);
+
+        return new RideCostResponse(price, estimatedTime, request.from(), request.to());
     }
 
     Ride getOrThrow(UUID rideId) {

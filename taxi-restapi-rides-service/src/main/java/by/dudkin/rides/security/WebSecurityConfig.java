@@ -4,6 +4,7 @@ import by.dudkin.rides.utils.RideEndpoints;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -33,7 +34,7 @@ import static by.dudkin.rides.utils.RideEndpoints.SAVE_RIDE;
  * @author Alexander Dudkin
  */
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
@@ -52,10 +53,19 @@ public class WebSecurityConfig {
             .authenticationEntryPoint(authenticationEntryPoint())
         );
 
-        http.authorizeHttpRequests(auth -> auth
-            .requestMatchers(GET_RIDE.getURI(), ACTIVATE_RIDE.getURI(), ASSIGN_RIDE.getURI(), COMPLETE_RIDE.getURI()).hasRole("DRIVER")
-            .requestMatchers(SAVE_RIDE.getURI(), GET_RIDE.getURI(), RATE_RIDE.getURI()).hasRole("PASSENGER")
-            .requestMatchers(RideEndpoints.BASE_URI.getAllURIs()).hasRole("ADMIN")
+        http.authorizeHttpRequests(authz -> authz
+            .requestMatchers(HttpMethod.GET, BASE_URI.getURI()).hasAnyRole("PASSENGER", "DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.POST, SAVE_RIDE.getURI()).hasAnyRole("PASSENGER", "ADMIN")
+            .requestMatchers(HttpMethod.GET, GET_RIDE.getURI()).hasAnyRole("PASSENGER", "DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.POST, CHECK_COST.getURI()).hasAnyRole("PASSENGER", "ADMIN")
+            .requestMatchers(HttpMethod.PUT, UPDATE_RIDE.getURI()).hasRole("ADMIN")
+            .requestMatchers(HttpMethod.DELETE, DELETE_RIDE.getURI()).hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PATCH, ACTIVATE_RIDE.getURI()).hasAnyRole("DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.POST, ASSIGN_RIDE.getURI()).hasAnyRole("DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.PATCH, COMPLETE_RIDE.getURI()).hasAnyRole("DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.PATCH, CANCEL_RIDE.getURI()).hasAnyRole("DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.PATCH, RATE_RIDE.getURI()).hasAnyRole("PASSENGER", "ADMIN")
+            .requestMatchers(HttpMethod.POST, CHECK_COST.getURI()).hasAnyRole("PASSENGER", "ADMIN")
             .anyRequest().authenticated()
         );
 
