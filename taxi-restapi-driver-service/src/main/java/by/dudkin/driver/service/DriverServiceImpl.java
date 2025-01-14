@@ -11,6 +11,7 @@ import by.dudkin.driver.rest.advice.custom.DriverNotFoundException;
 import by.dudkin.driver.rest.advice.custom.NoAvailableDriverException;
 import by.dudkin.driver.rest.dto.request.AvailableDriver;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
+import by.dudkin.driver.rest.dto.request.FeedbackRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
 import by.dudkin.driver.rest.dto.response.PendingRide;
 import by.dudkin.driver.service.api.DriverService;
@@ -20,8 +21,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -44,7 +43,6 @@ public class DriverServiceImpl implements DriverService {
     private final AvailableDriverService availableDriverService;
     private final AvailableDriverProducer availableDriverProducer;
     private final DriverStatusTransitionValidator transitionValidator;
-    private final JdbcTemplate jdbcTemplate;
 
     @Override
     @Transactional(readOnly = true)
@@ -126,14 +124,14 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    public DriverResponse rateDriver(UUID driverId, FeedbackRequest feedbackRequest) {
+        driverRepository.rateDriver(driverId, feedbackRequest.rating());
+        return driverMapper.toResponse(getOrThrow(driverId));
+    }
+
+    @Override
     public void updateBalance(UUID driverId, BigDecimal amount) {
-        jdbcTemplate.execute("update drivers set balance = balance + ? " +
-            "where id = ?", (PreparedStatementCallback<?>) updateDriver -> {
-            updateDriver.setBigDecimal(1, amount);
-            updateDriver.setObject(2, driverId);
-            updateDriver.execute();
-            return null;
-        });
+        driverRepository.updateBalance(driverId, amount);
     }
 
 }
