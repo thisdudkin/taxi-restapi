@@ -1,6 +1,5 @@
 package by.dudkin.rides.security;
 
-import by.dudkin.rides.utils.RideEndpoints;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
