@@ -1,6 +1,5 @@
 package by.dudkin.rides.security;
 
-import by.dudkin.rides.utils.RideEndpoints;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,12 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static by.dudkin.rides.utils.RideEndpoints.ACTIVATE_RIDE;
-import static by.dudkin.rides.utils.RideEndpoints.ASSIGN_RIDE;
-import static by.dudkin.rides.utils.RideEndpoints.COMPLETE_RIDE;
-import static by.dudkin.rides.utils.RideEndpoints.GET_RIDE;
-import static by.dudkin.rides.utils.RideEndpoints.RATE_RIDE;
-import static by.dudkin.rides.utils.RideEndpoints.SAVE_RIDE;
+import static by.dudkin.rides.utils.RideEndpoints.*;
 
 /**
  * @author Alexander Dudkin
