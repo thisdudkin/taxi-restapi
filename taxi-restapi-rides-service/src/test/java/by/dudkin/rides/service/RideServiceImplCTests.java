@@ -4,9 +4,12 @@ import by.dudkin.common.util.BalanceResponse;
 import by.dudkin.rides.feign.PassengerClient;
 import by.dudkin.rides.repository.RideRepository;
 import by.dudkin.rides.rest.dto.request.RideRequest;
+import by.dudkin.rides.rest.dto.response.PassengerResponse;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.util.TestDataGenerator;
+import by.dudkin.rides.util.TestJwtUtils;
+import by.dudkin.rides.util.TestSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +17,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -29,6 +32,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * @author Alexander Dudkin
@@ -37,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Testcontainers
 @Sql("classpath:data.sql")
 @ActiveProfiles({"test", "kafka"})
+@Import(TestSecurityConfig.class)
 @EmbeddedKafka(partitions = 1, topics = {"ride-requests"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class RideServiceImplCTests {
@@ -54,9 +59,6 @@ class RideServiceImplCTests {
     @MockBean
     PassengerClient passengerClient;
 
-    @MockBean
-    JwtDecoder jwtDecoder;
-
     @Test
     void shouldFindRide() {
         // Act
@@ -70,8 +72,12 @@ class RideServiceImplCTests {
     @Test
     void shouldCreateRide() {
         // Arrange
+        TestJwtUtils.setMockAuthentication();
         RideRequest request = TestDataGenerator.randomRideRequest();
-        Mockito.when(passengerClient.checkBalance(request.passengerId())).thenReturn(new BalanceResponse<>(request.passengerId(), BigDecimal.valueOf(1000)));
+        PassengerResponse passengerResponse = TestDataGenerator.randomResponse();
+        BalanceResponse<UUID> balanceResponse = new BalanceResponse<>(passengerResponse.id(), BigDecimal.valueOf(Integer.MAX_VALUE));
+        Mockito.when(passengerClient.getPassengerByUsername("mock-username")).thenReturn(passengerResponse);
+        Mockito.when(passengerClient.checkBalance(passengerResponse.id())).thenReturn(balanceResponse);
 
         // Act
         RideResponse response = rideService.create(request);
@@ -79,7 +85,7 @@ class RideServiceImplCTests {
         // Assert
         assertNotNull(response);
         assertNotNull(response.price());
-        assertEquals(request.passengerId(), response.passengerId());
+        assertThat(response.from().getLat()).isEqualTo(request.from().getLat());
     }
 
     @Test
@@ -93,7 +99,6 @@ class RideServiceImplCTests {
         // Assert
         assertNotNull(response);
         assertEquals(request.from(), response.from());
-        assertEquals(request.passengerId(), response.passengerId());
     }
 
     @Test

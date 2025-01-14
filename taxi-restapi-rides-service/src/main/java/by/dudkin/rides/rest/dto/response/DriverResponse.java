@@ -15,6 +15,8 @@ public record DriverResponse(
 
     UUID id,
 
+    String username,
+
     PersonalInfo info,
 
     BigDecimal balance,

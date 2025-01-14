@@ -12,18 +12,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-
 import static by.dudkin.passenger.util.PassengerEndpoints.DELETE_PASSENGER;
-import static by.dudkin.passenger.util.PassengerEndpoints.GET_PASSENGER_BY_ID;
+import static by.dudkin.passenger.util.PassengerEndpoints.GET_PASSENGER;
 import static by.dudkin.passenger.util.PassengerEndpoints.LIST_PASSENGERS;
 import static by.dudkin.passenger.util.PassengerEndpoints.SAVE_PASSENGER;
 import static by.dudkin.passenger.util.PassengerEndpoints.SEARCH_PASSENGER;
@@ -51,7 +46,7 @@ public class TestSecurityConfig {
             .requestMatchers(HttpMethod.GET, LIST_PASSENGERS.getURI()).hasAnyRole("PASSENGER", "ADMIN")
             .requestMatchers(HttpMethod.POST, SAVE_PASSENGER.getURI()).hasAnyRole("PASSENGER", "ADMIN")
             .requestMatchers(HttpMethod.GET, SEARCH_PASSENGER.getURI()).hasAnyRole("PASSENGER", "DRIVER", "ADMIN")
-            .requestMatchers(HttpMethod.GET, GET_PASSENGER_BY_ID.getURI()).hasAnyRole("PASSENGER", "DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.GET, GET_PASSENGER.getURI()).hasAnyRole("PASSENGER", "DRIVER", "ADMIN")
             .requestMatchers(HttpMethod.PUT, UPDATE_PASSENGER.getURI()).hasAnyRole("PASSENGER", "ADMIN")
             .requestMatchers(HttpMethod.DELETE, DELETE_PASSENGER.getURI()).hasRole("ADMIN")
             .anyRequest().authenticated()
