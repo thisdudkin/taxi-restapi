@@ -57,7 +57,7 @@ services:
       discovery-server:
         condition: service_healthy
       postgres:
-        condition: service_started
+        condition: service_healthy
       elasticsearch:
         condition: service_healthy
       kafka:
@@ -78,7 +78,7 @@ services:
       discovery-server:
         condition: service_healthy
       postgres:
-        condition: service_started
+        condition: service_healthy
       kafka:
         condition: service_started
     ports:
@@ -97,7 +97,7 @@ services:
       discovery-server:
         condition: service_healthy
       postgres:
-        condition: service_started
+        condition: service_healthy
     ports:
       - "8081:8081"
 
@@ -114,7 +114,7 @@ services:
       discovery-server:
         condition: service_healthy
       postgres:
-        condition: service_started
+        condition: service_healthy
     ports:
       - "8085:8085"
 
@@ -131,7 +131,7 @@ services:
       discovery-server:
         condition: service_healthy
       postgres:
-        condition: service_started
+        condition: service_healthy
     ports:
       - "8088:8088"
 
@@ -148,7 +148,7 @@ services:
       discovery-server:
         condition: service_healthy
       postgres:
-        condition: service_started
+        condition: service_healthy
       kafka:
         condition: service_started
     ports:
@@ -157,7 +157,7 @@ services:
   # Extra Services
 
   postgres:
-    image: rainaddan/taxi-restapi-postgres
+    image: postgis/postgis:17-master
     container_name: postgres
     deploy:
       resources:
@@ -171,6 +171,12 @@ services:
       POSTGRES_DB: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./docker/script/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d rides_db -U postgres"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.8.0
@@ -233,7 +239,8 @@ services:
       - "9090:8080"
     command: [ "start-dev", "--import-realm" ]
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     volumes:
       - ./keycloak/:/opt/keycloak/data/import/
 
