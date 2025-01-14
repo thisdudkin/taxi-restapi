@@ -13,6 +13,8 @@ public enum RideEndpoints implements Endpoints {
 
     GET_RIDE("/api/rides/{rideId}"),
 
+    CHECK_COST("/api/rides/cost"),
+
     UPDATE_RIDE("/api/rides/{rideId}"),
 
     DELETE_RIDE("/api/rides/{rideId}"),
