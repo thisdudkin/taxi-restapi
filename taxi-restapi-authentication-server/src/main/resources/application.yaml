@@ -4,15 +4,37 @@ spring:
   application:
     name: authentication-server
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9090/realms/taxi-realm/protocol/openid-connect/certs
+
   messages:
-    basename: messages
+    basename: messages/messages
 
 keycloak:
   client:
     id: taxi-client
-    secret: ${KEYCLOAK_CLIENT_SECRET:BLBIMdndJU2aiKBjlTYrgtTNzVEXDVuM}
+    secret: ${KEYCLOAK_CLIENT_SECRET:aNhp8YRYXlIW5xKuNlbuq6mSi7gOGW2g}
   realm: taxi-realm
   server-url: http://localhost:9090
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+    tags:
+      application: authentication-server
 
 eureka:
   client:
