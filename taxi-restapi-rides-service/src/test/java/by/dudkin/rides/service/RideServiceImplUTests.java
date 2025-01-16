@@ -121,12 +121,12 @@ class RideServiceImplUTests {
     void whenCreateRide_thenReturnRideResponse() {
         // Arrange
         when(rideMapper.toRide(rideRequest)).thenReturn(ride);
-        when(rideCreationService.createRide(ride)).thenReturn(ride);
+        when(rideCreationService.createRide(ride, null, "x-username")).thenReturn(ride);
         when(rideRepository.save(ride)).thenReturn(ride);
         when(rideMapper.toResponse(ride)).thenReturn(rideResponse);
 
         // Act
-        RideResponse response = rideService.create(rideRequest);
+        RideResponse response = rideService.create(rideRequest, "x-username");
 
         // Assert
         assertNotNull(response);

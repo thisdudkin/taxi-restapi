@@ -4,12 +4,14 @@ import by.dudkin.driver.repository.DriverLocationRepository;
 import by.dudkin.driver.repository.DriverRepository;
 import by.dudkin.driver.service.api.DriverService;
 import by.dudkin.driver.util.TestDataGenerator;
+import by.dudkin.driver.util.TestSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.security.web.SecurityFilterChain;
@@ -31,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Testcontainers
 @Transactional
+@Import(TestSecurityConfig.class)
 @ActiveProfiles({"test", "kafka"})
 @EmbeddedKafka(partitions = 1, topics = {"available-drivers", "ride-requests"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -43,8 +46,8 @@ class DriverServiceComponentTests {
     @MockBean
     DriverLocationRepository driverLocationRepository;
 
-    @MockBean
-    SecurityFilterChain jwtFilterChain;
+    @MockBean(name = "testFilterChain")
+    SecurityFilterChain testFilterChain;
 
     @Autowired
     DriverService driverService;
@@ -73,7 +76,7 @@ class DriverServiceComponentTests {
         var driverRequest = TestDataGenerator.randomDriverRequest();
 
         // Act
-        var driverResponse = driverService.create(driverRequest, "username");
+        var driverResponse = driverService.create(driverRequest, "x-username");
 
         // Assert
         assertThat(driverResponse).isNotNull();

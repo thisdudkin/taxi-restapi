@@ -1,0 +1,42 @@
+server.port: 8087
+
+spring:
+  application:
+    name: authentication-server
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://keycloak:8080/realms/taxi-realm/protocol/openid-connect/certs
+
+  messages:
+    basename: messages/messages
+
+keycloak:
+  client:
+    id: taxi-client
+    secret: ${KEYCLOAK_CLIENT_SECRET}
+  realm: taxi-realm
+  server-url: http://keycloak:8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+    tags:
+      application: authentication-server
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka/

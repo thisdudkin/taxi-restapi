@@ -9,7 +9,9 @@ public enum PassengerEndpoints implements Endpoints {
 
     BASE_URI("/api/passengers"),
 
-    GET_PASSENGER_BY_ID("/api/passengers/{passengerId}"),
+    GET_PASSENGER("/api/passengers/{passengerId}"),
+
+    SEARCH_PASSENGER("/api/passengers/username"),
 
     LIST_PASSENGERS("/api/passengers"),
 
@@ -21,7 +23,7 @@ public enum PassengerEndpoints implements Endpoints {
 
     CHECK_BALANCE("/api/passengers/{passengerId}/balance"),
 
-    UPDATE_BALANCE("/api/passengers/{passengerId}/balance?amount=%s");
+    UPDATE_BALANCE("/api/passengers/{passengerId}/balance");
 
     private final String uri;
 

@@ -58,10 +58,10 @@ class RideMapperTests {
 
     private RideRequest createRideRequest() {
         return new RideRequest(
-            DEFAULT_PASSENGER_ID,
             DEFAULT_LOCATION_FROM,
             DEFAULT_LOCATION_TO,
-            DEFAULT_PAYMENT_METHOD);
+            DEFAULT_PAYMENT_METHOD,
+            null);
     }
 
     @Test
@@ -91,7 +91,6 @@ class RideMapperTests {
 
         rideMapper.updateRide(request, ride);
 
-        assertEquals(request.passengerId(), ride.getPassengerId());
         assertEquals(request.from().getCity(), ride.getFrom().getCity());
         assertEquals(request.to().getCity(), ride.getTo().getCity());
         assertEquals(request.paymentMethod(), ride.getPaymentMethod());

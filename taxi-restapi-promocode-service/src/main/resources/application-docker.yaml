@@ -1,0 +1,32 @@
+server.port: 8088
+
+spring:
+  application:
+    name: promocode-service
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASS}
+
+  liquibase:
+    enabled: true
+  messages:
+    basename: messages
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://keycloak:8080/realms/taxi-realm/protocol/openid-connect/certs
+
+logging:
+  level:
+    liquibase: INFO
+    org:
+      springframework: INFO
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka/

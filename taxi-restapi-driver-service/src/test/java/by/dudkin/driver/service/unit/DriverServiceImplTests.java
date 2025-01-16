@@ -108,7 +108,7 @@ class DriverServiceImplTests {
         when(driverMapper.toResponse(driver)).thenReturn(driverResponse);
 
         // Act
-        DriverResponse response = driverService.create(driverRequest, "username");
+        DriverResponse response = driverService.create(driverRequest, "x-username");
 
         // Assert
         assertThat(response).isNotNull();
