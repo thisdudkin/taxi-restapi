@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -48,11 +49,31 @@ public class WebSecurityConfig {
                 .authenticationEntryPoint(authenticationEntryPoint())
         );
 
-        http.authorizeHttpRequests(auth -> auth
-                .requestMatchers(DriverEndpoints.BASE_URI.getAllURIs()).hasAnyRole("DRIVER", "ADMIN")
-                .requestMatchers(CarEndpoints.BASE_URI.getAllURIs()).hasAnyRole("DRIVER", "ADMIN")
-                .requestMatchers(AssignmentEndpoints.BASE_URI.getAllURIs()).hasAnyRole("DRIVER", "ADMIN")
-                .anyRequest().authenticated()
+        http.authorizeHttpRequests((authz) -> authz
+
+            // driver endpoints
+            .requestMatchers(HttpMethod.GET, DriverEndpoints.GET_ALL_DRIVERS.getURI()).hasAnyRole("DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.POST, DriverEndpoints.SAVE_DRIVER.getURI()).hasAnyRole("DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.GET, DriverEndpoints.GET_DRIVER.getURI()).hasAnyRole("DRIVER", "ADMIN", "PASSENGER")
+            .requestMatchers(HttpMethod.PUT, DriverEndpoints.UPDATE_DRIVER.getURI()).hasAnyRole("DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.DELETE, DriverEndpoints.DELETE_DRIVER.getURI()).hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PUT, DriverEndpoints.UPDATE_DRIVER_LOCATION.getURI()).hasRole("DRIVER")
+
+            // car endpoints
+            .requestMatchers(HttpMethod.GET, CarEndpoints.BASE_URI.getURI()).hasAnyRole("DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.POST, CarEndpoints.SAVE_CAR.getURI()).hasAnyRole("DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.GET, CarEndpoints.GET_CAR.getURI()).hasAnyRole("DRIVER", "ADMIN", "PASSENGER")
+            .requestMatchers(HttpMethod.PUT, CarEndpoints.UPDATE_CAR.getURI()).hasAnyRole("DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.DELETE, CarEndpoints.DELETE_CAR.getURI()).hasRole("ADMIN")
+
+            // assignments endpoints
+            .requestMatchers(HttpMethod.GET, AssignmentEndpoints.BASE_URI.getURI()).hasAnyRole("DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.POST, AssignmentEndpoints.SAVE_ASSIGNMENT.getURI()).hasAnyRole("DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.GET, AssignmentEndpoints.GET_ASSIGNMENT.getURI()).hasAnyRole("DRIVER", "ADMIN", "PASSENGER")
+            .requestMatchers(HttpMethod.PUT, AssignmentEndpoints.UPDATE_ASSIGNMENT.getURI()).hasAnyRole("DRIVER", "ADMIN")
+            .requestMatchers(HttpMethod.DELETE, AssignmentEndpoints.DELETE_ASSIGNMENT.getURI()).hasRole("ADMIN")
+
+            .anyRequest().authenticated()
         );
 
         return http.build();

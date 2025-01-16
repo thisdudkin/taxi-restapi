@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 public abstract class GeospatialUtils {
 
     private static final double EARTH_RADIUS = 6371.0;
+    private static final double AVERAGE_SPEED = 50.0;
 
     public static double calculateDistance(BigDecimal lat1, BigDecimal lng1, BigDecimal lat2, BigDecimal lng2) {
         double lat1Rad = Math.toRadians(lat1.doubleValue());
@@ -24,6 +25,10 @@ public abstract class GeospatialUtils {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return EARTH_RADIUS * c;
+    }
+
+    public static double calculateEstimatedTime(double distance) {
+        return distance / AVERAGE_SPEED * 60;
     }
 
 }

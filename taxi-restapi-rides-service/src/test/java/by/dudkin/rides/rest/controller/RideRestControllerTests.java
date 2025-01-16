@@ -4,13 +4,15 @@ import by.dudkin.common.enums.RideStatus;
 import by.dudkin.common.util.BalanceResponse;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.common.util.TransactionRequest;
-import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
-import by.dudkin.rides.rest.dto.request.RideRequest;
-import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.feign.DriverClient;
 import by.dudkin.rides.feign.PassengerClient;
 import by.dudkin.rides.feign.PaymentClient;
+import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
+import by.dudkin.rides.rest.dto.request.RideRequest;
+import by.dudkin.rides.rest.dto.response.PassengerResponse;
+import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.util.TestDataGenerator;
+import by.dudkin.rides.util.TestSecurityConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,16 +21,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.kafka.test.context.EmbeddedKafka;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -37,14 +38,19 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.UUID;
 
+import static by.dudkin.rides.util.TestJwtUtils.ROLE_ADMIN;
+import static by.dudkin.rides.util.TestJwtUtils.ROLE_DRIVER;
+import static by.dudkin.rides.util.TestJwtUtils.ROLE_PASSENGER;
+import static by.dudkin.rides.util.TestJwtUtils.createHeadersWithTokenAndUsername;
 import static java.util.Objects.requireNonNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * @author Alexander Dudkin
@@ -53,6 +59,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @Sql("classpath:data.sql")
 @ActiveProfiles({"test", "kafka"})
 @EmbeddedKafka(partitions = 1, topics = {"ride-requests"})
+@Import({TestSecurityConfig.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RideRestControllerTests {
 
@@ -70,9 +77,6 @@ class RideRestControllerTests {
     private PaymentClient paymentClient;
 
     @MockBean
-    SecurityFilterChain jwtFilterChain;
-
-    @MockBean
     private DriverClient driverClient;
 
     private static final String BASE_URI = "/api/rides";
@@ -87,24 +91,53 @@ class RideRestControllerTests {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    void shouldFindAllRides() {
+    void shouldReturn401HttpStatusCode() {
+        // Arrange
+        String URI = "%s/%s".formatted(BASE_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6983");
+
         // Act
-        PaginatedResponse<RideResponse> response = restTemplate.getForObject(BASE_URI, PaginatedResponse.class);
+        ResponseEntity<ProblemDetail> response = restTemplate.exchange(URI, HttpMethod.GET, null, ProblemDetail.class);
 
         // Assert
-        assertNotNull(response);
-        assertEquals(10, response.getContent().size());
-        assertEquals(0, response.getPage());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(response.getBody()).isNotNull();
+    }
+
+    @Test
+    void shouldReturn403HttpStatusCode() {
+        // Arrange
+        String URI = "%s/%s".formatted(BASE_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6983");
+        HttpHeaders headers = createHeadersWithTokenAndUsername("username", ROLE_PASSENGER);
+
+        // Act
+        ResponseEntity<ProblemDetail> response = restTemplate.exchange(URI, HttpMethod.DELETE, new HttpEntity<>(headers), ProblemDetail.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getBody()).isNotNull();
+    }
+
+    @Test
+    void shouldFindAllRides() {
+        // Act
+        HttpHeaders headers = createHeadersWithTokenAndUsername("username", ROLE_PASSENGER);
+        ResponseEntity<PaginatedResponse> response = restTemplate.exchange(BASE_URI, HttpMethod.GET, new HttpEntity<>(headers), PaginatedResponse.class);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(10, response.getBody().getContent().size());
+        assertEquals(0, response.getBody().getPage());
     }
 
     @Test
     void shouldFindRideWithValidId() {
         // Arrange
+        HttpHeaders headers = createHeadersWithTokenAndUsername("username", ROLE_PASSENGER);
         String VALID_URI = "%s/%s".formatted(BASE_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
 
         // Act
-        ResponseEntity<RideResponse> response = restTemplate.exchange(VALID_URI, HttpMethod.GET, null, RideResponse.class);
+        ResponseEntity<RideResponse> response = restTemplate.exchange(VALID_URI, HttpMethod.GET, new HttpEntity<>(headers), RideResponse.class);
 
         // Arrange
         assertNotNull(response);
@@ -118,10 +151,8 @@ class RideRestControllerTests {
     @Test
     void shouldNotFindRideWithInvalidId() {
         // Arrange
+        HttpHeaders headers = createHeadersWithTokenAndUsername("username", ROLE_PASSENGER);
         String INVALID_URI = "%s/%s".formatted(BASE_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
         // Act
         ResponseEntity<ProblemDetail> response = restTemplate.exchange(INVALID_URI, HttpMethod.GET, new HttpEntity<>(headers), ProblemDetail.class);
@@ -138,19 +169,23 @@ class RideRestControllerTests {
     @Rollback
     void shouldCreateRide() {
         // Arrange
+        String username = "mock-username";
         RideRequest request = TestDataGenerator.randomRideRequest();
-        BalanceResponse<UUID> mockResponse = new BalanceResponse<>(request.passengerId(), BigDecimal.valueOf(1000));
-        Mockito.when(passengerClient.checkBalance(request.passengerId())).thenReturn(mockResponse);
+        HttpHeaders headers = createHeadersWithTokenAndUsername(username, ROLE_PASSENGER);
+        PassengerResponse passengerResponse = TestDataGenerator.randomResponse();
+        UUID id = passengerResponse.id();
+        BalanceResponse<UUID> balanceResponse = new BalanceResponse<>(id, BigDecimal.valueOf(Integer.MAX_VALUE));
+        Mockito.when(passengerClient.getPassengerByUsername(username)).thenReturn(passengerResponse);
+        Mockito.when(passengerClient.checkBalance(id)).thenReturn(balanceResponse);
 
         // Act
-        ResponseEntity<RideResponse> response = restTemplate.exchange(BASE_URI, HttpMethod.POST, new HttpEntity<>(request), RideResponse.class);
+        ResponseEntity<RideResponse> response = restTemplate.exchange(BASE_URI, HttpMethod.POST, new HttpEntity<>(request, headers), RideResponse.class);
 
         // Assert
         assertNotNull(response);
         assertAll(
             () -> assertNotNull(response.getBody()),
-            () -> assertEquals(HttpStatus.CREATED, response.getStatusCode()),
-            () -> assertEquals(request.passengerId(), requireNonNull(response.getBody()).passengerId())
+            () -> assertEquals(HttpStatus.CREATED, response.getStatusCode())
         );
     }
 
@@ -158,9 +193,7 @@ class RideRestControllerTests {
     void shouldNotCreateRideWhenValidationFails() {
         // Arrange
         RideRequest request = new RideRequest(null, null, null, null);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpHeaders headers = createHeadersWithTokenAndUsername("username", ROLE_PASSENGER);
 
         // Act
         ResponseEntity<ProblemDetail> response = restTemplate.exchange(BASE_URI, HttpMethod.POST, new HttpEntity<>(request, headers), ProblemDetail.class);
@@ -179,9 +212,10 @@ class RideRestControllerTests {
         // Arrange
         String URI = "%s/%s".formatted(BASE_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6984");
         RideRequest request = TestDataGenerator.randomRideRequest();
+        HttpHeaders headers = createHeadersWithTokenAndUsername("admin", ROLE_ADMIN);
 
         // Act
-        ResponseEntity<RideResponse> response = restTemplate.exchange(URI, HttpMethod.PUT, new HttpEntity<>(request), RideResponse.class);
+        ResponseEntity<RideResponse> response = restTemplate.exchange(URI, HttpMethod.PUT, new HttpEntity<>(request, headers), RideResponse.class);
 
         // Assert
         assertNotNull(response);
@@ -195,10 +229,11 @@ class RideRestControllerTests {
     @Rollback
     void shouldDeleteRide() {
         // Arrange
+        HttpHeaders headers = createHeadersWithTokenAndUsername("admin", ROLE_ADMIN);
         String URI = "%s/%s".formatted(BASE_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
 
         // Act
-        ResponseEntity<Void> response = restTemplate.exchange(URI, HttpMethod.DELETE, null, Void.class);
+        ResponseEntity<Void> response = restTemplate.exchange(URI, HttpMethod.DELETE, new HttpEntity<>(headers), Void.class);
 
         // Assert
         assertNotNull(response);
@@ -212,7 +247,8 @@ class RideRestControllerTests {
     @Rollback
     void shouldActivateRide() {
         // Act
-        ResponseEntity<RideResponse> response = restTemplate.exchange(ACTIVATE_URI, HttpMethod.PATCH, null, RideResponse.class);
+        HttpHeaders headers = createHeadersWithTokenAndUsername("username", ROLE_DRIVER);
+        ResponseEntity<RideResponse> response = restTemplate.exchange(ACTIVATE_URI, HttpMethod.PATCH, new HttpEntity<>(headers), RideResponse.class);
 
         // Assert
         assertNotNull(response);
@@ -228,11 +264,12 @@ class RideRestControllerTests {
     @Rollback
     void shouldMarkDoneRide() {
         // Arrange
-        Mockito.doNothing().when(paymentClient).processTransaction(Mockito.any(TransactionRequest.class));
-        Mockito.doNothing().when(driverClient).markDriverAvailable(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6989"));
+        HttpHeaders headers = createHeadersWithTokenAndUsername("username", ROLE_DRIVER);
+        Mockito.doNothing().when(paymentClient).processTransaction(any(TransactionRequest.class));
+        Mockito.doNothing().when(driverClient).markDriverAvailable(any(UUID.class));
 
         // Act
-        ResponseEntity<RideResponse> response = restTemplate.exchange(DONE_URI, HttpMethod.PATCH, null, RideResponse.class);
+        ResponseEntity<RideResponse> response = restTemplate.exchange(DONE_URI, HttpMethod.PATCH, new HttpEntity<>(headers), RideResponse.class);
 
         // Assert
         assertNotNull(response);
@@ -249,7 +286,8 @@ class RideRestControllerTests {
     @Rollback
     void shouldCancelRide() {
         // Act
-        ResponseEntity<RideResponse> response = restTemplate.exchange(CANCEL_URI, HttpMethod.PATCH, null, RideResponse.class);
+        HttpHeaders headers = createHeadersWithTokenAndUsername("username", ROLE_ADMIN);
+        ResponseEntity<RideResponse> response = restTemplate.exchange(CANCEL_URI, HttpMethod.PATCH, new HttpEntity<>(headers), RideResponse.class);
 
         // Assert
         assertNotNull(response);
@@ -264,10 +302,11 @@ class RideRestControllerTests {
     @Rollback
     void shouldRateRide() {
         // Arrange
+        HttpHeaders headers = createHeadersWithTokenAndUsername("username", ROLE_PASSENGER);
         RideCompletionRequest request = new RideCompletionRequest(6);
 
         // Act
-        ResponseEntity<RideResponse> response = restTemplate.exchange(RATE_URI, HttpMethod.PATCH, new HttpEntity<>(request), RideResponse.class);
+        ResponseEntity<RideResponse> response = restTemplate.exchange(RATE_URI, HttpMethod.PATCH, new HttpEntity<>(request, headers), RideResponse.class);
 
         // Assert
         assertNotNull(response);

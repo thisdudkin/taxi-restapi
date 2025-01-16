@@ -19,7 +19,6 @@ import by.dudkin.rides.rest.dto.response.RideCostResponse;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.utils.GeospatialUtils;
-import by.dudkin.rides.utils.JwtTokenUtils;
 import by.dudkin.rides.utils.PriceCalculator;
 import by.dudkin.rides.utils.RideStatusTransition;
 import by.dudkin.rides.utils.RideStatusTransitionValidator;
@@ -56,9 +55,9 @@ public class RideServiceImpl implements RideService {
     private final PriceCalculator priceCalculator;
 
     @Override
-    public RideResponse create(RideRequest req) {
+    public RideResponse create(RideRequest req, String username) {
         Ride ride = rideMapper.toRide(req);
-        Ride saved = rideRepository.save(rideCreationService.createRide(ride, req.promocode()));
+        Ride saved = rideRepository.save(rideCreationService.createRide(ride, req.promocode(), username));
         eventPublisher.publishEvent(new PendingRide(saved.getId(), saved.getFrom(), saved.getTo(), saved.getPrice()));
         return rideMapper.toResponse(saved);
     }
@@ -119,12 +118,12 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public RideResponse assign(UUID rideId) {
+    public RideResponse assign(UUID rideId, String username) {
         Ride ride = getOrThrow(rideId);
         RideStatusTransition transition = new RideStatusTransition(ride.getStatus(), RideStatus.ASSIGNED);
         transitionValidator.validate(transition, new BeanPropertyBindingResult(transition, transition.getClass().getSimpleName()));
         DriverResponse driver = driverClient.getDriverByUsername(JwtTokenUtils.getPreferredUsername());
-        AvailableDriver assignmentByUsername = driverClient.getAssignmentByUsername(JwtTokenUtils.getPreferredUsername());
+        AvailableDriver assignmentByUsername = driverClient.getAssignmentByUsername(username);
         ride = rideAssignmentService.assignDriverToRide(ride, assignmentByUsername, driver);
         Ride saved = rideRepository.save(ride);
         eventPublisher.publishEvent(new AcceptedRideEvent(saved.getId(), saved.getDriverId(), saved.getCarId()));

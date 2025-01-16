@@ -108,7 +108,7 @@ class PassengerServiceImplUTests {
         when(passengerMapper.toResponse(passenger)).thenReturn(passengerResponse);
 
         // Act
-        PassengerResponse response = passengerService.create(passengerRequest);
+        PassengerResponse response = passengerService.create(passengerRequest, "x-username");
 
         // Assert
         assertNotNull(response);

@@ -137,6 +137,7 @@ public class TestDataGenerator {
     public static DriverResponse randomDriverResponse() {
         return new DriverResponse(
             randomId(),
+            randomUsername(),
             randomInfo(),
             randomBalance(),
             DriverStatus.READY,

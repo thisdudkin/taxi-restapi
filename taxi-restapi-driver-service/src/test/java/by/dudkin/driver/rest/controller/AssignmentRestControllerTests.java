@@ -5,42 +5,42 @@ import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.repository.DriverLocationRepository;
 import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
-import by.dudkin.driver.rest.dto.response.CarResponse;
-import by.dudkin.driver.service.DriverLocationService;
 import by.dudkin.driver.util.TestDataGenerator;
+import by.dudkin.driver.util.TestJwtUtils;
+import by.dudkin.driver.util.TestSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.test.context.EmbeddedKafka;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.Collections;
 import java.util.UUID;
 
+import static by.dudkin.driver.util.TestJwtUtils.createHeadersWithToken;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Alexander Dudkin
  */
 @Testcontainers
 @Sql("classpath:data.sql")
+@Import(TestSecurityConfig.class)
 @ActiveProfiles({"test", "kafka"})
 @EmbeddedKafka(partitions = 1, topics = {"available-drivers", "ride-requests"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -53,37 +53,72 @@ class AssignmentRestControllerTests {
     @MockBean
     DriverLocationRepository driverLocationRepository;
 
-    @MockBean
-    SecurityFilterChain jwtFilterChain;
-
     @Autowired
     TestRestTemplate restTemplate;
 
     private static final String ASSIGNMENTS_URI = "/api/assignments";
 
     @Test
-    @SuppressWarnings("unchecked")
-    void shouldFindAllAssignments() {
+    void shouldReturn401HttpStatusCode() {
+        // Arrange
+        var URI = "%s/%s".formatted(ASSIGNMENTS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
+
         // Act
-        PaginatedResponse<CarResponse> cars = restTemplate.getForObject(ASSIGNMENTS_URI, PaginatedResponse.class);
+        ResponseEntity<ProblemDetail> response = restTemplate.exchange(URI, HttpMethod.GET, null, ProblemDetail.class);
 
         // Assert
-        assertThat(cars).isNotNull();
-        assertThat(cars.getContent().size()).isGreaterThan(2);
-        assertThat(cars.getContent().size()).isLessThan(999);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isInstanceOf(ProblemDetail.class);
+    }
+
+    @Test
+    void shouldReturn403HttpStatusCode() {
+        // Arrange
+        var request = TestDataGenerator.randomAssignmentRequestWithIds(
+            UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"),
+            UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"));
+        HttpHeaders headers = createHeadersWithToken(TestJwtUtils.ROLE_PASSENGER);
+        HttpEntity<AssignmentRequest> entity = new HttpEntity<>(request, headers);
+
+        // Act
+        ResponseEntity<ProblemDetail> response = restTemplate.exchange(ASSIGNMENTS_URI, HttpMethod.POST, entity, ProblemDetail.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isInstanceOf(ProblemDetail.class);
+    }
+
+    @Test
+    void shouldFindAllAssignments() {
+        // Arrange
+        HttpEntity<?> entity = new HttpEntity<>(createHeadersWithToken(TestJwtUtils.ROLE_ADMIN));
+
+        // Act
+        ResponseEntity<PaginatedResponse> response = restTemplate.exchange(ASSIGNMENTS_URI, HttpMethod.GET, entity, PaginatedResponse.class);
+
+        // Assert
+        assertThat(response).isNotNull();
+        assertNotNull(response.getBody());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getContent().size()).isGreaterThan(2);
+        assertThat(response.getBody().getContent().size()).isLessThan(999);
     }
 
     @Test
     void shouldFindAssignmentWhenValidId() {
         // Arrange
         var URI = "%s/%s".formatted(ASSIGNMENTS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
+        HttpEntity<?> entity = new HttpEntity<>(createHeadersWithToken(TestJwtUtils.ROLE_ADMIN));
 
         // Act
-        ResponseEntity<AssignmentResponse> response = restTemplate.exchange(URI, HttpMethod.GET, null, AssignmentResponse.class);
+        ResponseEntity<AssignmentResponse> response = restTemplate.exchange(URI, HttpMethod.GET, entity, AssignmentResponse.class);
 
         // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response).isNotNull();
         assertThat(response.getBody()).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().car().id()).isNotNull();
         assertThat(response.getBody().driver().id()).isNotNull();
     }
@@ -92,12 +127,10 @@ class AssignmentRestControllerTests {
     void shouldNotFindAssignmentWhenInvalidId() {
         // Arrange
         var URI = "%s/%s".formatted(ASSIGNMENTS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6911");
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpEntity<?> entity = new HttpEntity<>(createHeadersWithToken(TestJwtUtils.ROLE_ADMIN));
 
         // Act
-        ResponseEntity<?> response = restTemplate.exchange(URI, HttpMethod.GET, new HttpEntity<>(headers), ProblemDetail.class);
+        ResponseEntity<?> response = restTemplate.exchange(URI, HttpMethod.GET, entity, ProblemDetail.class);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -111,9 +144,11 @@ class AssignmentRestControllerTests {
         var request = TestDataGenerator.randomAssignmentRequestWithIds(
             UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"),
             UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"));
+        HttpHeaders headers = createHeadersWithToken(TestJwtUtils.ROLE_ADMIN);
+        HttpEntity<AssignmentRequest> entity = new HttpEntity<>(request, headers);
 
         // Act
-        ResponseEntity<AssignmentResponse> response = restTemplate.exchange(ASSIGNMENTS_URI, HttpMethod.POST, new HttpEntity<>(request), AssignmentResponse.class);
+        ResponseEntity<AssignmentResponse> response = restTemplate.exchange(ASSIGNMENTS_URI, HttpMethod.POST, entity, AssignmentResponse.class);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -127,13 +162,11 @@ class AssignmentRestControllerTests {
         // Arrange
         var invalid = new AssignmentRequest(UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981"),
             UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6981"), null);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpHeaders headers = createHeadersWithToken(TestJwtUtils.ROLE_ADMIN);
+        HttpEntity<AssignmentRequest> entity = new HttpEntity<>(invalid, headers);
 
         // Act
-        ResponseEntity<ProblemDetail> response = restTemplate.exchange(ASSIGNMENTS_URI, HttpMethod.POST, new HttpEntity<>(invalid, headers), ProblemDetail.class);
+        ResponseEntity<ProblemDetail> response = restTemplate.exchange(ASSIGNMENTS_URI, HttpMethod.POST, entity, ProblemDetail.class);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -145,9 +178,10 @@ class AssignmentRestControllerTests {
     void shouldCancelAssignment() {
         // Arrange
         var URI = "%s/%s".formatted(ASSIGNMENTS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
+        HttpEntity<?> entity = new HttpEntity<>(createHeadersWithToken(TestJwtUtils.ROLE_ADMIN));
 
         // Act
-        ResponseEntity<AssignmentResponse> response = restTemplate.exchange(URI, HttpMethod.PUT, null, AssignmentResponse.class);
+        ResponseEntity<AssignmentResponse> response = restTemplate.exchange(URI, HttpMethod.PUT, entity, AssignmentResponse.class);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -160,9 +194,10 @@ class AssignmentRestControllerTests {
     void shouldDeleteAssignment() {
         // Arrange
         var URI = "%s/%s".formatted(ASSIGNMENTS_URI, "862eb8bc-8d7e-4a44-9dd2-cc258faf6981");
+        HttpEntity<?> entity = new HttpEntity<>(createHeadersWithToken(TestJwtUtils.ROLE_ADMIN));
 
         // Act
-        ResponseEntity<Void> response = restTemplate.exchange(URI, HttpMethod.DELETE, null, Void.class);
+        ResponseEntity<Void> response = restTemplate.exchange(URI, HttpMethod.DELETE, entity, Void.class);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);

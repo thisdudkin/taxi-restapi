@@ -1,5 +1,7 @@
 package by.dudkin.auth;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,19 +25,19 @@ class AuthenticationController {
     }
 
     @PostMapping("/register")
-    ResponseEntity<Void> registerUser(@RequestBody RegistrationRequest req) {
+    ResponseEntity<Void> registerUser(@RequestBody @Valid RegistrationRequest req) {
         authenticationService.saveUser(req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/register/admin")
-    ResponseEntity<Void> registerAdmin(@RequestBody RegistrationRequest req) {
+    ResponseEntity<Void> registerAdmin(@RequestBody @Valid RegistrationRequest req) {
         authenticationService.saveAdmin(req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    ResponseEntity<AccessTokenResponse> login(@RequestBody LoginRequest req) {
+    ResponseEntity<AccessTokenResponse> login(@RequestBody @Valid LoginRequest req) {
         return new ResponseEntity<>(authenticationService.login(req), HttpStatus.OK);
     }
 

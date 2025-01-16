@@ -1,0 +1,19 @@
+server.port: 8761
+
+spring:
+  application:
+    name: discovery-server
+
+# Avoid some debugging logs at startup
+logging:
+  level:
+    org:
+      springframework:
+        boot: INFO
+        web: INFO
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka/

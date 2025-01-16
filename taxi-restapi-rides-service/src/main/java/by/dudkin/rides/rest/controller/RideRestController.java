@@ -3,21 +3,27 @@ package by.dudkin.rides.rest.controller;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.rest.api.RidesApi;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
+import by.dudkin.rides.rest.dto.request.RideCostRequest;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.AvailableDriver;
 import by.dudkin.rides.rest.dto.request.PendingRide;
+import by.dudkin.rides.rest.dto.response.RideCostResponse;
 import by.dudkin.rides.rest.dto.response.RideResponse;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.utils.RideSpecification;
+import by.dudkin.rides.utils.TokenConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
+
+import static by.dudkin.rides.utils.TokenConstants.USERNAME_CLAIM_EXPRESSION;
 
 /**
  * @author Alexander Dudkin
@@ -42,8 +48,9 @@ public class RideRestController implements RidesApi {
     }
 
     @Override
-    public ResponseEntity<RideResponse> save(RideRequest rideRequest) {
-        return new ResponseEntity<>(this.rideService.create(rideRequest), HttpStatus.CREATED);
+    public ResponseEntity<RideResponse> save(RideRequest rideRequest,
+                                             @AuthenticationPrincipal(expression = USERNAME_CLAIM_EXPRESSION) String username) {
+        return new ResponseEntity<>(this.rideService.create(rideRequest, username), HttpStatus.CREATED);
     }
 
     @Override
@@ -80,6 +87,11 @@ public class RideRestController implements RidesApi {
     @Override
     public ResponseEntity<RideResponse> rate(UUID rideId, RideCompletionRequest request) {
         return new ResponseEntity<>(this.rideService.rate(rideId, request), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<RideCostResponse> checkRideCost(RideCostRequest request) {
+        return new ResponseEntity<>(this.rideService.checkCost(request), HttpStatus.OK);
     }
 
 }

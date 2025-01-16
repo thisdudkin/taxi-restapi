@@ -1,6 +1,5 @@
 package by.dudkin.driver.domain;
 
-import by.dudkin.common.enums.CarType;
 import by.dudkin.driver.rest.dto.request.CarRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;

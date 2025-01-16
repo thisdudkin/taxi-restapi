@@ -62,7 +62,7 @@ class PassengerServiceCTests {
         PassengerRequest request = TestDataGenerator.randomRequest();
 
         // Act
-        PassengerResponse response = passengerService.create(request);
+        PassengerResponse response = passengerService.create(request, "x-username");
 
         // Assert
         assertNotNull(response);
