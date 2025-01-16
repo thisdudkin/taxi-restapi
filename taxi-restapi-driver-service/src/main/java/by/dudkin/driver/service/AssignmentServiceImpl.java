@@ -16,7 +16,6 @@ import by.dudkin.driver.service.api.AssignmentService;
 import by.dudkin.driver.service.api.CarService;
 import by.dudkin.driver.service.api.DriverService;
 import by.dudkin.driver.util.AssignmentValidator;
-import by.dudkin.driver.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

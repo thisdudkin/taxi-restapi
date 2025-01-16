@@ -6,7 +6,7 @@ import by.dudkin.common.enums.CarType;
 import by.dudkin.common.enums.DriverStatus;
 import by.dudkin.driver.domain.Car;
 import by.dudkin.driver.domain.Driver;
-import by.dudkin.driver.domain.DriverCarAssignment;
+import by.dudkin.driver.domain.Assignment;
 import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.request.CarRequest;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
@@ -191,8 +191,8 @@ public class TestDataGenerator {
         );
     }
 
-    public static DriverCarAssignment randomAssignment(Driver driver, Car car) {
-        return DriverCarAssignment.builder()
+    public static Assignment randomAssignment(Driver driver, Car car) {
+        return Assignment.builder()
             .driver(driver)
             .car(car)
             .assignmentDate(Instant.now())

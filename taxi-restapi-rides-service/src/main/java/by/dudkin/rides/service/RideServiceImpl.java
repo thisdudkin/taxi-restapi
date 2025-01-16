@@ -122,7 +122,7 @@ public class RideServiceImpl implements RideService {
         Ride ride = getOrThrow(rideId);
         RideStatusTransition transition = new RideStatusTransition(ride.getStatus(), RideStatus.ASSIGNED);
         transitionValidator.validate(transition, new BeanPropertyBindingResult(transition, transition.getClass().getSimpleName()));
-        DriverResponse driver = driverClient.getDriverByUsername(JwtTokenUtils.getPreferredUsername());
+        DriverResponse driver = driverClient.getDriverByUsername(username);
         AvailableDriver assignmentByUsername = driverClient.getAssignmentByUsername(username);
         ride = rideAssignmentService.assignDriverToRide(ride, assignmentByUsername, driver);
         Ride saved = rideRepository.save(ride);

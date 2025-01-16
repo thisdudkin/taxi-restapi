@@ -3,7 +3,7 @@ package by.dudkin.driver.service.unit;
 import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.driver.domain.Car;
 import by.dudkin.driver.domain.Driver;
-import by.dudkin.driver.domain.DriverCarAssignment;
+import by.dudkin.driver.domain.Assignment;
 import by.dudkin.driver.mapper.AssignmentMapper;
 import by.dudkin.driver.repository.AssignmentRepository;
 import by.dudkin.driver.rest.advice.custom.AssignmentNotFoundException;
@@ -57,7 +57,7 @@ class AssignmentServiceImplTests {
     @InjectMocks
     private AssignmentServiceImpl assignmentService;
 
-    private DriverCarAssignment assignment;
+    private Assignment assignment;
     private AssignmentRequest assignmentRequest;
     private AssignmentResponse assignmentResponse;
     private Driver driver;
@@ -123,7 +123,7 @@ class AssignmentServiceImplTests {
         var pageable = Pageable.unpaged();
         var assignments = List.of(assignment);
         var assignmentPage = new PageImpl<>(assignments);
-        when(assignmentRepository.findAll((Specification<DriverCarAssignment>) null, pageable)).thenReturn(assignmentPage);
+        when(assignmentRepository.findAll((Specification<Assignment>) null, pageable)).thenReturn(assignmentPage);
         when(assignmentMapper.toResponse(assignment)).thenReturn(assignmentResponse);
 
         // Act

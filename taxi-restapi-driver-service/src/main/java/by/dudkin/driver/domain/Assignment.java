@@ -48,7 +48,7 @@ import java.util.UUID;
 @ToString(exclude = {"driver", "car"})
 @Table(name = "driver_car_assignments")
 @EntityListeners(AuditingEntityListener.class)
-public class DriverCarAssignment implements BaseEntity<UUID> {
+public class Assignment implements BaseEntity<UUID> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -85,7 +85,7 @@ public class DriverCarAssignment implements BaseEntity<UUID> {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        DriverCarAssignment that = (DriverCarAssignment) o;
+        Assignment that = (Assignment) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 

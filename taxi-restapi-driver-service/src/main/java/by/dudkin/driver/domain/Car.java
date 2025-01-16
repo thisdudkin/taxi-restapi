@@ -75,7 +75,7 @@ public class Car implements BaseEntity<UUID> {
 
     @Builder.Default
     @OneToMany(mappedBy = "car", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<DriverCarAssignment> assignments = new HashSet<>();
+    private Set<Assignment> assignments = new HashSet<>();
 
     @CreatedDate
     @Column(name = "created_utc", updatable = false, nullable = false)

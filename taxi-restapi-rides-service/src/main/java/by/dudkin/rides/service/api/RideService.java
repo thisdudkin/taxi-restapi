@@ -30,7 +30,7 @@ public interface RideService {
     RideResponse complete(UUID rideId);
     RideResponse activate(UUID rideId);
     RideResponse rate(UUID rideId, RideCompletionRequest request);
-    RideResponse assign(UUID rideId);
+    RideResponse assign(UUID rideId, String username);
 
     RideCostResponse checkCost(RideCostRequest request);
 

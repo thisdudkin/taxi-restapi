@@ -160,7 +160,8 @@ public interface RidesApi {
     @PostMapping(value = "/rides/{rideId}/assign", produces = "application/json", consumes = "application/json")
     ResponseEntity<RideResponse> assignDriver(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
-        @PathVariable("rideId") UUID rideId
+        @PathVariable("rideId") UUID rideId,
+        String username
     );
 
 
