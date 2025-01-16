@@ -16,7 +16,7 @@ spring:
 keycloak:
   client:
     id: taxi-client
-    secret: ${KEYCLOAK_CLIENT_SECRET:aNhp8YRYXlIW5xKuNlbuq6mSi7gOGW2g}
+    secret: ${KEYCLOAK_CLIENT_SECRET}
   realm: taxi-realm
   server-url: http://localhost:9090
 
