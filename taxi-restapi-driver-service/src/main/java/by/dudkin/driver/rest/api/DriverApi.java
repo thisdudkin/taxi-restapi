@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +48,19 @@ public interface DriverApi {
     ResponseEntity<DriverResponse> get(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable("driverId") UUID driverId);
 
     @Operation(
+        operationId = "getDriverByUsername",
+        summary = "Get a driver by username",
+        description = "Returns the driver or a 404 error.",
+        tags = {"driver"},
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Driver found and returned.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DriverResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Driver not found.")
+        }
+    )
+    @GetMapping(value = "/search", produces = "application/json")
+    ResponseEntity<DriverResponse> search(@Parameter(name = "driverId", description = "The username of the driver.", required = true, in = ParameterIn.PATH) @RequestParam String username);
+
+    @Operation(
         operationId = "listDrivers",
         summary = "Lists drivers with pagination",
         description = "Returns a paginated list of drivers.",
@@ -78,7 +92,11 @@ public interface DriverApi {
         }
     )
     @PostMapping(produces = "application/json", consumes = "application/json")
-    ResponseEntity<DriverResponse> save(@Parameter(name = "DriverRequest", description = "Driver data", required = true) @RequestBody @Valid DriverRequest driverRequest);
+    ResponseEntity<DriverResponse> save(
+        @Parameter(name = "DriverRequest", description = "Driver data", required = true)
+        @RequestBody @Valid DriverRequest driverRequest,
+        String username
+    );
 
     @Operation(
         operationId = "updateDriver",

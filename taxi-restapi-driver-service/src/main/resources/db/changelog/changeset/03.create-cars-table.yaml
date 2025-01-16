@@ -29,6 +29,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: color
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+              - column:
                   name: year
                   type: INTEGER
                   constraints:

@@ -62,8 +62,17 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverResponse create(DriverRequest driverRequest) {
-        return driverMapper.toResponse(driverRepository.save(driverMapper.toDriver(driverRequest)));
+    public DriverResponse search(String username) {
+        return driverRepository.findByUsername(username)
+            .map(driverMapper::toResponse)
+            .orElseThrow(() -> new DriverNotFoundException(ErrorMessages.DRIVER_NOT_FOUND));
+    }
+
+    @Override
+    public DriverResponse create(DriverRequest driverRequest, String username) {
+        Driver driver = driverMapper.toDriver(driverRequest);
+        driver.setUsername(username);
+        return driverMapper.toResponse(driverRepository.save(driver));
     }
 
     @Override

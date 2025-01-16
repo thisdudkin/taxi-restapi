@@ -5,6 +5,7 @@ import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.rides.domain.Ride;
 import by.dudkin.rides.feign.PassengerClient;
 import by.dudkin.rides.feign.PromocodeClient;
+import by.dudkin.rides.rest.dto.response.PassengerResponse;
 import by.dudkin.rides.rest.dto.response.Promocode;
 import by.dudkin.rides.utils.GeospatialUtils;
 import by.dudkin.rides.utils.PriceCalculator;
@@ -30,7 +31,9 @@ public class RideCreationService {
         this.promocodeClient = promocodeClient;
     }
 
-    public Ride createRide(Ride ride, String promocode) {
+    public Ride createRide(Ride ride, String promocode, String username) {
+        PassengerResponse passenger = passengerClient.getPassengerByUsername(username);
+        ride.setPassengerId(passenger.id());
         double distance = GeospatialUtils.calculateDistance(ride.getFrom().getLat(), ride.getFrom().getLng(),
             ride.getTo().getLat(), ride.getTo().getLng());
         BigDecimal price = priceCalculator.calculatePrice(distance);

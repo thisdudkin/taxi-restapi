@@ -4,14 +4,14 @@ TRUNCATE TABLE cars RESTART IDENTITY CASCADE;
 TRUNCATE TABLE drivers RESTART IDENTITY CASCADE;
 
 -- test data
-INSERT INTO drivers (id, firstname, lastname, phone, birthdate, balance, status, experience,
+INSERT INTO drivers (id, username, firstname, lastname, phone, birthdate, balance, status, experience,
                      created_at, updated_at)
-VALUES ('862eb8bc-8d7e-4a44-9dd2-cc258faf6981', 'John', 'Doe', '+1234567890', '1990-01-15', 1000.50, 'READY', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       ('862eb8bc-8d7e-4a44-9dd2-cc258faf6982', 'Jane', 'Smith', '+1234567891', '1985-05-20', 1500.00, 'OFFLINE', 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       ('862eb8bc-8d7e-4a44-9dd2-cc258faf6983', 'Alice', 'Johnson', '+1234567892', '1978-08-30', 750.75, 'OFFLINE', 10, CURRENT_TIMESTAMP,
+VALUES ('862eb8bc-8d7e-4a44-9dd2-cc258faf6981', 'username1', 'John', 'Doe', '+1234567890', '1990-01-15', 1000.50, 'READY', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('862eb8bc-8d7e-4a44-9dd2-cc258faf6982', 'username2', 'Jane', 'Smith', '+1234567891', '1985-05-20', 1500.00, 'OFFLINE', 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('862eb8bc-8d7e-4a44-9dd2-cc258faf6983', 'username3', 'Alice', 'Johnson', '+1234567892', '1978-08-30', 750.75, 'OFFLINE', 10, CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP),
-       ('862eb8bc-8d7e-4a44-9dd2-cc258faf6984', 'Bob', 'Brown', '+1234567893', '1992-11-02', 2000.25, 'READY', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       ('862eb8bc-8d7e-4a44-9dd2-cc258faf6985', 'Charlie', 'Davis', '+1234567894', '2000-03-18', 500.00, 'READY', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+       ('862eb8bc-8d7e-4a44-9dd2-cc258faf6984', 'username4', 'Bob', 'Brown', '+1234567893', '1992-11-02', 2000.25, 'READY', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('862eb8bc-8d7e-4a44-9dd2-cc258faf6985', 'username5', 'Charlie', 'Davis', '+1234567894', '2000-03-18', 500.00, 'READY', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO cars (id, license_plate, model, type, year, color)
 VALUES ('862eb8bc-8d7e-4a44-9dd2-cc258faf6981', 'ABC123', 'Toyota Prius', 'PREMIUM', 2020, 'Blue'),

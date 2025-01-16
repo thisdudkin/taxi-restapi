@@ -42,6 +42,13 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
+    public PassengerResponse findByUsername(String username) {
+        return passengerRepository.findByUsername(username)
+            .map(passengerMapper::toResponse)
+            .orElseThrow(() -> new PassengerNotFoundException(ErrorMessages.PASSENGER_NOT_FOUND));
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public PaginatedResponse<PassengerResponse> findAll(Pageable pageable) {
         Page<Passenger> passengerPage = passengerRepository.findAll(pageable);
@@ -53,8 +60,9 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public PassengerResponse create(PassengerRequest passengerRequest) {
+    public PassengerResponse create(PassengerRequest passengerRequest, String username) {
         Passenger passenger = passengerMapper.toPassenger(passengerRequest);
+        passenger.setUsername(username);
         passengerRepository.save(passenger);
         return passengerMapper.toResponse(passenger);
     }

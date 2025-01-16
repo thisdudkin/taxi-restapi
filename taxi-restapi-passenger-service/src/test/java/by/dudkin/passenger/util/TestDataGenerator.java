@@ -91,6 +91,7 @@ public abstract class TestDataGenerator {
     public static PassengerResponse randomResponse() {
         return new PassengerResponse(
             randomId(),
+            randomString(),
             randomInfo(),
             randomPayment(),
             randomBalance(),

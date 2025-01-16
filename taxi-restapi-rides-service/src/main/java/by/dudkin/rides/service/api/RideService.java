@@ -20,7 +20,7 @@ import java.util.UUID;
  */
 public interface RideService {
 
-    RideResponse create(RideRequest rideRequest);
+    RideResponse create(RideRequest rideRequest, String username);
     RideResponse read(UUID rideId);
     PaginatedResponse<RideResponse> readAll(Specification<Ride> spec, Pageable pageable);
     RideResponse update(UUID rideId, RideRequest rideRequest);
