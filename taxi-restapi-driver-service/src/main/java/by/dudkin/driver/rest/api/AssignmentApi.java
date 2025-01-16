@@ -83,7 +83,9 @@ public interface AssignmentApi {
     @PostMapping(value = "/assignments", produces = "application/json", consumes = "application/json")
     ResponseEntity<AssignmentResponse> save(
         @Parameter(name = "AssignmentRequest", description = "Assignment data", required = true)
-        @RequestBody @Valid AssignmentRequest assignmentRequest);
+        @RequestBody @Valid AssignmentRequest assignmentRequest,
+        String username
+    );
 
     @Operation(
         operationId = "cancelAssignment",
@@ -98,7 +100,8 @@ public interface AssignmentApi {
     @PutMapping(value = "/assignments/{assignmentId}", produces = "application/json")
     ResponseEntity<AssignmentResponse> cancel(
         @Parameter(name = "assignmentId", description = "The ID of the assignment.", required = true, in = ParameterIn.PATH)
-        @PathVariable("assignmentId") UUID assignmentId);
+        @PathVariable("assignmentId") UUID assignmentId
+    );
 
     @Operation(
         operationId = "deleteAssignment",

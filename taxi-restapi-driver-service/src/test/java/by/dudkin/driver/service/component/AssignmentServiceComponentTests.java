@@ -72,11 +72,11 @@ class AssignmentServiceComponentTests {
     @Test
     void shouldCreateAssignment() {
         // Arrange
-        String licensePlate = "LICENSE";
+        String licensePlate = "GJW235";
         var assignmentRequest = TestDataGenerator.randomAssignmentRequestWithLicensePlate(licensePlate);
 
         // Act
-        var assignmentResponse = assignmentService.create(assignmentRequest);
+        var assignmentResponse = assignmentService.create(assignmentRequest, "username5");
 
         // Assert
         assertThat(assignmentResponse).isNotNull();

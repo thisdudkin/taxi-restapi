@@ -84,7 +84,7 @@ class AssignmentServiceImplTests {
         when(assignmentMapper.toResponse(assignment)).thenReturn(assignmentResponse);
 
         // Act
-        var response = assignmentService.create(assignmentRequest);
+        var response = assignmentService.create(assignmentRequest, "x-username");
 
         // Assert
         assertThat(response).isNotNull();

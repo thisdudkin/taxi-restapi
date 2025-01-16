@@ -75,14 +75,11 @@ class AssignmentRestControllerTests {
     @Test
     void shouldReturn403HttpStatusCode() {
         // Arrange
-        var request = TestDataGenerator.randomAssignmentRequestWithIds(
-            UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"),
-            UUID.fromString("862eb8bc-8d7e-4a44-9dd2-cc258faf6985"));
         HttpHeaders headers = createHeadersWithToken(TestJwtUtils.ROLE_PASSENGER);
-        HttpEntity<AssignmentRequest> entity = new HttpEntity<>(request, headers);
+        HttpEntity<AssignmentRequest> entity = new HttpEntity<>(headers);
 
         // Act
-        ResponseEntity<ProblemDetail> response = restTemplate.exchange(ASSIGNMENTS_URI, HttpMethod.POST, entity, ProblemDetail.class);
+        ResponseEntity<ProblemDetail> response = restTemplate.exchange(ASSIGNMENTS_URI, HttpMethod.GET, entity, ProblemDetail.class);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
@@ -141,9 +138,9 @@ class AssignmentRestControllerTests {
     @Rollback
     void shouldCreateAssignment() {
         // Arrange
-        String licencePlate = "LICENSE";
+        String licencePlate = "GJW235";
         var request = TestDataGenerator.randomAssignmentRequestWithLicensePlate(licencePlate);
-        HttpHeaders headers = createHeadersWithToken(TestJwtUtils.ROLE_ADMIN);
+        HttpHeaders headers = TestJwtUtils.createHeadersWithTokenAndUsername("username4", TestJwtUtils.ROLE_ADMIN);
         HttpEntity<AssignmentRequest> entity = new HttpEntity<>(request, headers);
 
         // Act

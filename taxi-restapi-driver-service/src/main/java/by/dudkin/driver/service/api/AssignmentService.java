@@ -13,13 +13,9 @@ import java.util.UUID;
  * @author Alexander Dudkin
  */
 public interface AssignmentService {
-    AssignmentResponse create(AssignmentRequest assignmentRequest);
-
+    AssignmentResponse create(AssignmentRequest assignmentRequest, String username);
     AssignmentResponse findById(UUID assignmentId);
-
     PaginatedResponse<AssignmentResponse> findAll(Specification<Assignment> spec, Pageable pageable);
-
     AssignmentResponse cancelAssignment(UUID assignmentId);
-
     void delete(UUID assignmentId);
 }

@@ -15,7 +15,6 @@ import by.dudkin.driver.service.api.AssignmentService;
 import by.dudkin.driver.service.api.CarService;
 import by.dudkin.driver.service.api.DriverService;
 import by.dudkin.driver.util.AssignmentValidator;
-import by.dudkin.driver.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,11 +40,11 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final AssignmentValidator assignmentValidator;
 
     @Override
-    public AssignmentResponse create(AssignmentRequest assignmentRequest) {
+    public AssignmentResponse create(AssignmentRequest assignmentRequest, String username) {
         assignmentValidator.validateCarAvailability(assignmentRequest.licencePlate());
 
         Car car = carService.getOrThrow(assignmentRequest.licencePlate());
-        Driver driver = driverService.getOrThrow(JwtTokenUtils.getPreferredUsername());
+        Driver driver = driverService.getOrThrow(username);
 
         Assignment assignment = assignmentMapper.toAssignment(assignmentRequest);
         assignment.setDriver(driver);
