@@ -14,6 +14,12 @@ spring:
   messages:
     basename: messages
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://keycloak:8080/realms/taxi-realm/protocol/openid-connect/certs
+
   jpa:
     hibernate:
       ddl-auto: none

@@ -244,13 +244,31 @@ services:
     volumes:
       - ./keycloak/:/opt/keycloak/data/import/
 
-# Networks
+# Grafana / Prometheus
+
+  grafana-server:
+    build: ./docker/grafana
+    container_name: grafana-server
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    ports:
+      - "3000:3000"
+
+  prometheus-server:
+    build: ./docker/prometheus
+    container_name: prometheus-server
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    ports:
+      - "9091:9090"
 
 networks:
   default:
     driver: bridge
-
-# Volumes
 
 volumes:
   postgres_data:
