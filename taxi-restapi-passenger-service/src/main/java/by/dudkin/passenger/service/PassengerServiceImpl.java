@@ -9,7 +9,6 @@ import by.dudkin.passenger.repository.PassengerRepository;
 import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
-import by.dudkin.passenger.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,9 +60,9 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public PassengerResponse create(PassengerRequest passengerRequest) {
+    public PassengerResponse create(PassengerRequest passengerRequest, String username) {
         Passenger passenger = passengerMapper.toPassenger(passengerRequest);
-        passenger.setUsername(JwtTokenUtils.getPreferredUsername());
+        passenger.setUsername(username);
         passengerRepository.save(passenger);
         return passengerMapper.toResponse(passenger);
     }

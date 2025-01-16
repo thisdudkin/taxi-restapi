@@ -92,7 +92,11 @@ public interface PassengerApi {
         }
     )
     @PostMapping(produces = "application/json", consumes = "application/json")
-    ResponseEntity<PassengerResponse> save(@Parameter(name = "PassengerRequest", description = "Passenger data", required = true) @RequestBody @Valid PassengerRequest passengerRequest);
+    ResponseEntity<PassengerResponse> save(
+        @Parameter(name = "PassengerRequest", description = "Passenger data", required = true)
+        @RequestBody @Valid PassengerRequest passengerRequest,
+        String username
+    );
 
     @Operation(
         operationId = "updatePassenger",

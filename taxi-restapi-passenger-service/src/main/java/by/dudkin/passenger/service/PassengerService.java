@@ -14,21 +14,12 @@ import java.util.UUID;
  * @author Alexander Dudkin
  */
 public interface PassengerService {
-
     PassengerResponse findById(UUID id);
-
     PassengerResponse findByUsername(String username);
-
     PaginatedResponse<PassengerResponse> findAll(Pageable pageable);
-
-    PassengerResponse create(PassengerRequest passengerRequest);
-
+    PassengerResponse create(PassengerRequest passengerRequest, String username);
     PassengerResponse update(UUID passengerId, PassengerRequest passengerRequest);
-
     void delete(UUID passengerId);
-
     BalanceResponse<UUID> checkBalance(UUID passengerId);
-
     void updateBalance(UUID passengerId, BigDecimal amount);
-
 }

@@ -94,7 +94,8 @@ public interface RidesApi {
     @PostMapping(value = "/rides", produces = "application/json", consumes = "application/json")
     ResponseEntity<RideResponse> save(
         @Parameter(name = "RideRequest", description = "Ride data", required = true)
-        @RequestBody @Valid RideRequest rideRequest
+        @RequestBody @Valid RideRequest rideRequest,
+        String username
     );
 
     @Operation(

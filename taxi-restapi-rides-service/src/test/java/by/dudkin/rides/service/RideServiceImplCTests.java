@@ -80,7 +80,7 @@ class RideServiceImplCTests {
         Mockito.when(passengerClient.checkBalance(passengerResponse.id())).thenReturn(balanceResponse);
 
         // Act
-        RideResponse response = rideService.create(request);
+        RideResponse response = rideService.create(request, "mock-username");
 
         // Assert
         assertNotNull(response);

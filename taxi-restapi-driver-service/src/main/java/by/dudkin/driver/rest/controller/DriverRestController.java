@@ -6,16 +6,18 @@ import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.request.FeedbackRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
 import by.dudkin.driver.service.api.DriverService;
-import by.dudkin.driver.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+
+import static by.dudkin.driver.util.TokenConstants.USERNAME_CLAIM_EXPRESSION;
 
 /**
  * @author Alexander Dudkin
@@ -43,8 +45,9 @@ public class DriverRestController implements DriverApi {
     }
 
     @Override
-    public ResponseEntity<DriverResponse> save(DriverRequest driverRequest) {
-        return new ResponseEntity<>(driverService.create(driverRequest), HttpStatus.CREATED);
+    public ResponseEntity<DriverResponse> save(DriverRequest driverRequest,
+                                               @AuthenticationPrincipal(expression = USERNAME_CLAIM_EXPRESSION) String username) {
+        return new ResponseEntity<>(driverService.create(driverRequest, username), HttpStatus.CREATED);
     }
 
     @Override

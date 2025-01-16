@@ -76,7 +76,7 @@ class DriverServiceComponentTests {
         var driverRequest = TestDataGenerator.randomDriverRequest();
 
         // Act
-        var driverResponse = driverService.create(driverRequest);
+        var driverResponse = driverService.create(driverRequest, "x-username");
 
         // Assert
         assertThat(driverResponse).isNotNull();

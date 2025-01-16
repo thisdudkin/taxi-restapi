@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -91,7 +92,11 @@ public interface DriverApi {
         }
     )
     @PostMapping(produces = "application/json", consumes = "application/json")
-    ResponseEntity<DriverResponse> save(@Parameter(name = "DriverRequest", description = "Driver data", required = true) @RequestBody @Valid DriverRequest driverRequest);
+    ResponseEntity<DriverResponse> save(
+        @Parameter(name = "DriverRequest", description = "Driver data", required = true)
+        @RequestBody @Valid DriverRequest driverRequest,
+        String username
+    );
 
     @Operation(
         operationId = "updateDriver",

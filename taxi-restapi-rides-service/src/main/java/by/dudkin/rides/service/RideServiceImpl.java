@@ -55,9 +55,9 @@ public class RideServiceImpl implements RideService {
     private final PriceCalculator priceCalculator;
 
     @Override
-    public RideResponse create(RideRequest req) {
+    public RideResponse create(RideRequest req, String username) {
         Ride ride = rideMapper.toRide(req);
-        Ride saved = rideRepository.save(rideCreationService.createRide(ride, req.promocode()));
+        Ride saved = rideRepository.save(rideCreationService.createRide(ride, req.promocode(), username));
         eventPublisher.publishEvent(new PendingRide(saved.getId(), saved.getFrom(), saved.getTo(), saved.getPrice()));
         return rideMapper.toResponse(saved);
     }

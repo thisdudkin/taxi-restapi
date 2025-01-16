@@ -8,7 +8,6 @@ import by.dudkin.rides.feign.PromocodeClient;
 import by.dudkin.rides.rest.dto.response.PassengerResponse;
 import by.dudkin.rides.rest.dto.response.Promocode;
 import by.dudkin.rides.utils.GeospatialUtils;
-import by.dudkin.rides.utils.JwtTokenUtils;
 import by.dudkin.rides.utils.PriceCalculator;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +31,8 @@ public class RideCreationService {
         this.promocodeClient = promocodeClient;
     }
 
-    public Ride createRide(Ride ride, String promocode) {
-        PassengerResponse passenger = passengerClient.getPassengerByUsername(JwtTokenUtils.getPreferredUsername());
+    public Ride createRide(Ride ride, String promocode, String username) {
+        PassengerResponse passenger = passengerClient.getPassengerByUsername(username);
         ride.setPassengerId(passenger.id());
         double distance = GeospatialUtils.calculateDistance(ride.getFrom().getLat(), ride.getFrom().getLng(),
             ride.getTo().getLat(), ride.getTo().getLng());
