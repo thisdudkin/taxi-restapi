@@ -1,10 +1,12 @@
 package by.dudkin.driver.rest.controller;
 
 import by.dudkin.common.util.PaginatedResponse;
+import by.dudkin.driver.aspect.TrackMetric;
 import by.dudkin.driver.rest.api.CarApi;
 import by.dudkin.driver.rest.dto.request.CarRequest;
 import by.dudkin.driver.rest.dto.response.CarResponse;
 import by.dudkin.driver.service.api.CarService;
+import by.dudkin.driver.util.MetricUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,7 @@ public class CarRestController implements CarApi {
     }
 
     @Override
+    @TrackMetric(metricName = MetricUtils.CARS_CREATED_COUNT)
     public ResponseEntity<CarResponse> save(CarRequest carRequest) {
         return new ResponseEntity<>(carService.create(carRequest), HttpStatus.CREATED);
     }
@@ -45,6 +48,7 @@ public class CarRestController implements CarApi {
     }
 
     @Override
+    @TrackMetric(metricName = MetricUtils.CARS_DELETED_COUNT)
     public ResponseEntity<Void> delete(UUID carId) {
         carService.delete(carId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

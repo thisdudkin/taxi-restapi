@@ -3,9 +3,10 @@ server.port: 3030
 spring:
   application:
     name: api-gateway
-
   cloud:
     gateway:
+      metrics:
+        enabled: true
       discovery:
         locator:
           lower-case-service-id: true
@@ -14,38 +15,56 @@ spring:
           uri: lb://passengers-service
           predicates:
             - Path=/api/passengers/**
+          filters:
+            - name: RoutingTimeFilter
         - id: drivers-service-route
           uri: lb://drivers-service
           predicates:
             - Path=/api/drivers/**
+          filters:
+            - name: RoutingTimeFilter
         - id: drivers-service-car-route
           uri: lb://drivers-service
           predicates:
             - Path=/api/cars/**
+          filters:
+            - name: RoutingTimeFilter
         - id: driver-service-assignments-route
           uri: lb://drivers-service
           predicates:
             - Path=/api/assignments/**
+          filters:
+            - name: RoutingTimeFilter
         - id: rides-service-route
           uri: lb://rides-service
           predicates:
             - Path=/api/rides/**
+          filters:
+            - name: RoutingTimeFilter
         - id: authentication-server-route
           uri: lb://authentication-server
           predicates:
             - Path=/api/auth/**
+          filters:
+            - name: RoutingTimeFilter
         - id: notification-service-route
           uri: lb://notification-service
           predicates:
             - Path=/api/notifications/**
+          filters:
+            - name: RoutingTimeFilter
         - id: payment-service-route
           uri: lb://payment-service
           predicates:
             - Path=/api/payments/**
+          filters:
+            - name: RoutingTimeFilter
         - id: promocode-service-route
           uri: lb://promocode-service
           predicates:
             - Path=/api/promocodes/**
+          filters:
+            - name: RoutingTimeFilter
 
   security:
     oauth2:
@@ -59,3 +78,22 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+    tags:
+      application: api-gateway

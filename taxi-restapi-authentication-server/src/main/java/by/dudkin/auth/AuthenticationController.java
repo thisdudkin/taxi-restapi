@@ -1,7 +1,8 @@
 package by.dudkin.auth;
 
+import by.dudkin.metric.MetricUtils;
+import by.dudkin.metric.TrackMetric;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,7 @@ class AuthenticationController {
     }
 
     @PostMapping("/login")
+    @TrackMetric(metricName = MetricUtils.LOGIN_COUNT)
     ResponseEntity<AccessTokenResponse> login(@RequestBody @Valid LoginRequest req) {
         return new ResponseEntity<>(authenticationService.login(req), HttpStatus.OK);
     }

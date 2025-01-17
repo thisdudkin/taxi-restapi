@@ -1,24 +1,27 @@
 package by.dudkin.driver.rest.advice;
 
 import by.dudkin.common.util.ErrorMessages;
+import by.dudkin.driver.i18n.I18nUtils;
 import by.dudkin.driver.rest.advice.custom.AssignmentNotFoundException;
 import by.dudkin.driver.rest.advice.custom.CarNotFoundException;
 import by.dudkin.driver.rest.advice.custom.DriverNotFoundException;
 import by.dudkin.driver.rest.advice.custom.DuplicateLicensePlateException;
+import by.dudkin.driver.rest.advice.custom.EntityValidationConflictException;
 import by.dudkin.driver.rest.advice.custom.NoAvailableDriverException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Locale;
-
 import static java.util.stream.Collectors.joining;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ProblemDetail.forStatusAndDetail;
 
 /**
@@ -28,69 +31,74 @@ import static org.springframework.http.ProblemDetail.forStatusAndDetail;
 @RequiredArgsConstructor
 public class RestExceptionHandler {
 
-    private final MessageSource messageSource;
+    private final I18nUtils i18nUtils;
+    private static final Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String errors = e.getBindingResult().getFieldErrors().stream()
             .map(fe -> fe.getField() + " " + fe.getDefaultMessage())
             .collect(joining("; "));
-        String message = messageSource.getMessage(ErrorMessages.VALIDATION_FAILED, new Object[]{errors}, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(BAD_REQUEST, message), BAD_REQUEST);
+        String message = i18nUtils.getMessage(ErrorMessages.VALIDATION_FAILED, errors);
+
+        logger.warn("Validation failed: {}. Exception: {}", errors, e.getMessage());
+        return ResponseEntity.status(400).body(forStatusAndDetail(BAD_REQUEST, message));
     }
 
     @ExceptionHandler(NoAvailableDriverException.class)
     public ResponseEntity<ProblemDetail> handleNoAvailableDriverException(NoAvailableDriverException e) {
-        String message = messageSource.getMessage(e.getMessage(), null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(NOT_FOUND, message), NOT_FOUND);
+        String message = i18nUtils.getMessage(ErrorMessages.AVAILABLE_DRIVER_NOT_FOUND);
+
+        logger.info("No available drivers found for assignment request: {}", e.getMessage());
+        return ResponseEntity.status(404).body(forStatusAndDetail(NOT_FOUND, message));
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ProblemDetail> handleIllegalStateException(IllegalStateException e) {
-        String message = messageSource.getMessage(e.getMessage(), null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(CONFLICT, message), CONFLICT);
-    }
+    @ExceptionHandler(EntityValidationConflictException.class)
+    public ResponseEntity<ProblemDetail> handleEntityValidationException(EntityValidationConflictException e) {
+        String message = i18nUtils.getMessage(e.getMessage());
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ProblemDetail> handleIllegalArgumentException(IllegalArgumentException e) {
-        String message = messageSource.getMessage(e.getMessage(), null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(BAD_REQUEST, message), BAD_REQUEST);
+        logger.warn("Entity validation conflict occurred: {}", e.getMessage());
+        return ResponseEntity.status(409).body(forStatusAndDetail(CONFLICT, message));
     }
 
     @ExceptionHandler(AssignmentNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleAssignmentNotFoundException(AssignmentNotFoundException e) {
-        String message = messageSource.getMessage(ErrorMessages.ASSIGNMENT_NOT_FOUND, null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(NOT_FOUND, message), NOT_FOUND);
+        String message = i18nUtils.getMessage(ErrorMessages.ASSIGNMENT_NOT_FOUND);
+
+        logger.info("Assignment not found: {}", e.getMessage());
+        return ResponseEntity.status(404).body(forStatusAndDetail(NOT_FOUND, message));
     }
 
     @ExceptionHandler(CarNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleCarNotFoundException(CarNotFoundException e) {
-        String message = messageSource.getMessage(ErrorMessages.CAR_NOT_FOUND, null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(NOT_FOUND, message), NOT_FOUND);
+        String message = i18nUtils.getMessage(ErrorMessages.CAR_NOT_FOUND);
+
+        logger.info("Car not found: {}", e.getMessage());
+        return ResponseEntity.status(404).body(forStatusAndDetail(NOT_FOUND, message));
     }
 
     @ExceptionHandler(DriverNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleDriverNotFoundException(DriverNotFoundException e) {
-        String message = messageSource.getMessage(ErrorMessages.DRIVER_NOT_FOUND, null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(NOT_FOUND, message), NOT_FOUND);
+        String message = i18nUtils.getMessage(ErrorMessages.DRIVER_NOT_FOUND);
+
+        logger.info("Driver not found: {}", e.getMessage());
+        return ResponseEntity.status(404).body(forStatusAndDetail(NOT_FOUND, message));
     }
 
     @ExceptionHandler(DuplicateLicensePlateException.class)
     public ResponseEntity<ProblemDetail> handleDuplicateLicensePlateException(DuplicateLicensePlateException e) {
-        String message = messageSource.getMessage(ErrorMessages.DUPLICATE_LICENSE_PLATE, null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(CONFLICT, message), CONFLICT);
-    }
+        String message = i18nUtils.getMessage(ErrorMessages.DUPLICATE_LICENSE_PLATE);
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ProblemDetail> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
-        String message = messageSource.getMessage(ErrorMessages.DATA_INTEGRITY, null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(INTERNAL_SERVER_ERROR, message), INTERNAL_SERVER_ERROR);
+        logger.warn("Attempt to create car with duplicate license plate: {}", e.getMessage());
+        return ResponseEntity.status(409).body(forStatusAndDetail(CONFLICT, message));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleException(Exception e) {
-        String message = messageSource.getMessage(ErrorMessages.GENERAL_ERROR, null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
+        String message = i18nUtils.getMessage(ErrorMessages.GENERAL_ERROR);
+
+        logger.error("Unhandled exception occurred", e);
+        return ResponseEntity.status(500).body(forStatusAndDetail(INTERNAL_SERVER_ERROR, message));
     }
 
 }

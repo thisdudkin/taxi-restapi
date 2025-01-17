@@ -2,11 +2,12 @@ package by.dudkin.passenger.rest.controller;
 
 import by.dudkin.common.util.BalanceResponse;
 import by.dudkin.common.util.PaginatedResponse;
+import by.dudkin.passenger.aspect.TrackMetric;
 import by.dudkin.passenger.rest.api.PassengerApi;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import by.dudkin.passenger.service.PassengerService;
-import by.dudkin.passenger.util.TokenConstants;
+import by.dudkin.passenger.util.MetricUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import static by.dudkin.passenger.util.MetricUtils.PASSENGERS_CREATED_COUNT;
+import static by.dudkin.passenger.util.MetricUtils.PASSENGERS_UPDATED_COUNT;
 import static by.dudkin.passenger.util.TokenConstants.USERNAME_CLAIM_EXPRESSION;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -47,12 +50,14 @@ public class PassengerRestController implements PassengerApi {
     }
 
     @Override
+    @TrackMetric(metricName = PASSENGERS_CREATED_COUNT)
     public ResponseEntity<PassengerResponse> save(PassengerRequest passengerRequest,
                                                   @AuthenticationPrincipal(expression = USERNAME_CLAIM_EXPRESSION) String username) {
         return new ResponseEntity<>(passengerService.create(passengerRequest, username), HttpStatus.CREATED);
     }
 
     @Override
+    @TrackMetric(metricName = PASSENGERS_UPDATED_COUNT)
     public ResponseEntity<PassengerResponse> update(UUID passengerId, PassengerRequest passengerRequest) {
         return new ResponseEntity<>(passengerService.update(passengerId, passengerRequest), HttpStatus.OK);
     }

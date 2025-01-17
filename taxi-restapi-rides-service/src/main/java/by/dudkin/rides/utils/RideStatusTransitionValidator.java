@@ -2,6 +2,8 @@ package by.dudkin.rides.utils;
 
 import by.dudkin.common.enums.RideStatus;
 import by.dudkin.common.util.ErrorMessages;
+import by.dudkin.rides.rest.advice.custom.EntityValidationConflictException;
+import by.dudkin.rides.rest.advice.custom.IllegalStatusTransitionException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -33,12 +35,12 @@ public class RideStatusTransitionValidator implements Validator {
     @Override
     public void validate(@NonNull Object target, @NonNull Errors errors) {
         if (!(target instanceof RideStatusTransition(RideStatus current, RideStatus next))) {
-            throw new IllegalArgumentException(ErrorMessages.VALIDATION_FAILED);
+            throw new IllegalStatusTransitionException(ErrorMessages.VALIDATION_FAILED);
         }
 
         Set<RideStatus> allowedStatuses = transitionMap.get(current);
         if (allowedStatuses == null || !allowedStatuses.contains(next)) {
-            throw new IllegalStateException(ErrorMessages.INVALID_TRANSITION);
+            throw new EntityValidationConflictException(ErrorMessages.INVALID_TRANSITION);
         }
     }
 }

@@ -11,7 +11,32 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
+  - job_name: api-gateway
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['api-gateway:3030']
+
   - job_name: authentication-server
     metrics_path: /actuator/prometheus
     static_configs:
       - targets: ['authentication-server:8087']
+
+  - job_name: passenger-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['passenger-service:8081']
+
+  - job_name: driver-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['driver-service:8082']
+
+  - job_name: rides-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['rides-service:8083']
+
+  - job_name: notification-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['notification-service:8084']

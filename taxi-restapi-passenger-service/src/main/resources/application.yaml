@@ -26,6 +26,24 @@ spring:
         jwt:
           jwk-set-uri: http://localhost:9090/realms/taxi-realm/protocol/openid-connect/certs
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+    tags:
+      application: passenger-service
+
 logging:
   level:
     liquibase: INFO

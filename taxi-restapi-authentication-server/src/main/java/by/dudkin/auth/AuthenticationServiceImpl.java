@@ -22,7 +22,7 @@ class AuthenticationServiceImpl implements AuthenticationService {
         if (req.role() != Role.ROLE_ADMIN) {
             keycloakService.save(req);
         } else {
-            throw new IllegalArgumentException(ErrorMessages.NOT_ALLOWED_ROLE);
+            throw new InvalidRoleException(ErrorMessages.NOT_ALLOWED_ROLE);
         }
     }
 

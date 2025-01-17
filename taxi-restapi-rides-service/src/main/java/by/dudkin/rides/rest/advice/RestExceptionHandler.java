@@ -1,8 +1,14 @@
 package by.dudkin.rides.rest.advice;
 
 import by.dudkin.common.util.ErrorMessages;
+import by.dudkin.rides.i18n.I18nUtils;
+import by.dudkin.rides.rest.advice.custom.EntityValidationConflictException;
+import by.dudkin.rides.rest.advice.custom.IllegalStatusTransitionException;
+import by.dudkin.rides.rest.advice.custom.InsufficientFundsException;
 import by.dudkin.rides.rest.advice.custom.RideNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ProblemDetail;
@@ -18,6 +24,8 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.PAYMENT_REQUIRED;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.http.ProblemDetail.forStatusAndDetail;
 
 /**
@@ -27,45 +35,58 @@ import static org.springframework.http.ProblemDetail.forStatusAndDetail;
 @RequiredArgsConstructor
 public class RestExceptionHandler {
 
-    private final MessageSource messageSource;
+    private final I18nUtils i18nUtils;
+    private static final Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String errors = e.getBindingResult().getFieldErrors().stream()
             .map(fe -> fe.getField() + " " + fe.getDefaultMessage())
             .collect(joining("; "));
-        String message = messageSource.getMessage(ErrorMessages.VALIDATION_FAILED, new Object[]{errors}, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(BAD_REQUEST, message), BAD_REQUEST);
+        String message = i18nUtils.getMessage(ErrorMessages.VALIDATION_FAILED, errors);
+
+        logger.warn("Validation failed: {}. Exception: {}", errors, e.getMessage());
+        return ResponseEntity.status(400).body(forStatusAndDetail(BAD_REQUEST, message));
     }
 
     @ExceptionHandler(RideNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleRideNotFoundException(RideNotFoundException e) {
-        String message = messageSource.getMessage(e.getMessage(), null, Locale.getDefault());
+        String message = i18nUtils.getMessage(e.getMessage());
+
+        logger.info("Ride not found -> {}", e.getMessage());
         return new ResponseEntity<>(forStatusAndDetail(NOT_FOUND, message), NOT_FOUND);
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ProblemDetail> handleIllegalStateException(IllegalStateException e) {
-        String message = messageSource.getMessage(e.getMessage(), null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(CONFLICT, message), CONFLICT);
+    @ExceptionHandler(EntityValidationConflictException.class)
+    public ResponseEntity<ProblemDetail> handleEntityValidationConflictException(EntityValidationConflictException e) {
+        String message = i18nUtils.getMessage(e.getMessage());
+
+        logger.warn("Entity validation forced conflict -> {}", e.getMessage());
+        return ResponseEntity.status(409).body(forStatusAndDetail(CONFLICT, message));
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ProblemDetail> handleIllegalArgumentException(IllegalArgumentException e) {
-        String message = messageSource.getMessage(e.getMessage(), null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(BAD_REQUEST, message), BAD_REQUEST);
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseEntity<ProblemDetail> handleInsufficientFundsException(InsufficientFundsException e) {
+        String message = i18nUtils.getMessage(e.getMessage());
+
+        logger.warn("Attempt to create a ride with insufficient funds -> {}", e.getMessage());
+        return ResponseEntity.status(422).body(forStatusAndDetail(UNPROCESSABLE_ENTITY, message));
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ProblemDetail> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
-        String message = messageSource.getMessage(ErrorMessages.DATA_INTEGRITY, null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(INTERNAL_SERVER_ERROR, message), INTERNAL_SERVER_ERROR);
+    @ExceptionHandler(IllegalStatusTransitionException.class)
+    public ResponseEntity<ProblemDetail> handleIllegalStatusTransitionException(IllegalStatusTransitionException e) {
+        String message = i18nUtils.getMessage(e.getMessage());
+
+        logger.warn("Invalid status transition -> {}", e.getMessage());
+        return ResponseEntity.status(400).body(forStatusAndDetail(BAD_REQUEST, message));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleException(Exception e) {
-        String message = messageSource.getMessage(ErrorMessages.GENERAL_ERROR, null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
+        String message = i18nUtils.getMessage(ErrorMessages.GENERAL_ERROR);
+
+        logger.error("Unhandled exception -> {}", e.getMessage(), e);
+        return ResponseEntity.status(500).body(forStatusAndDetail(INTERNAL_SERVER_ERROR, message));
     }
 
 }
