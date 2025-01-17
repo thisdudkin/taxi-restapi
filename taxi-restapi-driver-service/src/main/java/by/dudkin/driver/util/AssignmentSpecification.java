@@ -1,6 +1,6 @@
 package by.dudkin.driver.util;
 
-import by.dudkin.driver.domain.DriverCarAssignment;
+import by.dudkin.driver.domain.Assignment;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -12,18 +12,18 @@ import java.util.UUID;
 @Component
 public class AssignmentSpecification {
 
-    public Specification<DriverCarAssignment> hasDriverId(UUID driverId) {
+    public Specification<Assignment> hasDriverId(UUID driverId) {
         return ((root, query, criteriaBuilder) ->
             driverId == null ? null : criteriaBuilder.equal(root.get("driver").get("id"), driverId));
     }
 
-    public Specification<DriverCarAssignment> hasCarId(UUID carId) {
+    public Specification<Assignment> hasCarId(UUID carId) {
         return (root, query, criteriaBuilder) ->
             carId == null ? null : criteriaBuilder.equal(root.get("car").get("id"), carId);
     }
 
-    public Specification<DriverCarAssignment> getSpecification(UUID driverId, UUID carId) {
-        Specification<DriverCarAssignment> spec = Specification.where(null);
+    public Specification<Assignment> getSpecification(UUID driverId, UUID carId) {
+        Specification<Assignment> spec = Specification.where(null);
         if (driverId != null) {
             spec = spec.and(hasDriverId(driverId));
         }

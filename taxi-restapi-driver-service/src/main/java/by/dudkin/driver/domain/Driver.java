@@ -85,7 +85,7 @@ public class Driver implements BaseEntity<UUID> {
 
     @Builder.Default
     @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<DriverCarAssignment> assignments = new HashSet<>();
+    private Set<Assignment> assignments = new HashSet<>();
 
     @Builder.Default
     @ElementCollection

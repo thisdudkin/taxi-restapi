@@ -24,6 +24,7 @@ public interface DriverService {
     void delete(UUID driverId);
 
     Driver getOrThrow(UUID driverId);
+    Driver getOrThrow(String username);
 
     void handleDriver(PendingRide ride);
 

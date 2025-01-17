@@ -14,15 +14,12 @@ import java.util.UUID;
 public interface CarService {
 
     PaginatedResponse<CarResponse> findAll(Pageable pageable);
-
     CarResponse findById(UUID carId);
-
     CarResponse create(CarRequest carRequest);
-
     CarResponse update(UUID carId, CarRequest carRequest);
-
     void delete(UUID carId);
 
     Car getOrThrow(UUID carId);
+    Car getOrThrow(String licensePlate);
 
 }
