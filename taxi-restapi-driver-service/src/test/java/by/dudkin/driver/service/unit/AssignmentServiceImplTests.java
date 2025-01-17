@@ -1,6 +1,7 @@
 package by.dudkin.driver.service.unit;
 
 import by.dudkin.common.util.ErrorMessages;
+import by.dudkin.driver.domain.Assignment;
 import by.dudkin.driver.domain.Car;
 import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.domain.Assignment;
@@ -77,14 +78,14 @@ class AssignmentServiceImplTests {
     @Test
     void whenCreateAssignment_thenReturnAssignmentResponse() {
         // Arrange
-        when(carService.getOrThrow(assignmentRequest.carId())).thenReturn(car);
-        when(driverService.getOrThrow(assignmentRequest.driverId())).thenReturn(driver);
+        when(carService.getOrThrow(assignmentRequest.licencePlate())).thenReturn(car);
+        when(driverService.getOrThrow(UUID.randomUUID())).thenReturn(driver);
         when(assignmentMapper.toAssignment(assignmentRequest)).thenReturn(assignment);
         when(assignmentRepository.save(assignment)).thenReturn(assignment);
         when(assignmentMapper.toResponse(assignment)).thenReturn(assignmentResponse);
 
         // Act
-        var response = assignmentService.create(assignmentRequest);
+        var response = assignmentService.create(assignmentRequest, "x-username");
 
         // Assert
         assertThat(response).isNotNull();

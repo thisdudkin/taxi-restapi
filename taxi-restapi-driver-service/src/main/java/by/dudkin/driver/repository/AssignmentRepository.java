@@ -26,6 +26,13 @@ public interface AssignmentRepository extends JpaRepository<Assignment, UUID> {
             """)
     Optional<Assignment> findActiveAssignmentByCarId(UUID carId);
 
+    @Query("""
+            select a from Assignment a
+            join fetch a.car c
+            where c.licensePlate = :licensePlate and a.status = 'ACTIVE'
+            """)
+    Optional<Assignment> findActiveAssignmentByLicencePlate(String licensePlate);
+
     Page<Assignment> findAll(Specification<Assignment> spec, Pageable pageable);
 
 }

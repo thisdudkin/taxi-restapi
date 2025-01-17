@@ -4,6 +4,7 @@ import by.dudkin.common.entity.PersonalInfo;
 import by.dudkin.common.enums.AssignmentStatus;
 import by.dudkin.common.enums.CarType;
 import by.dudkin.common.enums.DriverStatus;
+import by.dudkin.driver.domain.Assignment;
 import by.dudkin.driver.domain.Car;
 import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.domain.Assignment;
@@ -201,16 +202,14 @@ public class TestDataGenerator {
 
     public static AssignmentRequest randomAssignmentRequest() {
         return new AssignmentRequest(
-            randomId(),
-            randomId(),
+            randomLicensePlate(),
             Instant.now()
         );
     }
 
-    public static AssignmentRequest randomAssignmentRequestWithIds(UUID driverId, UUID carId) {
+    public static AssignmentRequest randomAssignmentRequestWithLicensePlate(String licensePlate) {
         return new AssignmentRequest(
-            driverId,
-            carId,
+            licensePlate,
             Instant.now()
         );
     }

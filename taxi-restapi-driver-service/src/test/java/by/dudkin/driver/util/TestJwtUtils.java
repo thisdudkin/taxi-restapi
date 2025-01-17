@@ -54,6 +54,17 @@ public final class TestJwtUtils {
         return headers;
     }
 
+    public static HttpHeaders createHeadersWithTokenAndUsername(String username, String... roles) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        JwtAuthenticationToken jwtToken = TestJwtUtils.createJwtToken(username, roles);
+        headers.set("Authorization", "Bearer " + jwtToken.getToken().getTokenValue());
+
+        return headers;
+    }
+
     public static Jwt parseToken(String tokenValue) {
         return tokenStorage.get(tokenValue);
     }

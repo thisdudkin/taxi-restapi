@@ -1,18 +1,15 @@
 package by.dudkin.driver.rest.dto.request;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
  */
 public record AssignmentRequest(
-        UUID driverId,
-        UUID carId,
-        @NotNull
-        Instant assignmentDate
-) implements Serializable {
-}
+        @NotEmpty String licencePlate,
+        @NotNull Instant assignmentDate
+) implements Serializable {}

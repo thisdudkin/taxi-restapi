@@ -42,11 +42,11 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final AvailableDriverService availableDriverService;
 
     @Override
-    public AssignmentResponse create(AssignmentRequest assignmentRequest) {
+    public AssignmentResponse create(AssignmentRequest assignmentRequest, String username) {
         assignmentValidator.validateCarAvailability(assignmentRequest.licencePlate());
 
         Car car = carService.getOrThrow(assignmentRequest.licencePlate());
-        Driver driver = driverService.getOrThrow(JwtTokenUtils.getPreferredUsername());
+        Driver driver = driverService.getOrThrow(username);
 
         Assignment assignment = assignmentMapper.toAssignment(assignmentRequest);
         assignment.setDriver(driver);

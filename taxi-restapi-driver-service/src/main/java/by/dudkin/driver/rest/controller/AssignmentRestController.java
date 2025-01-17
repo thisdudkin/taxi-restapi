@@ -7,15 +7,19 @@ import by.dudkin.driver.rest.dto.response.AssignmentResponse;
 import by.dudkin.driver.rest.dto.response.AvailableDriverResponse;
 import by.dudkin.driver.util.AssignmentSpecification;
 import by.dudkin.driver.service.api.AssignmentService;
+import by.dudkin.driver.util.TokenConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
+
+import static by.dudkin.driver.util.TokenConstants.USERNAME_CLAIM_EXPRESSION;
 
 /**
  * @author Alexander Dudkin
@@ -43,8 +47,9 @@ public class AssignmentRestController implements AssignmentApi {
     }
 
     @Override
-    public ResponseEntity<AssignmentResponse> save(AssignmentRequest assignmentRequest) {
-        return new ResponseEntity<>(assignmentService.create(assignmentRequest), HttpStatus.CREATED);
+    public ResponseEntity<AssignmentResponse> save(AssignmentRequest assignmentRequest,
+                                                   @AuthenticationPrincipal(expression = USERNAME_CLAIM_EXPRESSION) String username) {
+        return new ResponseEntity<>(assignmentService.create(assignmentRequest, username), HttpStatus.CREATED);
     }
 
     @Override

@@ -74,4 +74,10 @@ public class CarServiceImpl implements CarService {
                 .orElseThrow(() -> new CarNotFoundException(ErrorMessages.CAR_NOT_FOUND));
     }
 
+    @Override
+    public Car getOrThrow(String licensePlate) {
+        return carRepository.findByLicensePlate(licensePlate)
+            .orElseThrow(() -> new CarNotFoundException(ErrorMessages.CAR_NOT_FOUND));
+    }
+
 }
