@@ -5,6 +5,7 @@ import by.dudkin.driver.domain.DriverLocationDocument;
 import by.dudkin.driver.repository.DriverLocationRepository;
 import by.dudkin.driver.rest.advice.custom.NoAvailableDriverException;
 import by.dudkin.driver.rest.dto.request.AvailableDriver;
+import by.dudkin.driver.rest.dto.response.AvailableDriverResponse;
 import by.dudkin.driver.rest.dto.response.PendingRide;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,6 +36,27 @@ public class AvailableDriverService {
         }
 
         return poorestDriver;
+    }
+
+    public AvailableDriverResponse findAvailableDriverByUsername(String username) {
+        final AtomicReference<AvailableDriverResponse> result = new AtomicReference<>();
+        jdbcTemplate.execute("select dca.driver_id, dca.car_id " +
+                             "from driver_car_assignments dca " +
+                             "join public.drivers d on dca.driver_id = d.id " +
+                             "where d.username = ? and dca.status = 'ACTIVE'", (PreparedStatementCallback<?>) selectDriver -> {
+            selectDriver.setString(1, username);
+            try (ResultSet resultSet = selectDriver.executeQuery()) {
+                if (resultSet.next()) {
+                    UUID driverId = resultSet.getObject("driver_id", UUID.class);
+                    UUID carId = resultSet.getObject("car_id", UUID.class);
+                    AvailableDriverResponse response = new AvailableDriverResponse(driverId, carId);
+                    result.set(response);
+                }
+            }
+            return null;
+        });
+
+        return result.get();
     }
 
     private Set<DriverLocationDocument> getDriverInRange(BigDecimal lat, BigDecimal lng) {

@@ -4,6 +4,7 @@ import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.domain.Assignment;
 import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
+import by.dudkin.driver.rest.dto.response.AvailableDriverResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -18,4 +19,5 @@ public interface AssignmentService {
     PaginatedResponse<AssignmentResponse> findAll(Specification<Assignment> spec, Pageable pageable);
     AssignmentResponse cancelAssignment(UUID assignmentId);
     void delete(UUID assignmentId);
+    AvailableDriverResponse search(String username);
 }

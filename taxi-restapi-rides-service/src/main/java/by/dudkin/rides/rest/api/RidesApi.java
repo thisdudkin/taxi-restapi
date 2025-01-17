@@ -161,7 +161,7 @@ public interface RidesApi {
     ResponseEntity<RideResponse> assignDriver(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
         @PathVariable("rideId") UUID rideId,
-        @RequestBody AvailableDriver availableDriver
+        String username
     );
 
 

@@ -4,6 +4,7 @@ import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.driver.domain.Assignment;
 import by.dudkin.driver.domain.Car;
 import by.dudkin.driver.domain.Driver;
+import by.dudkin.driver.domain.Assignment;
 import by.dudkin.driver.mapper.AssignmentMapper;
 import by.dudkin.driver.repository.AssignmentRepository;
 import by.dudkin.driver.rest.advice.custom.AssignmentNotFoundException;

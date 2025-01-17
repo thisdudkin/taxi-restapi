@@ -3,6 +3,7 @@ package by.dudkin.driver.rest.api;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
+import by.dudkin.driver.rest.dto.response.AvailableDriverResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -85,6 +86,21 @@ public interface AssignmentApi {
         @Parameter(name = "AssignmentRequest", description = "Assignment data", required = true)
         @RequestBody @Valid AssignmentRequest assignmentRequest,
         String username
+    );
+
+    @Operation(
+        operationId = "getByUsername",
+        summary = "Get an assignment by username",
+        description = "Returns assignment or 404 error.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Assignment found and returned.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AssignmentResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Assignment not found.")
+        }
+    )
+    @GetMapping(value = "/assignments/search", produces = "application/json")
+    ResponseEntity<AvailableDriverResponse> search(
+        @Parameter(name = "username", description = "The username of the driver.", required = true, in = ParameterIn.PATH)
+        @RequestParam String username
     );
 
     @Operation(

@@ -11,6 +11,7 @@ import by.dudkin.driver.repository.AssignmentRepository;
 import by.dudkin.driver.rest.advice.custom.AssignmentNotFoundException;
 import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
+import by.dudkin.driver.rest.dto.response.AvailableDriverResponse;
 import by.dudkin.driver.service.api.AssignmentService;
 import by.dudkin.driver.service.api.CarService;
 import by.dudkin.driver.service.api.DriverService;
@@ -38,6 +39,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final DriverService driverService;
     private final CarService carService;
     private final AssignmentValidator assignmentValidator;
+    private final AvailableDriverService availableDriverService;
 
     @Override
     public AssignmentResponse create(AssignmentRequest assignmentRequest, String username) {
@@ -82,6 +84,15 @@ public class AssignmentServiceImpl implements AssignmentService {
     public void delete(UUID assignmentId) {
         Assignment assignment = getOrThrow(assignmentId);
         assignmentRepository.delete(assignment);
+    }
+
+    @Override
+    public AvailableDriverResponse search(String username) {
+        AvailableDriverResponse driverByUsername = availableDriverService.findAvailableDriverByUsername(username);
+        if (driverByUsername == null) {
+            throw new AssignmentNotFoundException(ErrorMessages.ASSIGNMENT_NOT_FOUND);
+        }
+        return driverByUsername;
     }
 
     public Assignment getOrThrow(UUID assignmentId) {

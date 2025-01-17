@@ -70,8 +70,10 @@ public class RideRestController implements RidesApi {
     }
 
     @Override
-    public ResponseEntity<RideResponse> assignDriver(UUID rideId, AvailableDriver availableDriver) {
-        return new ResponseEntity<>(this.rideService.assign(rideId, availableDriver), HttpStatus.OK);
+    public ResponseEntity<RideResponse> assignDriver(UUID rideId,
+                                                     @AuthenticationPrincipal(expression = USERNAME_CLAIM_EXPRESSION)
+                                                     String username) {
+        return new ResponseEntity<>(this.rideService.assign(rideId, username), HttpStatus.OK);
     }
 
     @Override

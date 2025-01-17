@@ -4,6 +4,7 @@ import by.dudkin.common.enums.RideStatus;
 import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.domain.Ride;
+import by.dudkin.rides.feign.DriverClient;
 import by.dudkin.rides.kafka.domain.AcceptedRideEvent;
 import by.dudkin.rides.mapper.RideMapper;
 import by.dudkin.rides.repository.RideRepository;
@@ -16,7 +17,6 @@ import by.dudkin.rides.rest.dto.response.AvailableDriver;
 import by.dudkin.rides.rest.dto.response.DriverResponse;
 import by.dudkin.rides.rest.dto.response.RideCostResponse;
 import by.dudkin.rides.rest.dto.response.RideResponse;
-import by.dudkin.rides.feign.DriverClient;
 import by.dudkin.rides.service.api.RideService;
 import by.dudkin.rides.utils.GeospatialUtils;
 import by.dudkin.rides.utils.PriceCalculator;
@@ -118,12 +118,13 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public RideResponse assign(UUID rideId, AvailableDriver availableDriver) {
+    public RideResponse assign(UUID rideId, String username) {
         Ride ride = getOrThrow(rideId);
         RideStatusTransition transition = new RideStatusTransition(ride.getStatus(), RideStatus.ASSIGNED);
         transitionValidator.validate(transition, new BeanPropertyBindingResult(transition, transition.getClass().getSimpleName()));
-        DriverResponse driver = driverClient.getDriverById(availableDriver.driverId());
-        ride = rideAssignmentService.assignDriverToRide(ride, availableDriver, driver);
+        DriverResponse driver = driverClient.getDriverByUsername(username);
+        AvailableDriver assignmentByUsername = driverClient.getAssignmentByUsername(username);
+        ride = rideAssignmentService.assignDriverToRide(ride, assignmentByUsername, driver);
         Ride saved = rideRepository.save(ride);
         eventPublisher.publishEvent(new AcceptedRideEvent(saved.getId(), saved.getDriverId(), saved.getCarId()));
         return rideMapper.toResponse(saved);
