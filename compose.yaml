@@ -178,6 +178,19 @@ services:
       timeout: 5s
       retries: 5
 
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.16.0
+    container_name: postgres-exporter
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgres://postgres:docker@5432/rides_db?sslmode=disable"
+    depends_on:
+      prometheus-server:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.8.0
     hostname: zookeeper
