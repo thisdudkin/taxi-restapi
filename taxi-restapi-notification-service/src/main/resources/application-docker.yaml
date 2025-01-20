@@ -43,6 +43,24 @@ logging:
     org:
       springframework: INFO
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+    tags:
+      application: notification-service
+
 eureka:
   client:
     service-url:

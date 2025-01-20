@@ -1,6 +1,8 @@
 package by.dudkin.rides.rest.controller;
 
 import by.dudkin.common.util.PaginatedResponse;
+import by.dudkin.rides.metric.MetricUtils;
+import by.dudkin.rides.metric.TrackMetric;
 import by.dudkin.rides.rest.api.RidesApi;
 import by.dudkin.rides.rest.dto.request.RideCompletionRequest;
 import by.dudkin.rides.rest.dto.request.RideCostRequest;
@@ -65,11 +67,13 @@ public class RideRestController implements RidesApi {
     }
 
     @Override
+    @TrackMetric(metricName = MetricUtils.RIDES_ACTIVATION)
     public ResponseEntity<RideResponse> activate(UUID rideId) {
         return new ResponseEntity<>(this.rideService.activate(rideId), HttpStatus.OK);
     }
 
     @Override
+    @TrackMetric(metricName = MetricUtils.RIDES_ASSIGNED)
     public ResponseEntity<RideResponse> assignDriver(UUID rideId,
                                                      @AuthenticationPrincipal(expression = USERNAME_CLAIM_EXPRESSION)
                                                      String username) {
@@ -77,6 +81,7 @@ public class RideRestController implements RidesApi {
     }
 
     @Override
+    @TrackMetric(metricName = MetricUtils.RIDES_COMPLETION)
     public ResponseEntity<RideResponse> markDone(UUID rideId) {
         return new ResponseEntity<>(this.rideService.complete(rideId), HttpStatus.OK);
     }

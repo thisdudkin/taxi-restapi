@@ -1,7 +1,9 @@
 package by.dudkin.driver.rest.controller;
 
+import by.dudkin.driver.aspect.TrackMetric;
 import by.dudkin.driver.service.DriverLocationService;
 import by.dudkin.driver.util.DriverLocation;
+import by.dudkin.driver.util.MetricUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,7 @@ public class DriverLocationRestController {
     private final DriverLocationService driverLocationService;
 
     @PutMapping(value = "/{driverId}/location")
+    @TrackMetric(metricName = MetricUtils.DRIVERS_LOCATION_UPDATED_COUNT)
     public ResponseEntity<Void> updateCoordinates(@PathVariable UUID driverId,
                                                   @RequestBody DriverLocation location) {
         this.driverLocationService.update(driverId, location);

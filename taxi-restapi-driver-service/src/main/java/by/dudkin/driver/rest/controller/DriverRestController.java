@@ -1,11 +1,13 @@
 package by.dudkin.driver.rest.controller;
 
 import by.dudkin.common.util.PaginatedResponse;
+import by.dudkin.driver.aspect.TrackMetric;
 import by.dudkin.driver.rest.api.DriverApi;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.request.FeedbackRequest;
 import by.dudkin.driver.rest.dto.response.DriverResponse;
 import by.dudkin.driver.service.api.DriverService;
+import by.dudkin.driver.util.MetricUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -45,12 +47,14 @@ public class DriverRestController implements DriverApi {
     }
 
     @Override
+    @TrackMetric(metricName = MetricUtils.DRIVERS_CREATED_COUNT)
     public ResponseEntity<DriverResponse> save(DriverRequest driverRequest,
                                                @AuthenticationPrincipal(expression = USERNAME_CLAIM_EXPRESSION) String username) {
         return new ResponseEntity<>(driverService.create(driverRequest, username), HttpStatus.CREATED);
     }
 
     @Override
+    @TrackMetric(metricName = MetricUtils.DRIVERS_UPDATED_COUNT)
     public ResponseEntity<DriverResponse> update(UUID driverId, DriverRequest driverRequest) {
         return new ResponseEntity<>(driverService.update(driverId, driverRequest), HttpStatus.OK);
     }

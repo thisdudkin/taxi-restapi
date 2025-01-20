@@ -14,6 +14,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
@@ -49,6 +50,13 @@ public class WebSecurityConfig {
                 .authenticationEntryPoint(authenticationEntryPoint())
         );
 
+        http.authorizeHttpRequests(swagger -> swagger
+            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/actuator/**").permitAll()
+            .requestMatchers("/api-docs/openapi.yml").permitAll()
+            .requestMatchers("/swagger-resources/**").permitAll()
+            .requestMatchers("/webjars/**").permitAll()
+        );
+
         http.authorizeHttpRequests((authz) -> authz
 
             // driver endpoints
@@ -78,6 +86,16 @@ public class WebSecurityConfig {
 
         return http.build();
 
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers("/v3/api-docs")
+            .requestMatchers("/swagger-resources/**")
+            .requestMatchers("/swagger-ui.html")
+            .requestMatchers("/configuration/**")
+            .requestMatchers("/webjars/**")
+            .requestMatchers("/public");
     }
 
     @Bean

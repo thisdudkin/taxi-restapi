@@ -28,9 +28,8 @@ public class NotificationAspect {
 
     @Around("execution(* by.dudkin.notification.controller.NotificationController.getNearbyRequests(..)) && args(driverId, ..)")
     public Object checkDriverExists(ProceedingJoinPoint joinPoint, UUID driverId) throws Throwable {
-        ResponseEntity<DriverResponse> response;
         try {
-            response = driverClient.getDriver(driverId);
+            driverClient.getDriver(driverId);
         } catch (FeignException e) {
             throw new DriverNotFoundException(ErrorMessages.DRIVER_NOT_FOUND);
         } catch (Exception e) {

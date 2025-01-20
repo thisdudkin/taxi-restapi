@@ -1,12 +1,14 @@
 package by.dudkin.driver.rest.controller;
 
 import by.dudkin.common.util.PaginatedResponse;
+import by.dudkin.driver.aspect.TrackMetric;
 import by.dudkin.driver.rest.api.AssignmentApi;
 import by.dudkin.driver.rest.dto.request.AssignmentRequest;
 import by.dudkin.driver.rest.dto.response.AssignmentResponse;
 import by.dudkin.driver.rest.dto.response.AvailableDriverResponse;
 import by.dudkin.driver.util.AssignmentSpecification;
 import by.dudkin.driver.service.api.AssignmentService;
+import by.dudkin.driver.util.MetricUtils;
 import by.dudkin.driver.util.TokenConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +49,7 @@ public class AssignmentRestController implements AssignmentApi {
     }
 
     @Override
+    @TrackMetric(metricName = MetricUtils.ASSIGNMENTS_CREATED_COUNT)
     public ResponseEntity<AssignmentResponse> save(AssignmentRequest assignmentRequest,
                                                    @AuthenticationPrincipal(expression = USERNAME_CLAIM_EXPRESSION) String username) {
         return new ResponseEntity<>(assignmentService.create(assignmentRequest, username), HttpStatus.CREATED);
@@ -58,11 +61,13 @@ public class AssignmentRestController implements AssignmentApi {
     }
 
     @Override
+    @TrackMetric(metricName = MetricUtils.ASSIGNMENTS_CANCELLED_COUNT)
     public ResponseEntity<AssignmentResponse> cancel(UUID assignmentId) {
         return new ResponseEntity<>(assignmentService.cancelAssignment(assignmentId), HttpStatus.OK);
     }
 
     @Override
+    @TrackMetric(metricName = MetricUtils.ASSIGNMENTS_DELETED_COUNT)
     public ResponseEntity<Void> delete(UUID assignmentId) {
         assignmentService.delete(assignmentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

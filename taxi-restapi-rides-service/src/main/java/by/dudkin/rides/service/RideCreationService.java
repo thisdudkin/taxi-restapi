@@ -5,6 +5,7 @@ import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.rides.domain.Ride;
 import by.dudkin.rides.feign.PassengerClient;
 import by.dudkin.rides.feign.PromocodeClient;
+import by.dudkin.rides.rest.advice.custom.InsufficientFundsException;
 import by.dudkin.rides.rest.dto.response.PassengerResponse;
 import by.dudkin.rides.rest.dto.response.Promocode;
 import by.dudkin.rides.utils.GeospatialUtils;
@@ -62,7 +63,7 @@ public class RideCreationService {
     private void validatePassenger(UUID passengerId, BigDecimal amount) {
         BalanceResponse<UUID> response = passengerClient.checkBalance(passengerId);
         if (response.amount().compareTo(amount) < 0) {
-            throw new IllegalStateException(ErrorMessages.INSUFFICIENT_FUNDS);
+            throw new InsufficientFundsException(ErrorMessages.INSUFFICIENT_FUNDS);
         }
     }
 

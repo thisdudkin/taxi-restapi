@@ -1,5 +1,6 @@
 package by.dudkin.auth;
 
+import by.dudkin.i18n.I18nUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.keycloak.OAuth2Constants;
@@ -24,16 +25,17 @@ import java.util.Collections;
  */
 @Service
 class KeycloakServiceImpl implements KeycloakService {
+
     final RealmResource realmResource;
     final KeycloakProperties properties;
     final CreationService creationService;
-    final MessageSource messageSource;
+    final I18nUtils i18nUtils;
 
-    KeycloakServiceImpl(RealmResource realmResource, KeycloakProperties properties, CreationService creationService, MessageSource messageSource) {
+    KeycloakServiceImpl(RealmResource realmResource, KeycloakProperties properties, CreationService creationService, I18nUtils i18nUtils) {
         this.properties = properties;
         this.realmResource = realmResource;
         this.creationService = creationService;
-        this.messageSource = messageSource;
+        this.i18nUtils = i18nUtils;
     }
 
     @Override
@@ -77,7 +79,7 @@ class KeycloakServiceImpl implements KeycloakService {
 
                 msg = jsonNode.path("errorMessage").asText(msg);
             } catch (Exception e) {
-                msg = messageSource.getMessage(ErrorMessages.KEYCLOAK_RESPONSE_ERROR, null, LocaleContextHolder.getLocale());
+                msg = i18nUtils.getMessage(ErrorMessages.KEYCLOAK_RESPONSE_ERROR);
             }
 
             throw new ResponseStatusException(HttpStatus.valueOf(status), msg);

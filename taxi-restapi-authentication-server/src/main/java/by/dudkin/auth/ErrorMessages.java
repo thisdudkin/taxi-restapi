@@ -10,6 +10,7 @@ final class ErrorMessages {
     /**
      * Common Errors
      */
+    public static final String VALIDATION_FAILED = "error.validation.failed";
     public static final String GENERAL_ERROR = "error.general";
 
     /**
@@ -17,5 +18,6 @@ final class ErrorMessages {
      */
     public static final String NOT_ALLOWED_ROLE = "error.auth.not.allowed.role";
     public static final String KEYCLOAK_RESPONSE_ERROR = "error.auth.keycloak.response.error";
+    public static final String KEYCLOAK_UNAUTHORIZED = "error.keycloak.unauthorized";
 
 }

@@ -2,6 +2,7 @@ package by.dudkin.driver.util;
 
 import by.dudkin.common.enums.DriverStatus;
 import by.dudkin.common.util.ErrorMessages;
+import by.dudkin.driver.rest.advice.custom.EntityValidationConflictException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -30,12 +31,12 @@ public class DriverStatusTransitionValidator implements Validator {
     @Override
     public void validate(@NonNull Object target, @NonNull Errors errors) {
         if (!(target instanceof DriverStatusTransition(DriverStatus current, DriverStatus next))) {
-            throw new IllegalArgumentException(ErrorMessages.VALIDATION_FAILED);
+            throw new EntityValidationConflictException(ErrorMessages.VALIDATION_FAILED);
         }
 
         Set<DriverStatus> allowedStatuses = transitionMap.get(current);
         if (allowedStatuses == null || !allowedStatuses.contains(next)) {
-            throw new IllegalStateException(ErrorMessages.INVALID_TRANSITION);
+            throw new EntityValidationConflictException(ErrorMessages.INVALID_TRANSITION);
         }
     }
 

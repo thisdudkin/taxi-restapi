@@ -1,6 +1,9 @@
 package by.dudkin.promocode;
 
 import by.dudkin.common.util.ErrorMessages;
+import by.dudkin.i18n.I18nUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ProblemDetail;
@@ -22,40 +25,25 @@ import static org.springframework.http.ProblemDetail.forStatusAndDetail;
 @RestControllerAdvice
 class RestExceptionHandler {
 
-    final MessageSource messageSource;
+    private final I18nUtils i18nUtils;
+    private static final Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
 
-    RestExceptionHandler(MessageSource messageSource) {
-        this.messageSource = messageSource;
+    RestExceptionHandler(I18nUtils i18nUtils) {
+        this.i18nUtils = i18nUtils;
     }
 
     @ExceptionHandler(PromocodeNotFoundException.class)
     ResponseEntity<ProblemDetail> handlePromocodeNotFoundException(PromocodeNotFoundException e) {
-        String message = messageSource.getMessage(e.getMessage(), null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(NOT_FOUND, message), NOT_FOUND);
-    }
+        String message = i18nUtils.getMessage(ErrorMessages.PROMOCODE_NOT_FOUND);
 
-    @ExceptionHandler(IllegalStateException.class)
-    ResponseEntity<ProblemDetail> handleIllegalStateException(IllegalStateException e) {
-        String message = messageSource.getMessage(e.getMessage(), null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(CONFLICT, message), CONFLICT);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    ResponseEntity<ProblemDetail> handleIllegalArgumentException(IllegalArgumentException e) {
-        String message = messageSource.getMessage(e.getMessage(), null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(BAD_REQUEST, message), BAD_REQUEST);
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    ResponseEntity<ProblemDetail> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
-        String message = messageSource.getMessage(ErrorMessages.DATA_INTEGRITY, null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(INTERNAL_SERVER_ERROR, message), INTERNAL_SERVER_ERROR);
+        logger.info("Promocode not found -> {}", e.getMessage());
+        return ResponseEntity.status(404).body(forStatusAndDetail(NOT_FOUND, message));
     }
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<ProblemDetail> handleException(Exception e) {
-        String message = messageSource.getMessage(ErrorMessages.GENERAL_ERROR, null, Locale.getDefault());
-        return new ResponseEntity<>(forStatusAndDetail(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
+        String message = i18nUtils.getMessage(ErrorMessages.GENERAL_ERROR);
+        return ResponseEntity.status(500).body(forStatusAndDetail(INTERNAL_SERVER_ERROR, message));
     }
 
 }
