@@ -23,7 +23,9 @@ public enum PassengerEndpoints implements Endpoints {
 
     CHECK_BALANCE("/api/passengers/{passengerId}/balance"),
 
-    UPDATE_BALANCE("/api/passengers/{passengerId}/balance");
+    UPDATE_BALANCE("/api/passengers/{passengerId}/balance"),
+
+    RATE_PASSENGER("/api/passengers/{passengerId}/rate");
 
     private final String uri;
 

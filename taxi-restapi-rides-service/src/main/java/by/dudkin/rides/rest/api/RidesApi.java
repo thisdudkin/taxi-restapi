@@ -157,7 +157,7 @@ public interface RidesApi {
             @ApiResponse(responseCode = "404", description = "Ride not found.")
         }
     )
-    @PostMapping(value = "/rides/{rideId}/assign", produces = "application/json", consumes = "application/json")
+    @PostMapping(value = "/rides/{rideId}/assign", produces = "application/json")
     ResponseEntity<RideResponse> assignDriver(
         @Parameter(name = "rideId", description = "The ID of the ride.", required = true, in = ParameterIn.PATH)
         @PathVariable("rideId") UUID rideId,
