@@ -44,6 +44,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 logging:
+  config: classpath:logback-docker.xml
   level:
     liquibase: INFO
     org:

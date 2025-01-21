@@ -6,6 +6,7 @@ spring:
 
 # Avoid some debugging logs at startup
 logging:
+  config: classpath:logback-docker.xml
   level:
     org:
       springframework:

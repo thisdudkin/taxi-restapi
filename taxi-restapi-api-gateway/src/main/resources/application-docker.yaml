@@ -72,6 +72,9 @@ spring:
         jwt:
           jwk-set-uri: http://keycloak:8080/realms/taxi-realm/protocol/openid-connect/certs
 
+logging:
+  config: classpath:logback-docker.xml
+
 eureka:
   client:
     register-with-eureka: true

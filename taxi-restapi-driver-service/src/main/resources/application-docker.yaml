@@ -65,6 +65,7 @@ management:
       application: driver-service
 
 logging:
+  config: classpath:logback-docker.xml
   level:
     liquibase: INFO
     org:
