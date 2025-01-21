@@ -1,7 +1,10 @@
 package by.dudkin.notification.service;
 
 import by.dudkin.common.util.ErrorMessages;
+import by.dudkin.notification.advice.DriverNotFoundException;
 import by.dudkin.notification.domain.RideRequest;
+import by.dudkin.notification.dto.DriverResponse;
+import by.dudkin.notification.feign.DriverClient;
 import by.dudkin.notification.kafka.domain.AcceptedRide;
 import by.dudkin.notification.metric.MetricUtils;
 import by.dudkin.notification.service.dao.DriverDao;
@@ -11,6 +14,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -28,12 +32,14 @@ public class NotificationService {
 
     private final RideDao rideDao;
     private final DriverDao driverDao;
+    private final DriverClient driverClient;
 
     private final AtomicInteger activeLongPollingConnections = new AtomicInteger(0);
 
-    public NotificationService(RideDao rideDao, DriverDao driverDao, MeterRegistry meterRegistry) {
+    public NotificationService(RideDao rideDao, DriverDao driverDao, MeterRegistry meterRegistry, DriverClient driverClient) {
         this.rideDao = rideDao;
         this.driverDao = driverDao;
+        this.driverClient = driverClient;
         Gauge.builder(MetricUtils.ACTIVE_LONG_POLLING_METRIC, this, NotificationService::getActiveLongPollingConnections)
             .register(meterRegistry);
     }
@@ -50,7 +56,16 @@ public class NotificationService {
         activeLongPollingConnections.decrementAndGet();
     }
 
-    public CompletableFuture<Set<RideRequest>> getNearbyRequestsForDriverAsync(UUID driverId, long timeout) {
+    private UUID getDriverId(String username) {
+        ResponseEntity<DriverResponse> response = driverClient.search(username);
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            throw new DriverNotFoundException(ErrorMessages.DRIVER_NOT_FOUND);
+        }
+        return response.getBody().id();
+    }
+
+    public CompletableFuture<Set<RideRequest>> getNearbyRequestsForDriverAsync(String username, long timeout) {
+        UUID driverId = getDriverId(username);
         return CompletableFuture.supplyAsync(() -> {
             try {
                 incrementActiveLongPollingConnections();
