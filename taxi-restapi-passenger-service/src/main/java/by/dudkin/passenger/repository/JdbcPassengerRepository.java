@@ -25,23 +25,21 @@ public class JdbcPassengerRepository {
     }
 
     public BalanceResponse<UUID> getBalance(UUID passengerId) {
-        final AtomicReference<BigDecimal> balance = new AtomicReference<>();
-        jdbcTemplate.execute("select balance from passengers " +
-                             "where id = ?", (PreparedStatementCallback<?>) ps -> {
-            ps.setObject(1, passengerId);
-            try (ResultSet resultSet = ps.executeQuery()) {
-                if (resultSet.next()) {
-                    balance.set(resultSet.getBigDecimal("balance"));
+        return jdbcTemplate.execute(
+            "select balance from passengers where id = ?",
+            (PreparedStatementCallback<BalanceResponse<UUID>>) ps -> {
+                ps.setObject(1, passengerId);
+
+                try (ResultSet resultSet = ps.executeQuery()) {
+                    if (resultSet.next()) {
+                        BigDecimal balance = resultSet.getBigDecimal("balance");
+                        return new BalanceResponse<>(passengerId, balance);
+                    } else {
+                        throw new PassengerNotFoundException(ErrorMessages.PASSENGER_NOT_FOUND);
+                    }
                 }
             }
-            return null;
-        });
-
-        if (balance.get() == null) {
-            throw new PassengerNotFoundException(ErrorMessages.PASSENGER_NOT_FOUND);
-        }
-
-        return new BalanceResponse<>(passengerId, balance.get());
+        );
     }
 
 }
