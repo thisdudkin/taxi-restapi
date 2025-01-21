@@ -2,6 +2,7 @@ package by.dudkin.passenger.service;
 
 import by.dudkin.common.util.BalanceResponse;
 import by.dudkin.common.util.PaginatedResponse;
+import by.dudkin.passenger.rest.dto.request.FeedbackRequest;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import org.springframework.data.domain.Pageable;
@@ -22,4 +23,5 @@ public interface PassengerService {
     void delete(UUID passengerId);
     BalanceResponse<UUID> checkBalance(UUID passengerId);
     void updateBalance(UUID passengerId, BigDecimal amount);
+    PassengerResponse ratePassenger(UUID passengerId, FeedbackRequest feedbackRequest);
 }

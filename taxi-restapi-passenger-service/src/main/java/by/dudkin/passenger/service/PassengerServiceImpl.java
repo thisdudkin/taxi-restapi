@@ -5,23 +5,21 @@ import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.passenger.entity.Passenger;
 import by.dudkin.passenger.mapper.PassengerMapper;
+import by.dudkin.passenger.repository.JdbcPassengerRepository;
 import by.dudkin.passenger.repository.PassengerRepository;
 import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
+import by.dudkin.passenger.rest.dto.request.FeedbackRequest;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Alexander Dudkin
@@ -31,9 +29,9 @@ import java.util.concurrent.atomic.AtomicReference;
 @RequiredArgsConstructor
 public class PassengerServiceImpl implements PassengerService {
 
-    private final JdbcTemplate jdbcTemplate;
     private final PassengerMapper passengerMapper;
     private final PassengerRepository passengerRepository;
+    private final JdbcPassengerRepository jdbcPassengerRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -83,34 +81,18 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     public BalanceResponse<UUID> checkBalance(UUID passengerId) {
-        final AtomicReference<BigDecimal> balance = new AtomicReference<>();
-        jdbcTemplate.execute("select balance from passengers " +
-            "where id = ?", (PreparedStatementCallback<?>) ps -> {
-            ps.setObject(1, passengerId);
-            try (ResultSet resultSet = ps.executeQuery()) {
-                if (resultSet.next()) {
-                    balance.set(resultSet.getBigDecimal("balance"));
-                }
-            }
-            return null;
-        });
-
-        if (balance.get() == null) {
-            throw new PassengerNotFoundException(ErrorMessages.PASSENGER_NOT_FOUND);
-        }
-
-        return new BalanceResponse<>(passengerId, balance.get());
+        return jdbcPassengerRepository.getBalance(passengerId);
     }
 
     @Override
     public void updateBalance(UUID passengerId, BigDecimal amount) {
-        jdbcTemplate.execute("update passengers set balance = balance - ? " +
-            "where id = ?", (PreparedStatementCallback<?>) updatePassenger -> {
-            updatePassenger.setBigDecimal(1, amount);
-            updatePassenger.setObject(2, passengerId);
-            updatePassenger.execute();
-            return null;
-        });
+        passengerRepository.updateBalance(passengerId, amount);
+    }
+
+    @Override
+    public PassengerResponse ratePassenger(UUID passengerId, FeedbackRequest feedbackRequest) {
+        passengerRepository.ratePassenger(UUID.randomUUID(), passengerId, feedbackRequest.rating());
+        return passengerMapper.toResponse(getOrThrow(passengerId));
     }
 
     Passenger getOrThrow(UUID id) {

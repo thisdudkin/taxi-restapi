@@ -2,6 +2,7 @@ package by.dudkin.passenger.rest.api;
 
 import by.dudkin.common.util.BalanceResponse;
 import by.dudkin.common.util.PaginatedResponse;
+import by.dudkin.passenger.rest.dto.request.FeedbackRequest;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -167,6 +168,22 @@ public interface PassengerApi {
         @PathVariable("passengerId") UUID passengerId,
         @Parameter(name = "amount", description = "The amount to adjust the balance by.", required = true)
         @RequestParam BigDecimal amount
+    );
+
+    @Operation(
+        operationId = "ratePassenger",
+        summary = "Rate passenger",
+        tags = {"passenger"},
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Passenger rated successfully."),
+            @ApiResponse(responseCode = "404", description = "Passenger not found."),
+            @ApiResponse(responseCode = "400", description = "Invalid input.")
+        }
+    )
+    @PostMapping(value = "/{passengerId}/rate", produces = "application/json")
+    ResponseEntity<PassengerResponse> ratePassenger(
+        @PathVariable UUID passengerId,
+        @Valid @RequestBody FeedbackRequest feedbackRequest
     );
 
 

@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import static by.dudkin.passenger.util.PassengerEndpoints.DELETE_PASSENGER;
 import static by.dudkin.passenger.util.PassengerEndpoints.LIST_PASSENGERS;
+import static by.dudkin.passenger.util.PassengerEndpoints.RATE_PASSENGER;
 import static by.dudkin.passenger.util.PassengerEndpoints.SAVE_PASSENGER;
 import static by.dudkin.passenger.util.PassengerEndpoints.SEARCH_PASSENGER;
 import static by.dudkin.passenger.util.PassengerEndpoints.GET_PASSENGER;
@@ -66,6 +67,7 @@ public class WebSecurityConfig {
             .requestMatchers(HttpMethod.GET, SEARCH_PASSENGER.getURI()).hasAnyRole("PASSENGER", "DRIVER", "ADMIN")
             .requestMatchers(HttpMethod.GET, GET_PASSENGER.getURI()).hasAnyRole("PASSENGER", "DRIVER", "ADMIN")
             .requestMatchers(HttpMethod.PUT, UPDATE_PASSENGER.getURI()).hasAnyRole("PASSENGER", "ADMIN")
+            .requestMatchers(HttpMethod.POST, RATE_PASSENGER.getURI()).hasAnyRole("DRIVER", "ADMIN")
             .requestMatchers(HttpMethod.DELETE, DELETE_PASSENGER.getURI()).hasRole("ADMIN")
             .anyRequest().authenticated()
         );
