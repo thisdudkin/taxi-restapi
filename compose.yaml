@@ -221,24 +221,6 @@ services:
     depends_on:
       - zookeeper
 
-  elasticsearch:
-    image: elasticsearch:7.17.22
-    hostname: elasticsearch
-    container_name: elasticsearch
-    deploy:
-      resources:
-        limits:
-          memory: 256M
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://elasticsearch:9200"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-    env_file:
-      - docker/env/elasticsearch.env
-    ports:
-      - "9200:9200"
-
   keycloak:
     container_name: keycloak
     image: quay.io/keycloak/keycloak:26.0
@@ -278,6 +260,50 @@ services:
           memory: 256M
     ports:
       - "9091:9090"
+
+# Elasticsearch / Logstash / Kibana
+
+  elasticsearch:
+    image: elasticsearch:7.17.22
+    hostname: elasticsearch
+    container_name: elasticsearch
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://elasticsearch:9200" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    env_file:
+      - docker/env/elasticsearch.env
+    ports:
+      - "9200:9200"
+
+  kibana:
+    image: kibana:7.17.22
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  logstash:
+    image: logstash:7.17.22
+    container_name: logstash
+    volumes:
+      - ./docs/logstash:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5000:5000"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
 
 networks:
   default:

@@ -20,6 +20,9 @@ keycloak:
   realm: taxi-realm
   server-url: http://keycloak:8080
 
+logging:
+  config: classpath:logback-docker.xml
+
 management:
   endpoints:
     web:

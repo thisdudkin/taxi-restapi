@@ -21,6 +21,7 @@ spring:
           jwk-set-uri: http://keycloak:8080/realms/taxi-realm/protocol/openid-connect/certs
 
 logging:
+  config: classpath:logback-docker.xml
   level:
     liquibase: INFO
     org:

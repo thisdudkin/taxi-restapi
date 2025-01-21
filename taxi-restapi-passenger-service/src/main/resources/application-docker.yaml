@@ -45,6 +45,7 @@ management:
       application: passenger-service
 
 logging:
+  config: classpath:logback-docker.xml
   level:
     liquibase: INFO
     org:
