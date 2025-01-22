@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: taxi-app-config
+  namespace: taxi-app
+data:
+  SPRING_PROFILES_ACTIVE: "docker"
+  # Environment Variables Here
+

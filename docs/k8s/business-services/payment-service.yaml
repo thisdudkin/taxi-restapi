@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+  namespace: taxi-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-type
+                    operator: In
+                    values:
+                      - business-services
+      containers:
+        - name: payment-service
+          image: rainaddan/taxi-restapi-payment-service
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 8085
+          envFrom:
+            - configMapRef:
+                name: taxi-app-config
+            - secretRef:
+                name: taxi-app-secrets
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+  namespace: taxi-app
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8085
+      targetPort: 8085
+  selector:
+    app: payment-service

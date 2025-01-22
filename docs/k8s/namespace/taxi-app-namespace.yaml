@@ -1,0 +1,7 @@
+apiVersion:       v1
+kind:             Namespace
+metadata:
+  name:           taxi-app
+  labels:
+    name:         taxi-app
+    environment:  local

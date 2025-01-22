@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication-server
+  namespace: taxi-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authentication-server
+  template:
+    metadata:
+      labels:
+        app: authentication-server
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-type
+                    operator: In
+                    values:
+                      - main-services
+      containers:
+        - name: authentication-server
+          image: rainaddan/taxi-restapi-authentication-server
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 8087
+          envFrom:
+            - configMapRef:
+                name: taxi-app-config
+            - secretRef:
+                name: taxi-app-secrets
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentication-server
+  namespace: taxi-app
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8087
+      targetPort: 8087
+  selector:
+    app: authentication-server
