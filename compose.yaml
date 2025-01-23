@@ -239,6 +239,16 @@ services:
     volumes:
       - ./keycloak/:/opt/keycloak/data/import/
 
+  tracing-server:
+    image: openzipkin/zipkin
+    container_name: tracing-server
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    ports:
+      - "9411:9411"
+
 # Grafana / Prometheus
 
   grafana-server:
