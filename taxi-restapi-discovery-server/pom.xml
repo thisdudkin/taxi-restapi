@@ -33,6 +33,13 @@
             <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
 
+        <!-- Logging -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>${logstash-encoder.version}</version>
+        </dependency>
+
         <!-- JAXB is required since Java 9 -->
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>

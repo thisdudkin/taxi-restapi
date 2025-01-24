@@ -45,6 +45,12 @@ logging:
       springframework: INFO
 
 management:
+  endpoint:
+    health:
+      show-details: always
+  tracing:
+    sampling:
+      probability: 1.0
   endpoints:
     web:
       exposure:
@@ -61,6 +67,9 @@ management:
         "[http.server.requests]": true
     tags:
       application: notification-service
+  zipkin:
+    tracing:
+      endpoint: http://tracing-server:9411/api/v2/spans
 
 eureka:
   client:
