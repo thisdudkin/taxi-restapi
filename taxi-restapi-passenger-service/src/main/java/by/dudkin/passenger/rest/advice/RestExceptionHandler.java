@@ -2,6 +2,7 @@ package by.dudkin.passenger.rest.advice;
 
 import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.passenger.i18n.I18nUtils;
+import by.dudkin.passenger.rest.advice.custom.PassengerAlreadyExistsException;
 import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static java.util.stream.Collectors.joining;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ProblemDetail.forStatusAndDetail;
@@ -45,6 +47,14 @@ public class RestExceptionHandler {
 
         logger.info("Passenger not found -> {}", e.getMessage());
         return ResponseEntity.status(404).body(forStatusAndDetail(NOT_FOUND, message));
+    }
+
+    @ExceptionHandler(PassengerAlreadyExistsException.class)
+    public ResponseEntity<ProblemDetail> handlePassengerAlreadyExistsException(PassengerAlreadyExistsException e) {
+        String message = i18nUtils.getMessage(ErrorMessages.PASSENGER_ALREADY_EXISTS_WITH_SAME_USERNAME);
+
+        logger.warn("Attempt to save passenger with taken username -> {}", e.getMessage());
+        return ResponseEntity.status(409).body(forStatusAndDetail(CONFLICT, message));
     }
 
     @ExceptionHandler(Exception.class)

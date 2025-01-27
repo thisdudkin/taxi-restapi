@@ -7,6 +7,7 @@ import by.dudkin.driver.domain.Driver;
 import by.dudkin.driver.kafka.producer.AvailableDriverProducer;
 import by.dudkin.driver.mapper.DriverMapper;
 import by.dudkin.driver.repository.DriverRepository;
+import by.dudkin.driver.rest.advice.custom.DriverAlreadyExistsException;
 import by.dudkin.driver.rest.advice.custom.DriverNotFoundException;
 import by.dudkin.driver.rest.advice.custom.NoAvailableDriverException;
 import by.dudkin.driver.rest.dto.request.AvailableDriver;
@@ -71,8 +72,16 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverResponse create(DriverRequest driverRequest, String username) {
         Driver driver = driverMapper.toDriver(driverRequest);
-        driver.setUsername(username);
-        return driverMapper.toResponse(driverRepository.save(driver));
+        driverRepository.findByUsername(username)
+            .ifPresentOrElse(d -> {
+                    throw new DriverAlreadyExistsException(ErrorMessages.DRIVER_ALREADY_EXISTS_WITH_SAME_USERNAME);
+                },
+                () -> {
+                    driver.setUsername(username);
+                    driverRepository.save(driver);
+                }
+            );
+        return driverMapper.toResponse(driver);
     }
 
     @Override
