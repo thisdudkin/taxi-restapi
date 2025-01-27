@@ -18,6 +18,7 @@ public final class ErrorMessages {
      * Passenger Service Errors
      */
     public static final String PASSENGER_NOT_FOUND = "error.passenger.notfound";
+    public static final String PASSENGER_ALREADY_EXISTS_WITH_SAME_USERNAME = "error.passenger.already.exists.with.same.username";
 
     /**
      * Driver Service Errors
@@ -27,6 +28,7 @@ public final class ErrorMessages {
     public static final String ASSIGNMENT_NOT_FOUND = "error.assignment.notfound";
     public static final String ASSIGNMENT_ALREADY_COMPLETED = "error.assignment.completed";
 
+    public static final String DRIVER_ALREADY_EXISTS_WITH_SAME_USERNAME = "error.driver.already.exists.with.same.username";
     public static final String DUPLICATE_LICENSE_PLATE = "error.duplicate.licensePlate";
     public static final String CAR_ALREADY_BOOKED = "error.car.already.booked";
 

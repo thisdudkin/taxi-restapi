@@ -4,6 +4,7 @@ import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.driver.i18n.I18nUtils;
 import by.dudkin.driver.rest.advice.custom.AssignmentNotFoundException;
 import by.dudkin.driver.rest.advice.custom.CarNotFoundException;
+import by.dudkin.driver.rest.advice.custom.DriverAlreadyExistsException;
 import by.dudkin.driver.rest.advice.custom.DriverNotFoundException;
 import by.dudkin.driver.rest.advice.custom.DuplicateLicensePlateException;
 import by.dudkin.driver.rest.advice.custom.EntityValidationConflictException;
@@ -90,6 +91,14 @@ public class RestExceptionHandler {
         String message = i18nUtils.getMessage(ErrorMessages.DUPLICATE_LICENSE_PLATE);
 
         logger.warn("Attempt to create car with duplicate license plate: {}", e.getMessage());
+        return ResponseEntity.status(409).body(forStatusAndDetail(CONFLICT, message));
+    }
+
+    @ExceptionHandler(DriverAlreadyExistsException.class)
+    public ResponseEntity<ProblemDetail> handleDriverAlreadyExistsException(DriverAlreadyExistsException e) {
+        String message = i18nUtils.getMessage(ErrorMessages.DRIVER_ALREADY_EXISTS_WITH_SAME_USERNAME);
+
+        logger.warn("Attempt to create driver with duplicate username: {}", e.getMessage());
         return ResponseEntity.status(409).body(forStatusAndDetail(CONFLICT, message));
     }
 

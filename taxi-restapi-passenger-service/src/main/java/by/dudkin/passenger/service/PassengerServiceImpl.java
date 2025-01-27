@@ -7,6 +7,7 @@ import by.dudkin.passenger.entity.Passenger;
 import by.dudkin.passenger.mapper.PassengerMapper;
 import by.dudkin.passenger.repository.JdbcPassengerRepository;
 import by.dudkin.passenger.repository.PassengerRepository;
+import by.dudkin.passenger.rest.advice.custom.PassengerAlreadyExistsException;
 import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
 import by.dudkin.passenger.rest.dto.request.FeedbackRequest;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
@@ -60,8 +61,15 @@ public class PassengerServiceImpl implements PassengerService {
     @Override
     public PassengerResponse create(PassengerRequest passengerRequest, String username) {
         Passenger passenger = passengerMapper.toPassenger(passengerRequest);
-        passenger.setUsername(username);
-        passengerRepository.save(passenger);
+        passengerRepository.findByUsername(username)
+            .ifPresentOrElse(p -> {
+                    throw new PassengerAlreadyExistsException(ErrorMessages.PASSENGER_ALREADY_EXISTS_WITH_SAME_USERNAME);
+                },
+                () -> {
+                    passenger.setUsername(username);
+                    passengerRepository.save(passenger);
+                }
+            );
         return passengerMapper.toResponse(passenger);
     }
 
