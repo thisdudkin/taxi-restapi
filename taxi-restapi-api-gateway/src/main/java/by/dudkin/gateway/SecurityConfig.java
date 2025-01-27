@@ -38,6 +38,7 @@ class SecurityConfig {
 
         http.authorizeExchange(exchange -> exchange
             .pathMatchers("/api/auth/register", "/api/auth/login", "/api/auth/refresh").permitAll()
+            .pathMatchers("/fallback/**").permitAll()
             .pathMatchers("/actuator/**").permitAll()
             .anyExchange().authenticated()
         );
