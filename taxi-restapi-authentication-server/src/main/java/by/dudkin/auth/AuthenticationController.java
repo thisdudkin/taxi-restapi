@@ -2,6 +2,7 @@ package by.dudkin.auth;
 
 import by.dudkin.metric.MetricUtils;
 import by.dudkin.metric.TrackMetric;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,7 @@ class AuthenticationController {
     }
 
     @PostMapping("/register/admin")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<Void> registerAdmin(@RequestBody @Valid RegistrationRequest req) {
         authenticationService.saveAdmin(req);
         return new ResponseEntity<>(HttpStatus.CREATED);
