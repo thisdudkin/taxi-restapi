@@ -46,6 +46,7 @@ class WebSecurityConfig {
         );
 
         http.authorizeHttpRequests(auth -> auth
+            .requestMatchers("/actuator/**").permitAll()
             .requestMatchers(HttpMethod.DELETE, "/api/promocodes/expired").hasRole("ADMIN")
             .anyRequest().authenticated()
         );
