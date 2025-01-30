@@ -44,9 +44,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: balance
-                  type: DECIMAL(19, 2)
-              - column:
                   name: created_at
                   type: TIMESTAMP WITHOUT TIMEZONE
                   defaultValueComputed: CURRENT_TIMESTAMP

@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
@@ -25,6 +26,8 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,6 +42,9 @@ class DriverServiceImplTests {
 
     @Mock
     private DriverRepository driverRepository;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private DriverServiceImpl driverService;
@@ -106,6 +112,7 @@ class DriverServiceImplTests {
         when(driverMapper.toDriver(driverRequest)).thenReturn(driver);
         when(driverRepository.save(driver)).thenReturn(driver);
         when(driverMapper.toResponse(driver)).thenReturn(driverResponse);
+        doNothing().when(eventPublisher).publishEvent(any());
 
         // Act
         DriverResponse response = driverService.create(driverRequest, "x-username");

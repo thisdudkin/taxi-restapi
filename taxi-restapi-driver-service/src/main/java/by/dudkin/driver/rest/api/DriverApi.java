@@ -179,25 +179,6 @@ public interface DriverApi {
     ResponseEntity<DriverResponse> markOffline(@Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH) @PathVariable UUID driverId);
 
     @Operation(
-        operationId = "updateDriverBalance",
-        summary = "Update driver balance",
-        description = "Updates the balance of a driver by ID.",
-        tags = {"driver"},
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Balance updated successfully."),
-            @ApiResponse(responseCode = "404", description = "Driver not found."),
-            @ApiResponse(responseCode = "400", description = "Invalid input.")
-        }
-    )
-    @PutMapping(value = "/{driverId}/balance", produces = "application/json")
-    ResponseEntity<Void> updateBalance(
-        @Parameter(name = "driverId", description = "The ID of the driver.", required = true, in = ParameterIn.PATH)
-        @PathVariable("driverId") UUID driverId,
-        @Parameter(name = "amount", description = "The amount to adjust the balance by.", required = true)
-        @RequestParam BigDecimal amount
-    );
-
-    @Operation(
         operationId = "rateDriver",
         summary = "Rate driver",
         tags = {"driver"},

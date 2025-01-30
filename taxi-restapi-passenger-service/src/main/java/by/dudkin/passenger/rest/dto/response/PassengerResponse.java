@@ -21,8 +21,6 @@ public record PassengerResponse(
 
         PaymentMethod paymentMethod,
 
-        BigDecimal balance,
-
         Double rating,
 
         LocalDateTime createdAt,

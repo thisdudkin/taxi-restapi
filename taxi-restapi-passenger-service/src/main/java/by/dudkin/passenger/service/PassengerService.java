@@ -21,7 +21,5 @@ public interface PassengerService {
     PassengerResponse create(PassengerRequest passengerRequest, String username);
     PassengerResponse update(UUID passengerId, PassengerRequest passengerRequest);
     void delete(UUID passengerId);
-    BalanceResponse<UUID> checkBalance(UUID passengerId);
-    void updateBalance(UUID passengerId, BigDecimal amount);
     PassengerResponse ratePassenger(UUID passengerId, FeedbackRequest feedbackRequest);
 }

@@ -61,9 +61,6 @@ public class Passenger implements BaseEntity<UUID> {
     @Column(name = "payment_method", nullable = false)
     private PaymentMethod preferredPaymentMethod = PaymentMethod.CASH;
 
-    @Column
-    private BigDecimal balance;
-
     @Builder.Default
     @ElementCollection
     @CollectionTable(name = "passenger_ratings", joinColumns = @JoinColumn(name = "passenger_id"))

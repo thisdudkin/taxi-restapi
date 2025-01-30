@@ -126,51 +126,6 @@ public interface PassengerApi {
     ResponseEntity<Void> delete(@Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH) @PathVariable("passengerId") UUID passengerId);
 
     @Operation(
-        operationId = "checkPassengerBalance",
-        summary = "Check passenger balance",
-        description = "Returns the balance of a passenger by ID.",
-        tags = {"passenger"},
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Balance retrieved successfully.",
-                content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = BalanceResponse.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "404",
-                description = "Passenger not found."
-            )
-        }
-    )
-    @GetMapping(value = "/{passengerId}/balance", produces = "application/json")
-    ResponseEntity<BalanceResponse<UUID>> checkBalance(
-        @Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH)
-        @PathVariable("passengerId") UUID passengerId
-    );
-
-    @Operation(
-        operationId = "updatePassengerBalance",
-        summary = "Update passenger balance",
-        description = "Updates the balance of a passenger by ID.",
-        tags = {"passenger"},
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Balance updated successfully."),
-            @ApiResponse(responseCode = "404", description = "Passenger not found."),
-            @ApiResponse(responseCode = "400", description = "Invalid input.")
-        }
-    )
-    @PutMapping(value = "/{passengerId}/balance", produces = "application/json")
-    ResponseEntity<Void> updateBalance(
-        @Parameter(name = "passengerId", description = "The ID of the passenger.", required = true, in = ParameterIn.PATH)
-        @PathVariable("passengerId") UUID passengerId,
-        @Parameter(name = "amount", description = "The amount to adjust the balance by.", required = true)
-        @RequestParam BigDecimal amount
-    );
-
-    @Operation(
         operationId = "ratePassenger",
         summary = "Rate passenger",
         tags = {"passenger"},

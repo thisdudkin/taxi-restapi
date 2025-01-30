@@ -33,6 +33,5 @@ public interface DriverService {
     DriverResponse markOffline(UUID driverId);
 
     DriverResponse rateDriver(UUID driverId, FeedbackRequest feedbackRequest);
-    void updateBalance(UUID driverId, BigDecimal amount);
 
 }

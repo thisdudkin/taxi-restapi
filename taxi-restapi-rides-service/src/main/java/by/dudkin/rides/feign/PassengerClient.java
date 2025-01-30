@@ -26,7 +26,4 @@ public interface PassengerClient {
     @GetMapping("/search")
     PassengerResponse getPassengerByUsername(@RequestParam String username);
 
-    @GetMapping("/{passengerId}/balance")
-    BalanceResponse<UUID> checkBalance(@PathVariable UUID passengerId);
-
 }

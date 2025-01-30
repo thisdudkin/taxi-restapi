@@ -38,9 +38,6 @@ databaseChangeLog:
                   constraints:
                     checkConstraint: "birthdate <= CURRENT_DATE"
               - column:
-                  name: balance
-                  type: DECIMAL(8, 2)
-              - column:
                   name: status
                   type: VARCHAR(64)
                   constraints:

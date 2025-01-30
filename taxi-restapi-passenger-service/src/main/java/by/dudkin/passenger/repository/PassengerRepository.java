@@ -18,10 +18,6 @@ public interface PassengerRepository extends JpaRepository<Passenger, UUID> {
     Optional<Passenger> findByUsername(String username);
 
     @Modifying
-    @Query("update Passenger p set p.balance = p.balance - :amount where p.id = :passengerId")
-    void updateBalance(UUID passengerId, BigDecimal amount);
-
-    @Modifying
     @Query(value = "insert into passenger_ratings (id, passenger_id, rating) values (:id, :passengerId, :rating)", nativeQuery = true)
     void ratePassenger(UUID id, UUID passengerId, int rating);
 

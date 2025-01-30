@@ -4,6 +4,7 @@ import by.dudkin.common.util.BalanceResponse;
 import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.rides.domain.Ride;
 import by.dudkin.rides.feign.PassengerClient;
+import by.dudkin.rides.feign.PaymentClient;
 import by.dudkin.rides.feign.PromocodeClient;
 import by.dudkin.rides.rest.advice.custom.InsufficientFundsException;
 import by.dudkin.rides.rest.dto.response.PassengerResponse;
@@ -22,11 +23,13 @@ import java.util.UUID;
 @Service
 public class RideCreationService {
 
+    private final PaymentClient paymentClient;
     private final PassengerClient passengerClient;
     private final PriceCalculator priceCalculator;
     private final PromocodeClient promocodeClient;
 
-    public RideCreationService(PassengerClient passengerClient, PriceCalculator priceCalculator, PromocodeClient promocodeClient) {
+    public RideCreationService(PaymentClient paymentClient, PassengerClient passengerClient, PriceCalculator priceCalculator, PromocodeClient promocodeClient) {
+        this.paymentClient = paymentClient;
         this.passengerClient = passengerClient;
         this.priceCalculator = priceCalculator;
         this.promocodeClient = promocodeClient;
@@ -61,7 +64,7 @@ public class RideCreationService {
     }
 
     private void validatePassenger(UUID passengerId, BigDecimal amount) {
-        BalanceResponse<UUID> response = passengerClient.checkBalance(passengerId);
+        BalanceResponse<UUID> response = paymentClient.getBalance(passengerId);
         if (response.amount().compareTo(amount) < 0) {
             throw new InsufficientFundsException(ErrorMessages.INSUFFICIENT_FUNDS);
         }
