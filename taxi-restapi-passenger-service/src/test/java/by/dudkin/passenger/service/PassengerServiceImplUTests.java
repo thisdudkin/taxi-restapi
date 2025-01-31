@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
@@ -24,6 +25,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,6 +41,9 @@ class PassengerServiceImplUTests {
 
     @Mock
     private PassengerRepository passengerRepository;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private PassengerServiceImpl passengerService;
@@ -106,6 +112,7 @@ class PassengerServiceImplUTests {
         when(passengerMapper.toPassenger(passengerRequest)).thenReturn(passenger);
         when(passengerRepository.save(passenger)).thenReturn(passenger);
         when(passengerMapper.toResponse(passenger)).thenReturn(passengerResponse);
+        doNothing().when(eventPublisher).publishEvent(any());
 
         // Act
         PassengerResponse response = passengerService.create(passengerRequest, "x-username");

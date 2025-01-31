@@ -72,9 +72,6 @@ public class Driver implements BaseEntity<UUID> {
     @Embedded
     private PersonalInfo info;
 
-    @Column(name = "balance")
-    private BigDecimal balance;
-
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

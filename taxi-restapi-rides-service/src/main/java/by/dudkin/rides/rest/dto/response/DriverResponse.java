@@ -19,8 +19,6 @@ public record DriverResponse(
 
     PersonalInfo info,
 
-    BigDecimal balance,
-
     DriverStatus status,
 
     Integer experience,

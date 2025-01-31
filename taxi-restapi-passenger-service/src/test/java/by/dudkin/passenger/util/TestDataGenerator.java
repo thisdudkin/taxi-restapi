@@ -75,7 +75,6 @@ public abstract class TestDataGenerator {
     public static Passenger randomPassenger() {
         return Passenger.builder()
             .info(randomInfo())
-            .balance(randomBalance())
             .preferredPaymentMethod(randomPayment())
             .build();
     }
@@ -94,7 +93,6 @@ public abstract class TestDataGenerator {
             randomString(),
             randomInfo(),
             randomPayment(),
-            randomBalance(),
             randomRating(),
             LocalDateTime.now(),
             LocalDateTime.now()

@@ -5,14 +5,15 @@ import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.passenger.entity.Passenger;
 import by.dudkin.passenger.mapper.PassengerMapper;
-import by.dudkin.passenger.repository.JdbcPassengerRepository;
 import by.dudkin.passenger.repository.PassengerRepository;
 import by.dudkin.passenger.rest.advice.custom.PassengerAlreadyExistsException;
 import by.dudkin.passenger.rest.advice.custom.PassengerNotFoundException;
+import by.dudkin.passenger.rest.dto.request.AccountRequest;
 import by.dudkin.passenger.rest.dto.request.FeedbackRequest;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class PassengerServiceImpl implements PassengerService {
 
     private final PassengerMapper passengerMapper;
     private final PassengerRepository passengerRepository;
-    private final JdbcPassengerRepository jdbcPassengerRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional(readOnly = true)
@@ -70,6 +71,7 @@ public class PassengerServiceImpl implements PassengerService {
                     passengerRepository.save(passenger);
                 }
             );
+        eventPublisher.publishEvent(new AccountRequest(passenger.getId(), passengerRequest.balance()));
         return passengerMapper.toResponse(passenger);
     }
 
@@ -85,16 +87,6 @@ public class PassengerServiceImpl implements PassengerService {
     public void delete(UUID passengerId) {
         Passenger passenger = getOrThrow(passengerId);
         passengerRepository.delete(passenger);
-    }
-
-    @Override
-    public BalanceResponse<UUID> checkBalance(UUID passengerId) {
-        return jdbcPassengerRepository.getBalance(passengerId);
-    }
-
-    @Override
-    public void updateBalance(UUID passengerId, BigDecimal amount) {
-        passengerRepository.updateBalance(passengerId, amount);
     }
 
     @Override

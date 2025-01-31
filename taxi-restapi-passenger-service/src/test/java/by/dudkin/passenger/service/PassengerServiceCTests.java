@@ -1,5 +1,6 @@
 package by.dudkin.passenger.service;
 
+import by.dudkin.common.util.KafkaConstants;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.passenger.entity.Passenger;
 import by.dudkin.passenger.repository.PassengerRepository;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +33,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @Testcontainers
 @Transactional
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "kafka"})
 @Sql("classpath:data.sql")
+@EmbeddedKafka(partitions = 1, topics = {KafkaConstants.PASSENGER_ACCOUNT_REQUESTS_TOPIC})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class PassengerServiceCTests {
 

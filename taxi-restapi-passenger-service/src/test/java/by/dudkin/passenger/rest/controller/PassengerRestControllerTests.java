@@ -1,5 +1,6 @@
 package by.dudkin.passenger.rest.controller;
 
+import by.dudkin.common.util.KafkaConstants;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.passenger.rest.dto.request.PassengerRequest;
 import by.dudkin.passenger.rest.dto.response.PassengerResponse;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -36,9 +38,10 @@ import static by.dudkin.passenger.util.TestJwtUtils.createHeadersWithToken;
  * @author Alexander Dudkin
  */
 @Testcontainers
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "kafka"})
 @Sql("classpath:data.sql")
 @Import(TestSecurityConfig.class)
+@EmbeddedKafka(partitions = 1, topics = {KafkaConstants.PASSENGER_ACCOUNT_REQUESTS_TOPIC})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PassengerRestControllerTests {
 

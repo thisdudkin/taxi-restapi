@@ -46,7 +46,7 @@ public class WebSecurityConfiguration {
 
         http.authorizeHttpRequests(auth -> auth
             .requestMatchers("/actuator/**").permitAll()
-            .anyRequest().hasAnyRole("DRIVER", "ADMIN")
+            .anyRequest().authenticated()
         );
 
         return http.build();

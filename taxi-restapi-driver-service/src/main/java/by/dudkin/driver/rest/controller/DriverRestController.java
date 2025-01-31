@@ -81,12 +81,6 @@ public class DriverRestController implements DriverApi {
     }
 
     @Override
-    public ResponseEntity<Void> updateBalance(UUID driverId, BigDecimal amount) {
-        driverService.updateBalance(driverId, amount);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @Override
     public ResponseEntity<DriverResponse> rateDriver(UUID driverId, FeedbackRequest feedbackRequest) {
         return new ResponseEntity<>(driverService.rateDriver(driverId, feedbackRequest), HttpStatus.OK);
     }

@@ -73,8 +73,7 @@ public class AvailableDriverService {
         jdbcTemplate.execute("select dca.driver_id, dca.car_id " +
             "from driver_car_assignments dca " +
             "join public.drivers d on dca.driver_id = d.id " +
-            "where d.status = 'READY' and dca.status = 'ACTIVE' and d.id = any(?::uuid[]) " +
-            "order by d.balance limit 1", (PreparedStatementCallback<?>) selectDrivers -> {
+            "where d.status = 'READY' and dca.status = 'ACTIVE' and d.id = any(?::uuid[]) ", (PreparedStatementCallback<?>) selectDrivers -> {
             selectDrivers.setArray(1, selectDrivers.getConnection()
                 .createArrayOf("uuid", drivers.stream().map(DriverLocationDocument::driverId).toArray()));
             try (ResultSet driverSet = selectDrivers.executeQuery()) {

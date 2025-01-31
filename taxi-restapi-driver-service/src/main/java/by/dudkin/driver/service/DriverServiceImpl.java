@@ -10,6 +10,7 @@ import by.dudkin.driver.repository.DriverRepository;
 import by.dudkin.driver.rest.advice.custom.DriverAlreadyExistsException;
 import by.dudkin.driver.rest.advice.custom.DriverNotFoundException;
 import by.dudkin.driver.rest.advice.custom.NoAvailableDriverException;
+import by.dudkin.driver.rest.dto.request.AccountRequest;
 import by.dudkin.driver.rest.dto.request.AvailableDriver;
 import by.dudkin.driver.rest.dto.request.DriverRequest;
 import by.dudkin.driver.rest.dto.request.FeedbackRequest;
@@ -20,6 +21,7 @@ import by.dudkin.driver.util.DriverStatusTransition;
 import by.dudkin.driver.util.DriverStatusTransitionValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,7 @@ public class DriverServiceImpl implements DriverService {
 
     private final DriverMapper driverMapper;
     private final DriverRepository driverRepository;
+    private final ApplicationEventPublisher eventPublisher;
     private final AvailableDriverService availableDriverService;
     private final AvailableDriverProducer availableDriverProducer;
     private final DriverStatusTransitionValidator transitionValidator;
@@ -81,6 +84,7 @@ public class DriverServiceImpl implements DriverService {
                     driverRepository.save(driver);
                 }
             );
+        eventPublisher.publishEvent(new AccountRequest(driver.getId(), driverRequest.balance()));
         return driverMapper.toResponse(driver);
     }
 
@@ -151,11 +155,6 @@ public class DriverServiceImpl implements DriverService {
     public DriverResponse rateDriver(UUID driverId, FeedbackRequest feedbackRequest) {
         driverRepository.rateDriver(driverId, feedbackRequest.rating());
         return driverMapper.toResponse(getOrThrow(driverId));
-    }
-
-    @Override
-    public void updateBalance(UUID driverId, BigDecimal amount) {
-        driverRepository.updateBalance(driverId, amount);
     }
 
 }

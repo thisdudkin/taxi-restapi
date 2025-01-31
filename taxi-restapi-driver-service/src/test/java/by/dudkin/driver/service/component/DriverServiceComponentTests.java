@@ -81,7 +81,6 @@ class DriverServiceComponentTests {
         // Assert
         assertThat(driverResponse).isNotNull();
         assertThat(driverResponse.info().getFirstName()).isNotEmpty();
-        assertThat(driverResponse.balance()).isNotZero();
     }
 
     @Test

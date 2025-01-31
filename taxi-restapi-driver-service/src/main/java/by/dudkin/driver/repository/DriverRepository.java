@@ -22,10 +22,6 @@ public interface DriverRepository extends JpaRepository<Driver, UUID> {
     Optional<Driver> findWithAssignmentsAndCarsById(UUID id);
 
     @Modifying
-    @Query("update Driver d set d.balance = d.balance + :amount where d.id = :driverId")
-    void updateBalance(UUID driverId, BigDecimal amount);
-
-    @Modifying
     @Query(value = "insert into driver_ratings (driver_id, rating) values (:driverId, :rating)", nativeQuery = true)
     void rateDriver(UUID driverId, int rating);
 

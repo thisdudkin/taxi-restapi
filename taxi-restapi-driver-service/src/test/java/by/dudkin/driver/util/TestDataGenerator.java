@@ -113,7 +113,6 @@ public class TestDataGenerator {
     public static Driver randomDriver() {
         return Driver.builder()
             .info(randomInfo())
-            .balance(randomBalance())
             .experience(randomExperience())
             .build();
     }
@@ -140,7 +139,6 @@ public class TestDataGenerator {
             randomId(),
             randomUsername(),
             randomInfo(),
-            randomBalance(),
             DriverStatus.READY,
             randomExperience(),
             randomRating(),

@@ -2,6 +2,7 @@ package by.dudkin.rides.service;
 
 import by.dudkin.common.util.BalanceResponse;
 import by.dudkin.rides.feign.PassengerClient;
+import by.dudkin.rides.feign.PaymentClient;
 import by.dudkin.rides.repository.RideRepository;
 import by.dudkin.rides.rest.dto.request.RideRequest;
 import by.dudkin.rides.rest.dto.response.PassengerResponse;
@@ -59,6 +60,9 @@ class RideServiceImplCTests {
     @MockBean
     PassengerClient passengerClient;
 
+    @MockBean
+    private PaymentClient paymentClient;
+
     @Test
     void shouldFindRide() {
         // Act
@@ -77,7 +81,7 @@ class RideServiceImplCTests {
         PassengerResponse passengerResponse = TestDataGenerator.randomResponse();
         BalanceResponse<UUID> balanceResponse = new BalanceResponse<>(passengerResponse.id(), BigDecimal.valueOf(Integer.MAX_VALUE));
         Mockito.when(passengerClient.getPassengerByUsername("mock-username")).thenReturn(passengerResponse);
-        Mockito.when(passengerClient.checkBalance(passengerResponse.id())).thenReturn(balanceResponse);
+        Mockito.when(paymentClient.getBalance(passengerResponse.id())).thenReturn(balanceResponse);
 
         // Act
         RideResponse response = rideService.create(request, "mock-username");

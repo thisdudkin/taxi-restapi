@@ -176,7 +176,7 @@ class RideRestControllerTests {
         UUID id = passengerResponse.id();
         BalanceResponse<UUID> balanceResponse = new BalanceResponse<>(id, BigDecimal.valueOf(Integer.MAX_VALUE));
         Mockito.when(passengerClient.getPassengerByUsername(username)).thenReturn(passengerResponse);
-        Mockito.when(passengerClient.checkBalance(id)).thenReturn(balanceResponse);
+        Mockito.when(paymentClient.getBalance(id)).thenReturn(balanceResponse);
 
         // Act
         ResponseEntity<RideResponse> response = restTemplate.exchange(BASE_URI, HttpMethod.POST, new HttpEntity<>(request, headers), RideResponse.class);

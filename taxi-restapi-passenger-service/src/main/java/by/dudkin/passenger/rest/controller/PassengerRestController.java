@@ -70,17 +70,6 @@ public class PassengerRestController implements PassengerApi {
     }
 
     @Override
-    public ResponseEntity<BalanceResponse<UUID>> checkBalance(UUID passengerId) {
-        return new ResponseEntity<>(passengerService.checkBalance(passengerId), HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Void> updateBalance(UUID passengerId, BigDecimal amount) {
-        passengerService.updateBalance(passengerId, amount);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @Override
     public ResponseEntity<PassengerResponse> ratePassenger(UUID passengerId, FeedbackRequest feedbackRequest) {
         return new ResponseEntity<>(passengerService.ratePassenger(passengerId, feedbackRequest), OK);
     }

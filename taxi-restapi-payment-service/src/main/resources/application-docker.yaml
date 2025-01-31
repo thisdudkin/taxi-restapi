@@ -4,6 +4,23 @@ spring:
   application:
     name: payment-service
 
+  kafka:
+    bootstrap-servers: kafka:29092
+    consumer:
+      group-id: payment-service-consumer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+    producer:
+      acks: all
+      retries: 3
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    listener:
+      missing-topics-fatal: false
+      concurrency: 3
+
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USER}

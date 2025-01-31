@@ -93,7 +93,6 @@ public abstract class TestDataGenerator {
             id,
             randomString(),
             randomInfo(),
-            randomBalance(),
             DriverStatus.READY,
             ThreadLocalRandom.current().nextInt(1, 6),
             randomRatingDouble(),
@@ -136,7 +135,6 @@ public abstract class TestDataGenerator {
             username,
             randomInfo(),
             randomPayment(),
-            randomBalance(),
             randomRatingDouble(),
             LocalDateTime.now(),
             LocalDateTime.now()
@@ -149,7 +147,6 @@ public abstract class TestDataGenerator {
             randomString(),
             randomInfo(),
             randomPayment(),
-            randomBalance(),
             randomRatingDouble(),
             LocalDateTime.now(),
             LocalDateTime.now()
