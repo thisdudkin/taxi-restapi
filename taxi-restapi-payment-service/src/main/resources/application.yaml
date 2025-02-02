@@ -1,83 +1,34 @@
-server.port: 8085
-
 spring:
   application:
     name: payment-service
-
-  boot:
-    admin:
-      client:
+  config:
+    import:
+      - "vault://"
+      - "optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}"
+  cloud:
+    vault:
+      token: keyword
+      scheme: http
+      authentication: token
+      host: 127.0.0.1
+      port: 8200
+      kv:
         enabled: true
-        instance:
-          name: payment-service
-        url: http://localhost:8086
-
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: payment-service-consumer
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      auto-offset-reset: earliest
-      enable-auto-commit: false
-    producer:
-      acks: all
-      retries: 3
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    listener:
-      missing-topics-fatal: false
-      concurrency: 3
-
-  datasource:
-    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/transactions_db}
-    username: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASS:root}
-
+        backend: taxi-restapi
+        default-context: dev
+        profile-separator: /
   liquibase:
     enabled: true
-  messages:
-    basename: messages
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://localhost:9090/realms/taxi-realm/protocol/openid-connect/certs
-
-  jpa:
-    hibernate:
-      ddl-auto: none
-    open-in-view: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-
-management:
-  health:
-    livenessstate:
-      enabled: true
-    readinessstate:
-      enabled: true
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  endpoint:
-    health:
-      show-details: always
-  tracing:
-    sampling:
-      probability: 1.0
-  zipkin:
-    tracing:
-      endpoint: http://loclahost:9411/api/v2/spans
-
-logging:
-  level:
-    liquibase: INFO
-    org:
-      springframework: INFO
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+    import:
+      - "vault://"
+      - "configserver:http://config-server:8888"
+  cloud:
+    vault:
+      host: vault
+      port: 8200

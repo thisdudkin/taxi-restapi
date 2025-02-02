@@ -1,64 +1,32 @@
-server.port: 8087
-
 spring:
   application:
     name: authentication-server
-
-  boot:
-    admin:
-      client:
+  config:
+    import:
+      - "vault://"
+      - "optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}"
+  cloud:
+    vault:
+      token: keyword
+      scheme: http
+      authentication: token
+      host: 127.0.0.1
+      port: 8200
+      kv:
         enabled: true
-        instance:
-          name: authentication-server
-        url: http://localhost:8086
+        backend: taxi-restapi
+        default-context: dev
+        profile-separator: /
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://localhost:9090/realms/taxi-realm/protocol/openid-connect/certs
-
-  messages:
-    basename: messages/messages
-
-keycloak:
-  client:
-    id: taxi-client
-    secret: ${KEYCLOAK_CLIENT_SECRET}
-  realm: taxi-realm
-  server-url: http://localhost:9090
-
-management:
-  health:
-    livenessstate:
-      enabled: true
-    readinessstate:
-      enabled: true
-  endpoint:
-    health:
-      show-details: always
-  tracing:
-    sampling:
-      probability: 1.0
-  zipkin:
-    tracing:
-      endpoint: http://localhost:9411/api/v2/spans
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-  metrics:
-    distribution:
-      percentiles-histogram:
-        "[http.server.requests]": true
-    tags:
-      application: authentication-server
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+    import:
+      - "vault://"
+      - "configserver:http://config-server:8888"
+  cloud:
+    vault:
+      host: vault
+      port: 8200

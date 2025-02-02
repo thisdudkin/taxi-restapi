@@ -5,6 +5,7 @@ import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.common.util.PaginatedResponse;
 import by.dudkin.rides.domain.Ride;
 import by.dudkin.rides.feign.DriverClient;
+import by.dudkin.rides.feign.ServiceUnavailableException;
 import by.dudkin.rides.kafka.domain.AcceptedRideEvent;
 import by.dudkin.rides.mapper.RideMapper;
 import by.dudkin.rides.repository.RideRepository;
@@ -22,7 +23,9 @@ import by.dudkin.rides.utils.GeospatialUtils;
 import by.dudkin.rides.utils.PriceCalculator;
 import by.dudkin.rides.utils.RideStatusTransition;
 import by.dudkin.rides.utils.RideStatusTransitionValidator;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +42,7 @@ import java.util.UUID;
 /**
  * @author Alexander Dudkin
  */
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -122,8 +126,8 @@ public class RideServiceImpl implements RideService {
         Ride ride = getOrThrow(rideId);
         RideStatusTransition transition = new RideStatusTransition(ride.getStatus(), RideStatus.ASSIGNED);
         transitionValidator.validate(transition, new BeanPropertyBindingResult(transition, transition.getClass().getSimpleName()));
-        DriverResponse driver = driverClient.getDriverByUsername(username);
-        AvailableDriver assignmentByUsername = driverClient.getAssignmentByUsername(username);
+        DriverResponse driver = getDriverByUsername(username);
+        AvailableDriver assignmentByUsername = getAssignmentByUsername(username);
         ride = rideAssignmentService.assignDriverToRide(ride, assignmentByUsername, driver);
         Ride saved = rideRepository.save(ride);
         eventPublisher.publishEvent(new AcceptedRideEvent(saved.getId(), saved.getDriverId(), saved.getCarId()));
@@ -153,6 +157,26 @@ public class RideServiceImpl implements RideService {
         transitionValidator.validate(transition, new BeanPropertyBindingResult(transition, transition.getClass().getSimpleName()));
         ride.setStatus(newStatus);
         return rideRepository.save(ride);
+    }
+
+    @CircuitBreaker(name = "driver-service", fallbackMethod = "fallbackDriverByUsername")
+    private DriverResponse getDriverByUsername(String username) {
+        return driverClient.getDriverByUsername(username);
+    }
+
+    @CircuitBreaker(name = "driver-service", fallbackMethod = "fallbackAssignmentByUsername")
+    private AvailableDriver getAssignmentByUsername(String username) {
+        return driverClient.getAssignmentByUsername(username);
+    }
+
+    private DriverResponse fallbackDriverByUsername(Exception ex) {
+        log.warn("Fallback method was triggered for getDriverByUsername", ex);
+        throw new ServiceUnavailableException("Driver service is unavailable.");
+    }
+
+    private DriverResponse fallbackAssignmentByUsername(Exception ex) {
+        log.warn("Fallback method was triggered for getAssignmentByUsername", ex);
+        throw new ServiceUnavailableException("Driver service is unavailable.");
     }
 
 }

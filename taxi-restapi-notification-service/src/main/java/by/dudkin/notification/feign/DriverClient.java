@@ -5,23 +5,17 @@ import by.dudkin.notification.dto.DriverResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.UUID;
 
 /**
  * @author Alexander Dudkin
  */
 @FeignClient(
-    value = "drivers-service",
+    value = "driver-service",
     path = "/api/drivers",
     configuration = OpenFeignBearerTokenInterceptorConfiguration.class
 )
 public interface DriverClient {
-
-    @GetMapping("/{driverId}")
-    ResponseEntity<DriverResponse> getDriver(@PathVariable UUID driverId);
 
     @GetMapping("/search")
     ResponseEntity<DriverResponse> search(@RequestParam String username);

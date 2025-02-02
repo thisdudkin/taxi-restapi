@@ -28,6 +28,7 @@
         <module>taxi-restapi-api-gateway</module>
         <module>taxi-restapi-promocode-service</module>
         <module>taxi-restapi-admin-server</module>
+        <module>taxi-restapi-config-server</module>
     </modules>
 
     <properties>

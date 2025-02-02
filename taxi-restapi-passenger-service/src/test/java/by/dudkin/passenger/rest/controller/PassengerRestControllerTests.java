@@ -9,9 +9,13 @@ import by.dudkin.passenger.util.TestJwtUtils;
 import by.dudkin.passenger.util.TestSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.cloud.config.client.ConfigClientAutoConfiguration;
+import org.springframework.cloud.vault.config.VaultAutoConfiguration;
+import org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -43,6 +47,11 @@ import static by.dudkin.passenger.util.TestJwtUtils.createHeadersWithToken;
 @Import(TestSecurityConfig.class)
 @EmbeddedKafka(partitions = 1, topics = {KafkaConstants.PASSENGER_ACCOUNT_REQUESTS_TOPIC})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@EnableAutoConfiguration(exclude = {
+    ConfigClientAutoConfiguration.class,
+    VaultAutoConfiguration.class,
+    VaultReactiveAutoConfiguration.class
+})
 class PassengerRestControllerTests {
 
     @Container
