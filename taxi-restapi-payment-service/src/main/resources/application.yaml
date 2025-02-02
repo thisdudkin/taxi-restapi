@@ -4,6 +4,14 @@ spring:
   application:
     name: payment-service
 
+  boot:
+    admin:
+      client:
+        enabled: true
+        instance:
+          name: payment-service
+        url: http://localhost:8086
+
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
@@ -42,6 +50,26 @@ spring:
       ddl-auto: none
     open-in-view: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+management:
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://loclahost:9411/api/v2/spans
 
 logging:
   level:

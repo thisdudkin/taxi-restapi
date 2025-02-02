@@ -4,6 +4,14 @@ spring:
   application:
     name: rides-service
 
+  boot:
+    admin:
+      client:
+        enabled: true
+        instance:
+          name: rides-service
+        url: http://localhost:8086
+
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
@@ -55,12 +63,24 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
 
 management:
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
   endpoints:
     web:
       exposure:
-        include:
-          - health
-          - prometheus
+        include: '*'
   prometheus:
     metrics:
       export:

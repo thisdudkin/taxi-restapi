@@ -4,6 +4,25 @@ spring:
   application:
     name: discovery-server
 
+  boot:
+    admin:
+      client:
+        enabled: true
+        instance:
+          name: discovery-server
+        url: http://localhost:8086
+
+management:
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
 # Avoid some debugging logs at startup
 logging:
   level:

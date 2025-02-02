@@ -27,6 +27,7 @@
         <module>taxi-restapi-payment-service</module>
         <module>taxi-restapi-api-gateway</module>
         <module>taxi-restapi-promocode-service</module>
+        <module>taxi-restapi-admin-server</module>
     </modules>
 
     <properties>
@@ -45,6 +46,7 @@
         <liquibase.version>4.30.0</liquibase.version>
         <shedlock.version>6.2.0</shedlock.version>
         <logstash-encoder.version>7.2</logstash-encoder.version>
+        <spring.boot.admin.version>3.2.2</spring.boot.admin.version>
 
         <!-- Maven plugins -->
         <java.version>21</java.version>

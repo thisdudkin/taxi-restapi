@@ -43,6 +43,164 @@ services:
       - "3030:3030"
     restart: unless-stopped
 
+  passenger-service:
+    image: rainaddan/taxi-restapi-passenger-service
+    container_name: passenger-service
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    env_file:
+      - docker/env/passenger-service.env
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://passenger-service:8081/actuator/health" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      tracing-server:
+        condition: service_started
+      logstash:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+
+  driver-service:
+    image: rainaddan/taxi-restapi-driver-service
+    container_name: driver-service
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    env_file:
+      - docker/env/driver-service.env
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://driver-service:8082/actuator/health" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      tracing-server:
+        condition: service_started
+      logstash:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
+
+  rides-service:
+    image: rainaddan/taxi-restapi-rides-service
+    container_name: rides-service
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    env_file:
+      - docker/env/rides-service.env
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://rides-service:8083/actuator/health" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      tracing-server:
+        condition: service_started
+      logstash:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "8083:8083"
+    restart: unless-stopped
+
+  notification-service:
+    image: rainaddan/taxi-restapi-notification-service
+    container_name: notification-service
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    env_file:
+      - docker/env/notification-service.env
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://notification-server:8084/actuator/health" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      tracing-server:
+        condition: service_started
+      logstash:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "8084:8084"
+    restart: unless-stopped
+
+  payment-service:
+    image: rainaddan/taxi-restapi-payment-service
+    container_name: payment-service
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    env_file:
+      - docker/env/payment-service.env
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://payment-server:8085/actuator/health" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      tracing-server:
+        condition: service_started
+      logstash:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8085:8085"
+    restart: unless-stopped
+
+  admin-server:
+    image: rainaddan/taxi-restapi-admin-server
+    container_name: admin-server
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8086
+    ports:
+      - "8086:8086"
+
   authentication-server:
     image: rainaddan/taxi-restapi-authentication-server
     container_name: authentication-server
@@ -70,119 +228,6 @@ services:
       - "8087:8087"
     restart: unless-stopped
 
-  driver-service:
-    image: rainaddan/taxi-restapi-driver-service
-    container_name: driver-service
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-    env_file:
-      - docker/env/driver-service.env
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://driver-service:8082/actuator/health"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-    depends_on:
-      tracing-server:
-        condition: service_started
-      logstash:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-      elasticsearch:
-        condition: service_healthy
-      kafka:
-        condition: service_started
-    ports:
-      - "8082:8082"
-
-  notification-service:
-    image: rainaddan/taxi-restapi-notification-service
-    container_name: notification-service
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-    env_file:
-      - docker/env/notification-service.env
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://notification-server:8084/actuator/health"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-    depends_on:
-      tracing-server:
-        condition: service_started
-      logstash:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-      kafka:
-        condition: service_started
-    ports:
-      - "8084:8084"
-    restart: unless-stopped
-
-  passenger-service:
-    image: rainaddan/taxi-restapi-passenger-service
-    container_name: passenger-service
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-    env_file:
-      - docker/env/passenger-service.env
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://passenger-service:8081/actuator/health"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-    depends_on:
-      tracing-server:
-        condition: service_started
-      logstash:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    ports:
-      - "8081:8081"
-    restart: unless-stopped
-
-  payment-service:
-    image: rainaddan/taxi-restapi-payment-service
-    container_name: payment-service
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-    env_file:
-      - docker/env/payment-service.env
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://payment-server:8085/actuator/health"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-    depends_on:
-      tracing-server:
-        condition: service_started
-      logstash:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    ports:
-      - "8085:8085"
-    restart: unless-stopped
-
   promocode-service:
     image: rainaddan/taxi-restapi-promocode-service
     container_name: promocode-service
@@ -208,35 +253,6 @@ services:
         condition: service_healthy
     ports:
       - "8088:8088"
-    restart: unless-stopped
-
-  rides-service:
-    image: rainaddan/taxi-restapi-rides-service
-    container_name: rides-service
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-    env_file:
-      - docker/env/rides-service.env
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://rides-service:8083/actuator/health"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-    depends_on:
-      tracing-server:
-        condition: service_started
-      logstash:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-      kafka:
-        condition: service_started
-    ports:
-      - "8083:8083"
     restart: unless-stopped
 
   # Extra Services
@@ -335,7 +351,7 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./keycloak/:/opt/keycloak/data/import/
+      - ./docs/keycloak/:/opt/keycloak/data/import/
 
   tracing-server:
     image: openzipkin/zipkin
@@ -388,6 +404,7 @@ services:
       - docker/env/elasticsearch.env
     ports:
       - "9200:9200"
+    restart: unless-stopped
 
   kibana:
     image: kibana:7.17.22

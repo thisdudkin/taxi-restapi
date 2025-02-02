@@ -4,6 +4,14 @@ spring:
   application:
     name: drivers-service
 
+  boot:
+    admin:
+      client:
+        enabled: true
+        instance:
+          name: driver-service
+        url: http://admin-server:8086
+
   kafka:
     bootstrap-servers: kafka:29092
     consumer:
@@ -47,6 +55,11 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 management:
+  health:
+    readinessstate:
+      enabled: true
+    livenessstate:
+      enabled: true
   endpoint:
     health:
       show-details: always
@@ -59,9 +72,7 @@ management:
   endpoints:
     web:
       exposure:
-        include:
-          - health
-          - prometheus
+        include: '*'
   prometheus:
     metrics:
       export:

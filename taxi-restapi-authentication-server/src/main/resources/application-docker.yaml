@@ -4,6 +4,14 @@ spring:
   application:
     name: authentication-server
 
+  boot:
+    admin:
+      client:
+        enabled: true
+        instance:
+          name: authentication-server
+        url: http://admin-server:8086
+
   security:
     oauth2:
       resourceserver:
@@ -24,6 +32,11 @@ logging:
   config: classpath:logback-docker.xml
 
 management:
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
   endpoint:
     health:
       show-details: always
@@ -36,9 +49,7 @@ management:
   endpoints:
     web:
       exposure:
-        include:
-          - health
-          - prometheus
+        include: '*'
   prometheus:
     metrics:
       export:
