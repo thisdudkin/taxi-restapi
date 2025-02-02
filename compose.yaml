@@ -1,4 +1,21 @@
 services:
+  config-server:
+    image: rainaddan/taxi-restapi-config-server
+    container_name: config-server
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    healthcheck:
+      test: [ "CMD", "curl", "-I", "http://config-server:8888" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    environment:
+      SERVER_PORT: 8888
+    ports:
+      - "8888:8888"
+
   discovery-server:
     image: rainaddan/taxi-restapi-discovery-server
     container_name: discovery-server
@@ -11,7 +28,11 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8761
     depends_on:
+      config-server:
+        condition: service_healthy
       logstash:
         condition: service_healthy
       tracing-server:
@@ -32,7 +53,13 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 3030
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       discovery-server:
         condition: service_healthy
       logstash:
@@ -50,14 +77,18 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/passenger-service.env
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://passenger-service:8081/actuator/health" ]
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8081
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       tracing-server:
         condition: service_started
       logstash:
@@ -77,14 +108,18 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/driver-service.env
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://driver-service:8082/actuator/health" ]
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8082
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       tracing-server:
         condition: service_started
       logstash:
@@ -108,14 +143,18 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/rides-service.env
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://rides-service:8083/actuator/health" ]
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8083
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       tracing-server:
         condition: service_started
       logstash:
@@ -137,14 +176,18 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/notification-service.env
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://notification-server:8084/actuator/health" ]
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8084
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       tracing-server:
         condition: service_started
       logstash:
@@ -166,14 +209,18 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/payment-service.env
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://payment-server:8085/actuator/health" ]
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8085
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       tracing-server:
         condition: service_started
       logstash:
@@ -193,7 +240,14 @@ services:
       resources:
         limits:
           memory: 512M
+    healthcheck:
+      test: [ "CMD", "curl", "-I", "http://admin-server:8086" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
     depends_on:
+      config-server:
+        condition: service_healthy
       discovery-server:
         condition: service_healthy
     environment:
@@ -208,14 +262,18 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/authentication-server.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://authentication-server:8087/actuator/health"]
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8087
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       logstash:
         condition: service_healthy
       discovery-server:
@@ -235,14 +293,18 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/promocode-service.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://promocode-service:8088/actuator/health"]
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8088
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       tracing-server:
         condition: service_started
       logstash:
@@ -255,7 +317,7 @@ services:
       - "8088:8088"
     restart: unless-stopped
 
-  # Extra Services
+  # Infrastructure
 
   postgres:
     image: postgis/postgis:17-master
@@ -268,8 +330,10 @@ services:
       - "5433:5432"
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: docker
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
       POSTGRES_DB: postgres
+    secrets:
+      - postgres_password
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docker/script/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -344,6 +408,8 @@ services:
           memory: 512M
     env_file:
       - docker/env/keycloak.env
+    secrets:
+      - postgres_password
     ports:
       - "9090:8080"
     command: [ "start-dev", "--import-realm" ]
@@ -362,8 +428,7 @@ services:
           memory: 512M
     ports:
       - "9411:9411"
-
-# Grafana / Prometheus
+    restart: unless-stopped
 
   grafana-server:
     build: ./docker/grafana
@@ -384,8 +449,6 @@ services:
           memory: 256M
     ports:
       - "9091:9090"
-
-# Elasticsearch / Logstash / Kibana
 
   elasticsearch:
     image: elasticsearch:7.17.22
@@ -445,3 +508,7 @@ volumes:
     driver: local
   keycloak:
     driver: local
+
+secrets:
+  postgres_password:
+    file: ./docker/env/postgres_secrets.txt

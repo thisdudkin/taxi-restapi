@@ -2,6 +2,22 @@
 
 [![Build Status](https://github.com/thisdudkin/cab-aggregator/actions/workflows/maven-build.yml/badge.svg)](https://github.com/thisdudkin/cab-aggregator/actions/workflows/maven-build.yml)
 
+## Running the Hashicorp Vault Container
+
+Before starting any microservice, ensure you set the required secrets in Vault: `POSTGRES_PASSWORD` and `KEYCLOAK_CLIENT_SECRET`.
+
+Use the following command to start the Vault container:
+
+```bash
+docker run -d \
+  --name vault \
+  -p 8200:8200 \
+  -e VAULT_DEV_ROOT_TOKEN_ID=keyword \
+  -e VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200 \
+  --restart unless-stopped \
+  vault:1.13.3
+```
+
 ## Starting services locally without Docker
 
 Every microservice is a Spring Boot application and can be started locally using IDE or `../mvnw spring-boot:run` command.

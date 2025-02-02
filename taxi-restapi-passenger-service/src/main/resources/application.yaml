@@ -1,93 +1,36 @@
-server.port: 8081
-
 spring:
   application:
-    name: passengers-service
-
-  boot:
-    admin:
-      client:
+    name: passenger-service
+  config:
+    import:
+      - "vault://"
+      - "optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}"
+  cloud:
+    vault:
+      token: keyword
+      scheme: http
+      authentication: token
+      host: 127.0.0.1
+      port: 8200
+      kv:
         enabled: true
-        instance:
-          name: passengers-service
-        url: http://localhost:8086
-
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: passenger-service-consumer
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      auto-offset-reset: earliest
-      enable-auto-commit: false
-    producer:
-      acks: all
-      retries: 3
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    listener:
-      missing-topics-fatal: false
-      concurrency: 3
-
+        backend: taxi-restapi
+        default-context: dev
+        profile-separator: /
   liquibase:
     enabled: true
   messages:
-    basename: messages
+    basename: messages/messages
 
-  datasource:
-    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/passengers_db}
-    username: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASS:root}
-
-  jpa:
-    hibernate:
-      ddl-auto: none
-    open-in-view: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://localhost:9090/realms/taxi-realm/protocol/openid-connect/certs
-
-management:
-  health:
-    livenessstate:
-      enabled: true
-    readinessstate:
-      enabled: true
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-  metrics:
-    distribution:
-      percentiles-histogram:
-        "[http.server.requests]": true
-    tags:
-      application: passenger-service
-  tracing:
-    sampling:
-      probability: 1.0
-  zipkin:
-    tracing:
-      endpoint: http://tracing-server:9411/api/v2/spans
-
-logging:
-  level:
-    liquibase: INFO
-    org:
-      springframework: INFO
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+    import:
+      - "vault://"
+      - "configserver:http://config-server:8888"
+  cloud:
+    vault:
+      host: vault
+      port: 8200

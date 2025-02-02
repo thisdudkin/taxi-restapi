@@ -1,7 +1,7 @@
 package by.dudkin.auth;
 
-import by.dudkin.metric.MetricUtils;
-import by.dudkin.metric.TrackMetric;
+import by.dudkin.auth.metric.MetricUtils;
+import by.dudkin.auth.metric.TrackMetric;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.keycloak.representations.AccessTokenResponse;

@@ -15,14 +15,11 @@ import java.util.UUID;
  * @author Alexander Dudkin
  */
 @FeignClient(
-    value = "drivers-service",
+    value = "driver-service",
     path = "/api/",
     configuration = OpenFeignBearerTokenInterceptorConfiguration.class
 )
 public interface DriverClient {
-
-    @GetMapping("/drivers/{driverId}")
-    DriverResponse getDriverById(@PathVariable UUID driverId);
 
     @GetMapping("/drivers/search")
     DriverResponse getDriverByUsername(@RequestParam String username);

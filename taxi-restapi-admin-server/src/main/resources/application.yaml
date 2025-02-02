@@ -1,2 +1,12 @@
-server:
-  port: ${SERVER_PORT:8086}
+spring:
+  application:
+    name: admin-server
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+    import: configserver:http://config-server:8888

@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+    vault:
+      enabled: false
+keycloak:
+  server-url: localhost
+  realm: taxi-realm
