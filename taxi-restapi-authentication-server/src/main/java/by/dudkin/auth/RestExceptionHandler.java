@@ -1,7 +1,7 @@
 package by.dudkin.auth;
 
-import by.dudkin.i18n.I18nUtils;
-import by.dudkin.i18n.LocaleException;
+import by.dudkin.auth.i18n.I18nUtils;
+import by.dudkin.auth.i18n.LocaleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatusCode;

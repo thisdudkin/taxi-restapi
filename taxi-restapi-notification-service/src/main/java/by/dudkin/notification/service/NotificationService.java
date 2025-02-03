@@ -5,10 +5,12 @@ import by.dudkin.notification.advice.DriverNotFoundException;
 import by.dudkin.notification.domain.RideRequest;
 import by.dudkin.notification.dto.DriverResponse;
 import by.dudkin.notification.feign.DriverClient;
+import by.dudkin.notification.feign.ServiceUnavailableException;
 import by.dudkin.notification.kafka.domain.AcceptedRide;
 import by.dudkin.notification.metric.MetricUtils;
 import by.dudkin.notification.service.dao.DriverDao;
 import by.dudkin.notification.service.dao.RideDao;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +58,7 @@ public class NotificationService {
         activeLongPollingConnections.decrementAndGet();
     }
 
+    @CircuitBreaker(name = "driver-service", fallbackMethod = "fallbackDriverSearch")
     private UUID getDriverId(String username) {
         ResponseEntity<DriverResponse> response = driverClient.search(username);
         if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
@@ -111,6 +114,11 @@ public class NotificationService {
                 throw new RuntimeException("Failed to remove accepted ride due to database error", e);
             }
         }
+    }
+
+    private ResponseEntity<DriverResponse> fallbackDriverSearch(Exception ex) {
+        log.warn("Fallback method was triggered for search method.", ex);
+        throw new ServiceUnavailableException("Driver service unavailable. Try again later");
     }
 
 }

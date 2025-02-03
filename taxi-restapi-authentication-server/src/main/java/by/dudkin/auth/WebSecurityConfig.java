@@ -51,6 +51,7 @@ class WebSecurityConfig {
         );
 
         http.authorizeHttpRequests(authz -> authz
+            .requestMatchers("/injected").permitAll()
             .requestMatchers("/api/auth/login").permitAll()
             .requestMatchers("/api/auth/refresh").permitAll()
             .requestMatchers("/api/auth/register").permitAll()

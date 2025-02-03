@@ -6,11 +6,14 @@ import by.dudkin.rides.domain.Ride;
 import by.dudkin.rides.feign.PassengerClient;
 import by.dudkin.rides.feign.PaymentClient;
 import by.dudkin.rides.feign.PromocodeClient;
+import by.dudkin.rides.feign.ServiceUnavailableException;
 import by.dudkin.rides.rest.advice.custom.InsufficientFundsException;
 import by.dudkin.rides.rest.dto.response.PassengerResponse;
 import by.dudkin.rides.rest.dto.response.Promocode;
 import by.dudkin.rides.utils.GeospatialUtils;
 import by.dudkin.rides.utils.PriceCalculator;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,6 +23,7 @@ import java.util.UUID;
 /**
  * @author Alexander Dudkin
  */
+@Slf4j
 @Service
 public class RideCreationService {
 
@@ -36,7 +40,7 @@ public class RideCreationService {
     }
 
     public Ride createRide(Ride ride, String promocode, String username) {
-        PassengerResponse passenger = passengerClient.getPassengerByUsername(username);
+        PassengerResponse passenger = getPassengerByUsername(username);
         ride.setPassengerId(passenger.id());
         double distance = GeospatialUtils.calculateDistance(ride.getFrom().getLat(), ride.getFrom().getLng(),
             ride.getTo().getLat(), ride.getTo().getLng());
@@ -53,7 +57,7 @@ public class RideCreationService {
     }
 
     private BigDecimal applyPromocode(BigDecimal price, String code) {
-        Promocode promocode = promocodeClient.validate(code);
+        Promocode promocode = getPromocode(code);
         if (promocode != null) {
             BigDecimal discountPercentage = BigDecimal.valueOf(promocode.discount()).divide(BigDecimal.valueOf(100));
             BigDecimal discount = price.multiply(discountPercentage);
@@ -64,10 +68,40 @@ public class RideCreationService {
     }
 
     private void validatePassenger(UUID passengerId, BigDecimal amount) {
-        BalanceResponse<UUID> response = paymentClient.getBalance(passengerId);
+        BalanceResponse<UUID> response = getBalance(passengerId);
         if (response.amount().compareTo(amount) < 0) {
             throw new InsufficientFundsException(ErrorMessages.INSUFFICIENT_FUNDS);
         }
+    }
+
+    @CircuitBreaker(name = "payment-service", fallbackMethod = "fallbackGetBalance")
+    private BalanceResponse<UUID> getBalance(UUID passengerId) {
+        return paymentClient.getBalance(passengerId);
+    }
+
+    @CircuitBreaker(name = "passenger-service", fallbackMethod = "fallbackPassengerByUsername")
+    private PassengerResponse getPassengerByUsername(String username) {
+        return passengerClient.getPassengerByUsername(username);
+    }
+
+    @CircuitBreaker(name = "promocode-service", fallbackMethod = "fallbackGetPromocode")
+    private Promocode getPromocode(String code) {
+        return promocodeClient.validate(code);
+    }
+
+    private PassengerResponse fallbackPassengerByUsername(Exception ex) {
+        log.warn("Fallback method was triggered for getPassengerByUsername", ex);
+        throw new ServiceUnavailableException("Passenger service is unavailable.");
+    }
+
+    private BalanceResponse<UUID> fallbackGetBalance(Exception ex) {
+        log.warn("Fallback method was triggered for getBalance", ex);
+        throw new ServiceUnavailableException("Payment service is unavailable.");
+    }
+
+    private Promocode fallbackGetPromocode(Exception ex) {
+        log.warn("Fallback method was triggered for getPromocode", ex);
+        throw new ServiceUnavailableException("Promocode service is unavailable.");
     }
 
 }

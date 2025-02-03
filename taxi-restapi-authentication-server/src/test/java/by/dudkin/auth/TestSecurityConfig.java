@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -23,6 +24,8 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
+
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Alexander Dudkin
@@ -59,6 +62,11 @@ class TestSecurityConfig {
 
         return http.build();
 
+    }
+
+    @Bean
+    JwtDecoder jwtDecoder() {
+        return mock();
     }
 
     @Bean
