@@ -4,6 +4,14 @@ spring:
   application:
     name: promocode-service
 
+  boot:
+    admin:
+      client:
+        enabled: true
+        instance:
+          name: promocode-service
+        url: http://admin-server:8086
+
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USER}
@@ -21,6 +29,15 @@ spring:
           jwk-set-uri: http://keycloak:8080/realms/taxi-realm/protocol/openid-connect/certs
 
 management:
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
   endpoint:
     health:
       show-details: always

@@ -4,6 +4,14 @@ spring:
   application:
     name: passengers-service
 
+  boot:
+    admin:
+      client:
+        enabled: true
+        instance:
+          name: passengers-service
+        url: http://localhost:8086
+
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
@@ -44,12 +52,18 @@ spring:
           jwk-set-uri: http://localhost:9090/realms/taxi-realm/protocol/openid-connect/certs
 
 management:
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
   endpoints:
     web:
       exposure:
-        include:
-          - health
-          - prometheus
+        include: '*'
   prometheus:
     metrics:
       export:
@@ -60,6 +74,12 @@ management:
         "[http.server.requests]": true
     tags:
       application: passenger-service
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://tracing-server:9411/api/v2/spans
 
 logging:
   level:

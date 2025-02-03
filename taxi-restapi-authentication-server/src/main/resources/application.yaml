@@ -4,6 +4,14 @@ spring:
   application:
     name: authentication-server
 
+  boot:
+    admin:
+      client:
+        enabled: true
+        instance:
+          name: authentication-server
+        url: http://localhost:8086
+
   security:
     oauth2:
       resourceserver:
@@ -21,12 +29,24 @@ keycloak:
   server-url: http://localhost:9090
 
 management:
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
   endpoints:
     web:
       exposure:
-        include:
-          - health
-          - prometheus
+        include: '*'
   prometheus:
     metrics:
       export:
