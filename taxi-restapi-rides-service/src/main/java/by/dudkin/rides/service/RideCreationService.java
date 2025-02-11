@@ -11,6 +11,7 @@ import by.dudkin.rides.rest.dto.response.PassengerResponse;
 import by.dudkin.rides.rest.dto.response.Promocode;
 import by.dudkin.rides.utils.GeospatialUtils;
 import by.dudkin.rides.utils.PriceCalculator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ import java.util.UUID;
 /**
  * @author Alexander Dudkin
  */
+@Slf4j
 @Service
 public class RideCreationService {
 

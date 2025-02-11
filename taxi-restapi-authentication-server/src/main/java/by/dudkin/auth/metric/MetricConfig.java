@@ -1,4 +1,4 @@
-package by.dudkin.metric;
+package by.dudkin.auth.metric;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.binder.MeterBinder;

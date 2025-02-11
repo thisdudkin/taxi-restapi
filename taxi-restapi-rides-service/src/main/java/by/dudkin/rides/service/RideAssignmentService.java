@@ -4,16 +4,18 @@ import by.dudkin.common.enums.DriverStatus;
 import by.dudkin.common.enums.RideStatus;
 import by.dudkin.common.util.ErrorMessages;
 import by.dudkin.rides.domain.Ride;
+import by.dudkin.rides.feign.DriverClient;
 import by.dudkin.rides.rest.advice.custom.EntityValidationConflictException;
 import by.dudkin.rides.rest.dto.response.AvailableDriver;
 import by.dudkin.rides.rest.dto.response.DriverResponse;
-import by.dudkin.rides.feign.DriverClient;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
  * @author Alexander Dudkin
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RideAssignmentService {

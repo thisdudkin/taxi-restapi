@@ -1,4 +1,4 @@
-package by.dudkin.i18n;
+package by.dudkin.auth.i18n;
 
 public class LocaleException extends RuntimeException {
     public LocaleException(String message) {

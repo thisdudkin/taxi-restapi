@@ -1,4 +1,4 @@
-package by.dudkin.notification.feign;
+package by.dudkin.notification.feign.exception;
 
 import feign.FeignException;
 import feign.Response;

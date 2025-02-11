@@ -1,4 +1,4 @@
-package by.dudkin.metric;
+package by.dudkin.auth.metric;
 
 /**
  * @author Alexander Dudkin

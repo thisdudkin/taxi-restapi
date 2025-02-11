@@ -1,4 +1,4 @@
-package by.dudkin.notification.feign;
+package by.dudkin.notification.feign.exception;
 
 import feign.FeignException;
 import feign.Response;
@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 /**
  * @author Alexander Dudkin
  */
-@Component("404")
-public class FeignNotFoundExceptionHandler implements FeignExceptionHandler {
+@Component("400")
+public class FeignBadRequestExceptionHandler implements FeignExceptionHandler {
 
     @Override
     public FeignException handleException(Response response) {

@@ -1,4 +1,4 @@
-package by.dudkin.i18n;
+package by.dudkin.auth.i18n;
 
 import java.util.Locale;
 

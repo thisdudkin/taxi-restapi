@@ -1,4 +1,21 @@
 services:
+  config-server:
+    image: rainaddan/taxi-restapi-config-server
+    container_name: config-server
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    healthcheck:
+      test: [ "CMD", "curl", "-I", "http://config-server:8888" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    environment:
+      SERVER_PORT: 8888
+    ports:
+      - "8888:8888"
+
   discovery-server:
     image: rainaddan/taxi-restapi-discovery-server
     container_name: discovery-server
@@ -11,7 +28,11 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8761
     depends_on:
+      config-server:
+        condition: service_healthy
       logstash:
         condition: service_healthy
       tracing-server:
@@ -32,7 +53,13 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 3030
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       discovery-server:
         condition: service_healthy
       logstash:
@@ -50,14 +77,18 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/passenger-service.env
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://passenger-service:8081/actuator/health" ]
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8081
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       tracing-server:
         condition: service_started
       logstash:
@@ -77,14 +108,18 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/driver-service.env
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://driver-service:8082/actuator/health" ]
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8082
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       tracing-server:
         condition: service_started
       logstash:
@@ -108,14 +143,18 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/rides-service.env
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://rides-service:8083/actuator/health" ]
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8083
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       tracing-server:
         condition: service_started
       logstash:
@@ -137,14 +176,18 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/notification-service.env
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://notification-server:8084/actuator/health" ]
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8084
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       tracing-server:
         condition: service_started
       logstash:
@@ -166,14 +209,18 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/payment-service.env
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://payment-server:8085/actuator/health" ]
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8085
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       tracing-server:
         condition: service_started
       logstash:
@@ -193,7 +240,14 @@ services:
       resources:
         limits:
           memory: 512M
+    healthcheck:
+      test: [ "CMD", "curl", "-I", "http://admin-server:8086" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
     depends_on:
+      config-server:
+        condition: service_healthy
       discovery-server:
         condition: service_healthy
     environment:
@@ -208,14 +262,18 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/authentication-server.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://authentication-server:8087/actuator/health"]
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8087
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       logstash:
         condition: service_healthy
       discovery-server:
@@ -235,14 +293,18 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/promocode-service.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://promocode-service:8088/actuator/health"]
       interval: 5s
       timeout: 3s
       retries: 10
+    environment:
+      SERVER_PORT: 8088
     depends_on:
+      admin-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
       tracing-server:
         condition: service_started
       logstash:
@@ -255,7 +317,7 @@ services:
       - "8088:8088"
     restart: unless-stopped
 
-  # Extra Services
+  # Infrastructure
 
   postgres:
     image: postgis/postgis:17-master
@@ -268,7 +330,7 @@ services:
       - "5433:5432"
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: docker
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -300,6 +362,10 @@ services:
       resources:
         limits:
           memory: 256M
+    environment:
+      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_PORT}
+      ZOOKEEPER_SERVER_ID: ${ZOOKEEPER_SERVER_ID}
+      ZOOKEEPER_SERVERS: ${ZOOKEEPER_SERVERS}
     healthcheck:
       test: nc -z localhost 2181 || exit -1
       interval: 10s
@@ -308,8 +374,6 @@ services:
     restart: unless-stopped
     ports:
       - "2181:2181"
-    env_file:
-      - docker/env/zookeeper.env
 
   kafka:
     image: confluentinc/cp-kafka:7.8.0
@@ -319,21 +383,33 @@ services:
       resources:
         limits:
           memory: 256M
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: ${KAFKA_ADVERTISED_LISTENERS}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
+      KAFKA_INTER_BROKER_LISTENER_NAME: ${KAFKA_INTER_BROKER_LISTENER_NAME}
+      KAFKA_ZOOKEEPER_CONNECT: ${KAFKA_ZOOKEEPER_CONNECT}
+      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID}
+      KAFKA_LOG4J_LOGGERS: ${KAFKA_LOG4J_LOGGERS}
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: ${KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR}
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: ${KAFKA_TRANSACTION_STATE_LOG_MIN_ISR}
+      KAFKA_JMX_PORT: ${KAFKA_JMX_PORT}
+      KAFKA_JMX_HOSTNAME: ${KAFKA_JMX_HOSTNAME}
+      KAFKA_AUTHORIZER_CLASS_NAME: ${KAFKA_AUTHORIZER_CLASS_NAME}
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: ${KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND}
     healthcheck:
       test: kafka-topics --bootstrap-server kafka:9092 --list
       interval: 30s
       timeout: 10s
       retries: 3
-    restart: unless-stopped
     ports:
       - "9092:9092"
       - "29092:29092"
       - "9999:9999"
-    env_file:
-      - docker/env/kafka.env
     depends_on:
       zookeeper:
         condition: service_healthy
+    restart: unless-stopped
 
   keycloak:
     container_name: keycloak
@@ -342,8 +418,13 @@ services:
       resources:
         limits:
           memory: 512M
-    env_file:
-      - docker/env/keycloak.env
+    environment:
+      KC_DB: ${KC_DB}
+      KC_DB_URL: ${KC_DB_URL}
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
     ports:
       - "9090:8080"
     command: [ "start-dev", "--import-realm" ]
@@ -362,8 +443,7 @@ services:
           memory: 512M
     ports:
       - "9411:9411"
-
-# Grafana / Prometheus
+    restart: unless-stopped
 
   grafana-server:
     build: ./docker/grafana
@@ -385,8 +465,6 @@ services:
     ports:
       - "9091:9090"
 
-# Elasticsearch / Logstash / Kibana
-
   elasticsearch:
     image: elasticsearch:7.17.22
     hostname: elasticsearch
@@ -395,13 +473,13 @@ services:
       resources:
         limits:
           memory: 256M
+    environment:
+      discovery.type: ${DISCOVERY_TYPE}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://elasticsearch:9200" ]
       interval: 5s
       timeout: 3s
       retries: 10
-    env_file:
-      - docker/env/elasticsearch.env
     ports:
       - "9200:9200"
     restart: unless-stopped

@@ -1,4 +1,4 @@
-package by.dudkin.metric;
+package by.dudkin.auth.metric;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

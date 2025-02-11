@@ -23,6 +23,7 @@ import by.dudkin.rides.utils.PriceCalculator;
 import by.dudkin.rides.utils.RideStatusTransition;
 import by.dudkin.rides.utils.RideStatusTransitionValidator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +40,7 @@ import java.util.UUID;
 /**
  * @author Alexander Dudkin
  */
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
