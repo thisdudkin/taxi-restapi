@@ -15,7 +15,7 @@ target/
 *.iml
 
 # Secrets
-docker/env/postgres_secrets.txt
+.env
 
 # Visual Studio Code
 .factorypath
